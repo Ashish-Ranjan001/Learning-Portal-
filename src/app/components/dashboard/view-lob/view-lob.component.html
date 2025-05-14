@@ -1,4 +1,4 @@
-<div class="view-lob-container">
+<!-- <div class="view-lob-container">
     <div class="search-container">
       <label for="search">Search:</label>
       <input 
@@ -22,7 +22,8 @@
         <tbody>
           <tr *ngFor="let lob of paginatedLobs">
             <td class="col-name">{{ lob.name }}</td>
-            <td class="col-description">{{ lob.description }}</td>
+            <td class="col-description">{{ lob.lobDescription
+ }}</td>
             <td class="col-status">
               <span class="status-badge" [ngClass]="lob.status.toLowerCase()">
                 <span class="status-dot"></span>
@@ -44,4 +45,65 @@
       <button class="pagination-btn" (click)="nextPage()" [disabled]="currentPage === totalPages">›</button>
       <button class="pagination-btn" (click)="lastPage()" [disabled]="currentPage === totalPages">»</button>
     </div>
+  </div> -->
+
+  <!-- ----------------------------------------------------------------------------------------------- -->
+
+  <div class="view-lob-container">
+ 
+  <div *ngIf="loading" class="loading">Loading LOB data...</div>
+  <div *ngIf="error" class="error-message">{{ error }}</div>
+  
+  <div class="search-container">
+    <label for="search">Search:</label>
+    <input 
+      type="text" 
+      id="search" 
+      class="search-input" 
+      [(ngModel)]="searchTerm" 
+       (ngModelChange)="onSearchChange()"
+      placeholder="Search LOBs...">
   </div>
+
+  <div class="table-container" *ngIf="!loading && !error">
+    <table class="lob-table">
+      <thead>
+        <tr>
+          <th class="col-id">ID</th>
+          <th class="col-name">Name</th>
+          <th class="col-description">Description</th>
+          <th class="col-status">Status</th>
+          <th class="col-actions">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let lob of paginatedLobs">
+          <td class="col-id">{{ lob.lobId }}</td>
+          <td class="col-name">{{ lob.lobName }}</td>
+          <td class="col-description">{{ lob.lobDescription }}</td>
+          <td class="col-status">
+            <span class="status-badge" [ngClass]="getStatusText(lob.status).toLowerCase()">
+              <span class="status-dot"></span>
+              {{ getStatusText(lob.status) }}
+            </span>
+          </td>
+          <td class="col-actions">
+            <button class="btn-edit" (click)="editLob(lob.lobId)">Edit</button>
+          </td>
+        </tr>
+        <tr *ngIf="paginatedLobs.length === 0">
+          <td colspan="5" class="no-data">No LOBs found</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="pagination-container" *ngIf="!loading && !error && filteredLobs.length > 0">
+    <button class="pagination-btn" (click)="firstPage()" [disabled]="currentPage === 1">«</button>
+    <button class="pagination-btn" (click)="previousPage()" [disabled]="currentPage === 1">‹</button>
+    <span class="pagination-current">{{ currentPage }} of {{ totalPages }}</span>
+    <button class="pagination-btn" (click)="nextPage()" [disabled]="currentPage === totalPages">›</button>
+    <button class="pagination-btn" (click)="lastPage()" [disabled]="currentPage === totalPages">»</button>
+  </div>
+</div>
+

@@ -1,4 +1,4 @@
-<div class="view-sme-container">
+<!-- <div class="view-sme-container">
     <div class="search-container">
       <label for="search">Search:</label>
       <input 
@@ -37,4 +37,111 @@
         </tr>
       </tbody>
     </table>
+  </div> -->
+
+  <div class="container-fluid">
+  <!-- <h2 class="page-title">View SME</h2> -->
+  
+  <!-- Search and Filter Row -->
+  <div class="row mb-3 justify-content-end">
+    <div class="col-md-4 text-end">
+      <div class="input-group">
+        <span class="input-group-text">Search:</span>
+        <input 
+          type="text" 
+          class="form-control"
+          [(ngModel)]="searchTerm" 
+          (input)="search()" 
+          placeholder="Search SMEs...">
+      </div>
+    </div>
   </div>
+
+  <!-- Loading State -->
+  <div class="text-center my-4" *ngIf="isLoading">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="mt-2">Loading SME data...</p>
+  </div>
+
+  <!-- Error State -->
+  <div class="alert alert-danger" *ngIf="error">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+    {{ error }}
+  </div>
+
+  <!-- Empty State -->
+  <div class="text-center my-4" *ngIf="!isLoading && !error && filteredSmes.length === 0">
+    <div class="empty-state">
+      <i class="bi bi-person-x fs-1 text-muted"></i>
+      <p class="mt-3">No SMEs found.</p>
+      <p class="text-muted small">Try adjusting your search criteria.</p>
+    </div>
+  </div>
+
+  <!-- SME Data Table -->
+  <div class="table-responsive" *ngIf="!isLoading && !error && paginatedSmes.length > 0">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let sme of paginatedSmes">
+          <td>{{ sme.name }}</td>
+          <td>{{ sme.email }}</td>
+          <td>{{ sme.phone }}</td>
+          <!-- <td>
+            <div class="status-indicator">
+              <span class="status-dot" [ngClass]="getStatusClass(sme.status)"></span>
+              <span>{{ getStatusText(sme.status) }}</span>
+            </div>
+          </td> -->
+          <td class="col-status">
+            <span class="status-badge" [ngClass]="getStatusText(sme.status).toLowerCase()">
+              <span class="status-dot"></span>
+              {{ getStatusText(sme.status) }}
+            </span>
+          </td>
+          <td class="actions-column">
+            <button class="btn btn-sm btn-outline-primary me-2" (click)="editSme(sme.smeId)">Edit</button>
+            <button class="btn btn-sm btn-outline-secondary" (click)="changePassword(sme.smeId)">Change Password</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div class="row" *ngIf="!isLoading && !error && filteredSmes.length > 0">
+    <div class="col-12">
+      <nav aria-label="SME pagination">
+        <ul class="pagination justify-content-center">
+          <li class="page-item" [class.disabled]="currentPage === 1">
+            <a class="page-link" href="javascript:void(0)" (click)="goToFirstPage()">&laquo;</a>
+          </li>
+          <li class="page-item" [class.disabled]="currentPage === 1">
+            <a class="page-link" href="javascript:void(0)" (click)="goToPreviousPage()">&lsaquo;</a>
+          </li>
+          
+          <li class="page-item" *ngFor="let page of pages" [class.active]="page === currentPage">
+            <a class="page-link" href="javascript:void(0)" (click)="goToPage(page)">{{ page }}</a>
+          </li>
+          
+          <li class="page-item" [class.disabled]="currentPage === totalPages">
+            <a class="page-link" href="javascript:void(0)" (click)="goToNextPage()">&rsaquo;</a>
+          </li>
+          <li class="page-item" [class.disabled]="currentPage === totalPages">
+            <a class="page-link" href="javascript:void(0)" (click)="goToLastPage()">&raquo;</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
