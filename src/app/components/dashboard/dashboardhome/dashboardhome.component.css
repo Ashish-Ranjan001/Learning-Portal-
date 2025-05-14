@@ -1,0 +1,79 @@
+/* 
+.app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+  
+ 
+  app-dashheader {
+    flex: 0 0 auto;
+  }
+  
+  
+  .main-content {
+    display: flex;
+    flex: 1 1 auto;
+    overflow: hidden;
+  }
+  
+
+  app-dashboardsidebar {
+    flex: 0 0 250px;           
+    transition: flex 0.3s ease;
+  }
+  
+
+  app-dashboardsidebar[collapsed="true"] {
+    flex: 0 0 0;
+    overflow: hidden;
+  }
+  
+ 
+  main.content {
+    flex: 1 1 auto;
+    padding: 1rem;
+    overflow-y: auto;
+    transition: margin-left 0.3s ease;
+  }
+  
+ 
+  main.content.expanded {
+  
+    margin-left: 0;
+  }
+   
+  
+  app-dash-footer {
+    flex: 0 0 auto;
+  }
+   */
+
+   /* dashboardhome.component.scss */
+.app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+  }
+  
+  .main-content {
+    display: flex;
+    flex: 1;
+    margin-top: 60px; /* Match header height */
+  }
+  
+  .content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    margin-left: 250px; /* Default margin for sidebar width */
+    transition: margin-left 0.3s ease;
+  
+    &.expanded {
+      margin-left: 0; /* No margin when sidebar is closed */
+    }
+  }
+  .content {
+  min-height: calc(100vh - 60px); /* Ensures full space below header */
+}

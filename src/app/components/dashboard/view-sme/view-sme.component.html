@@ -1,0 +1,40 @@
+<div class="view-sme-container">
+    <div class="search-container">
+      <label for="search">Search:</label>
+      <input 
+        type="text" 
+        id="search" 
+        [(ngModel)]="searchTerm" 
+        (input)="search()" 
+        placeholder="Search users...">
+    </div>
+  
+    <table class="users-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of filteredUsers">
+          <td>{{ user.name }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.phone }}</td>
+          <td>
+            <div class="status-badge" [ngClass]="{'active': user.status === 'Active', 'inactive': user.status === 'Inactive'}">
+              <span class="status-dot"></span>
+              <span>{{ user.status }}</span>
+            </div>
+          </td>
+          <td class="actions-cell">
+            <button class="action-btn edit-btn" (click)="editUser(user)">Edit</button>
+            <button class="action-btn password-btn" (click)="changePassword(user)">Change Password</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>

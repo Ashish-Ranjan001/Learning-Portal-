@@ -1,0 +1,42 @@
+<div class="add-course-container">
+  <div class="stepper">
+    <div class="steps">
+      <div 
+        *ngFor="let step of steps" 
+        class="step" 
+        [class.active]="currentStep === step.number"
+        [class.completed]="currentStep > step.number"
+        (click)="navigateToStep(step.number)">
+        <div class="step-number">{{ step.number }}</div>
+        <div class="step-label">{{ step.label }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-container">
+    <router-outlet></router-outlet>
+  </div>
+
+  <div class="navigation-buttons">
+    <button 
+      *ngIf="currentStep > 1" 
+      (click)="goToPrevStep()" 
+      class="back-button">
+      Back
+    </button>
+    
+    <button 
+      *ngIf="currentStep < steps.length" 
+      (click)="goToNextStep()" 
+      class="next-button">
+      Next
+    </button>
+    
+    <button 
+      *ngIf="currentStep === steps.length" 
+      (click)="submitCourse()" 
+      class="submit-button">
+      Submit Course
+    </button>
+  </div>
+</div>

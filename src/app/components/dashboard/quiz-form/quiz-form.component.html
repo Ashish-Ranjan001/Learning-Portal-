@@ -1,0 +1,45 @@
+<div class="quiz-form">
+  <h2>Create Quiz</h2>
+  
+  <div class="form-content">
+    <div class="file-upload-container">
+      <label for="quizFile">
+        Quiz <span class="required">*</span>
+      </label>
+      
+      <div class="file-upload">
+        <input 
+          type="file" 
+          id="quizFile" 
+          accept=".csv" 
+          (change)="onFileChange($event)" 
+          class="file-input"
+        >
+        <div class="file-upload-button">Choose File</div>
+        <div class="file-name">{{ fileName }}</div>
+      </div>
+      
+      <div class="file-info">Upload only csv.</div>
+      
+      <div *ngIf="error" class="error-message">
+        {{ error }}
+      </div>
+      
+      <div class="instructions">
+        <h3>CSV Format Instructions</h3>
+        <p>Your CSV file should follow this format:</p>
+        <ul>
+          <li>First column: Question text</li>
+          <li>Columns 2-5: Answer options</li>
+          <li>Column 6: Correct answer number (1-4)</li>
+        </ul>
+        <p>Example:</p>
+        <div class="csv-example">
+          Question,Option1,Option2,Option3,Option4,CorrectAnswer<br>
+          "What is Angular?","Framework","Language","Library","Tool",1<br>
+          "Which version is latest?","17","18","19","20",3
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

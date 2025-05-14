@@ -1,0 +1,102 @@
+.add-lob-container {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  h2 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 25px;
+    color: #333;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 8px;
+    color: #333;
+  }
+  
+  input, textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    font-size: 14px;
+    outline: none;
+    box-sizing: border-box;
+  }
+  
+  input::placeholder, textarea::placeholder {
+    color: #999;
+  }
+  
+  textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+  
+  .button-group {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 30px;
+  }
+  
+  .btn-cancel {
+    background-color: transparent;
+    border: 1px solid #6c757d;
+    color: #6c757d;
+    border-radius: 20px;
+    padding: 8px 20px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .btn-save {
+    background-color: #8e44ad;
+    border: none;
+    color: white;
+    border-radius: 20px;
+    padding: 8px 20px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .btn-cancel:hover {
+    background-color: #f8f9fa;
+  }
+  
+  .btn-save:hover {
+    background-color: #7d3c98;
+  }
+  
+  .invalid {
+    border-color: #dc3545;
+  }
+  
+  /* For responsive design */
+  @media (max-width: 768px) {
+    .add-lob-container {
+      padding: 15px;
+      margin: 0 10px;
+    }
+    
+    .button-group {
+      flex-direction: column;
+    }
+    
+    .btn-cancel, .btn-save {
+      width: 100%;
+    }
+  }

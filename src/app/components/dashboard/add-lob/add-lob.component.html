@@ -1,0 +1,32 @@
+<div class="add-lob-container">
+    <h2>Create New LOB</h2>
+    
+    <form [formGroup]="lobForm">
+      <div class="form-group">
+        <label for="name">Name</label>
+        <input 
+          type="text" 
+          id="name" 
+          formControlName="LobName" 
+          placeholder="Enter Name"
+          [ngClass]="{'invalid': lobForm.get('LobName')?.invalid && lobForm.get('LobName')?.touched}"
+        >
+      </div>
+      
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea 
+          id="description" 
+          formControlName="LobDescription" 
+          placeholder="Enter Description"
+          rows="4"
+          [ngClass]="{'invalid': lobForm.get('LobDescription')?.invalid && lobForm.get('LobDescription')?.touched}"
+        ></textarea>
+      </div>
+      
+      <div class="button-group">
+        <button type="button" class="btn-cancel" (click)="onCancel()">Cancel</button>
+        <button type="button" class="btn-save" (click)="onSave()">Save Changes</button>
+      </div>
+    </form>
+  </div>

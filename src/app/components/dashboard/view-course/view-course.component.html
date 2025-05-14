@@ -1,0 +1,58 @@
+<div class="view-course-container">
+  <!-- Search Bar -->
+  <div class="search-container">
+    <label for="search">Search:</label>
+    <input 
+      type="text" 
+      id="search" 
+      [(ngModel)]="searchTerm" 
+      (input)="search()" 
+      placeholder="Search courses...">
+  </div>
+
+  <!-- Course Table -->
+  <table class="courses-table">
+    <thead>
+      <tr>
+        <th class="image-column">Image</th>
+        <th>Course Name</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let course of paginatedCourses">
+        <td class="image-column">
+          <div class="course-image-container">
+            <img [src]="course.imageUrl" alt="{{ course.name }}" class="course-image">
+          </div>
+        </td>
+        <td>{{ course.name }}</td>
+        <td>
+          <div class="status-badge" [ngClass]="{'published': course.status === 'Published', 'unpublished': course.status === 'Unpublished'}">
+            <span class="status-dot"></span>
+            <span>{{ course.status }}</span>
+          </div>
+        </td>
+        <td class="actions-column">
+          <button class="action-btn edit-btn" (click)="editCourse(course)">Edit</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Pagination -->
+  <div class="pagination-container">
+    <button class="pagination-btn" [disabled]="currentPage === 1" (click)="goToFirstPage()">«</button>
+    <button class="pagination-btn" [disabled]="currentPage === 1" (click)="goToPreviousPage()">‹</button>
+    
+    <div class="pagination-pages">
+      <button *ngFor="let page of pages" class="pagination-btn page-number" [ngClass]="{'active': page === currentPage}" (click)="goToPage(page)">
+        {{ page }}
+      </button>
+    </div>
+
+    <button class="pagination-btn" [disabled]="currentPage === totalPages" (click)="goToNextPage()">›</button>
+    <button class="pagination-btn" [disabled]="currentPage === totalPages" (click)="goToLastPage()">»</button>
+  </div>
+</div>
