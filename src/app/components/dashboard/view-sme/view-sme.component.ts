@@ -1,14 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { SmeServicesService } from '../../../services/smes/sme-services.service';
 
-interface User {
-  id: number;
+interface Sme {
+  smeId: number;
+  adminId: number;
   name: string;
   email: string;
-  phone: string;
-  status: 'Active' | 'Inactive';
+  phone: number;
+  status: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 @Component({
@@ -19,90 +23,119 @@ interface User {
   styleUrls: ['./view-sme.component.css']
 })
 export class ViewSmeComponent implements OnInit {
-  users: User[] = [];
+  smes: Sme[] = [];
   searchTerm: string = '';
-  filteredUsers: User[] = [];
+  filteredSmes: Sme[] = [];
+  paginatedSmes: Sme[] = [];
+  isLoading: boolean = true;
+  error: string | null = null;
 
-  constructor(private http: HttpClient) {}
+  currentPage: number = 1;
+  itemsPerPage: number = 5;
+  totalPages: number = 1;
+  pages: number[] = [];
+
+  constructor(
+    private smeService: SmeServicesService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
-    // For now, use static data
-    // Later, we'll replace this with an API call
-    this.users = [
-      { 
-        id: 1, 
-        name: 'Mohak Pachisia', 
-        email: 'mohak.pachisia@evalueserve.com', 
-        phone: '7766776677', 
-        status: 'Active' 
-      },
-      { 
-        id: 2, 
-        name: 'Ravinder Ahuja', 
-        email: 'ravinder.ahuja@evalueserve.com', 
-        phone: '6677667777', 
-        status: 'Active' 
-      },
-      { 
-        id: 3, 
-        name: 'Ravi Shankar Jha', 
-        email: 'ravi.jha@evalueserve.com', 
-        phone: '9999998899', 
-        status: 'Active' 
-      },
-      { 
-        id: 4, 
-        name: 'Sushant Raj', 
-        email: 'sushant.raj@evalueserve.com', 
-        phone: '7777778877', 
-        status: 'Active' 
-      },
-      { 
-        id: 5, 
-        name: 'Sumit Joshi', 
-        email: 'sumit.joshi@evalueserve.com', 
-        phone: '9899987878', 
-        status: 'Active' 
-      }
-    ];
-    
-    this.filteredUsers = [...this.users];
+    this.loadSmes();
+  }
 
-    // When ready to fetch from API, uncomment this code:
-    /*
-    this.http.get<User[]>('your-api-endpoint').subscribe({
-      next: (data) => {
-        this.users = data;
-        this.filteredUsers = [...this.users];
+  loadSmes(): void {
+    this.isLoading = true;
+    this.error = null;
+    
+    this.smeService.viewSmes().subscribe({
+      next: (response: any) => {
+        this.smes = response;
+        this.filterSmes();
+        this.isLoading = false;
       },
-      error: (error) => {
-        console.error('Error fetching users:', error);
+      error: (error:any) => {
+        console.error('Error fetching SMEs:', error);
+        this.error = 'Failed to load SME data. Please try again later.';
+        this.isLoading = false;
       }
     });
-    */
   }
 
   search(): void {
+    this.currentPage = 1; // Reset to first page when searching
+    this.filterSmes();
+  }
+
+  filterSmes(): void {
     if (!this.searchTerm.trim()) {
-      this.filteredUsers = [...this.users];
-      return;
+      this.filteredSmes = [...this.smes];
+    } else {
+      const term = this.searchTerm.toLowerCase().trim();
+      this.filteredSmes = this.smes.filter(sme => 
+        sme.name.toLowerCase().includes(term) || 
+        sme.email.toLowerCase().includes(term)
+      );
     }
-    
-    const term = this.searchTerm.toLowerCase().trim();
-    this.filteredUsers = this.users.filter(user => 
-      user.name.toLowerCase().includes(term) ||
-      user.email.toLowerCase().includes(term) ||
-      user.phone.includes(term)
-    );
+
+    this.calculateTotalPages();
+    this.updatePagination();
   }
 
-  editUser(user: User): void {
-    // Implementation for edit functionality
-    console.log('Edit user:', user);
+  calculateTotalPages(): void {
+    this.totalPages = Math.ceil(this.filteredSmes.length / this.itemsPerPage);
+    this.generatePageArray();
   }
 
-  changePassword(user: User): void {
-    // Implementation for change password functionality
-    console.log('Change password for user:', user);
+  generatePageArray(): void {
+    this.pages = Array.from({ length: this.totalPages }, (_, i) => i + 1);
+  }
+
+  updatePagination(): void {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    this.paginatedSmes = this.filteredSmes.slice(startIndex, startIndex + this.itemsPerPage);
+  }
+
+  goToPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+      this.updatePagination();
+    }
+  }
+
+  goToFirstPage(): void {
+    this.goToPage(1);
+  }
+
+  goToLastPage(): void {
+    this.goToPage(this.totalPages);
+  }
+
+  goToPreviousPage(): void {
+    this.goToPage(this.currentPage - 1);
+  }
+
+  goToNextPage(): void {
+    this.goToPage(this.currentPage + 1);
+  }
+
+  editSme(smeId: number): void {
+    console.log('Edit SME with ID:', smeId);
+    // Navigate to edit page with smeId
+    // this.router.navigate(['/edit-sme', smeId]);
+  }
+
+  changePassword(smeId: number): void {
+    console.log('Change password for SME with ID:', smeId);
+    // Navigate to change password page with smeId
+    // this.router.navigate(['/change-password', smeId]);
+  }
+
+  getStatusClass(status: boolean): string {
+    return status ? 'active' : 'inactive';
+  }
+
+  getStatusText(status: boolean): string {
+    return status ? 'Active' : 'Inactive';
   }
 }
