@@ -1,0 +1,66 @@
+/* body {
+    background-color: #f8f9fa;
+}
+
+.edit-lob-container {
+    max-width: 600px;
+    margin: auto;
+    background: white;
+    border-radius: 10px;
+}
+
+.is-invalid {
+    border-color: #dc3545 !important;
+}
+
+.invalid-feedback {
+    color: #dc3545;
+    font-size: 0.9rem;
+}
+
+button {
+    min-width: 100px;
+} */
+ body {
+    background-color: #f8f9fa;
+}
+
+.edit-lob-container {
+    max-width: 600px;
+    margin: auto;
+    background: white;
+    border-radius: 10px;
+}
+
+.is-invalid {
+    border-color: #dc3545 !important;
+}
+
+.invalid-feedback {
+    color: #dc3545;
+    font-size: 0.9rem;
+}
+
+button {
+    min-width: 100px;
+}
+
+/* Toggle Switch Styles */
+.toggle-switch {
+    width: 50px;
+    height: 25px;
+    cursor: pointer;
+}
+
+.form-switch .form-check-input {
+    width: 50px;
+    height: 25px;
+    background-color: #ccc;
+    border-radius: 15px;
+    appearance: none;
+    transition: 0.3s;
+}
+
+.form-switch .form-check-input:checked {
+    background-color: #007bff;
+}
