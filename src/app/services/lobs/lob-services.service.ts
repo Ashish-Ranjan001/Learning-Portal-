@@ -34,4 +34,13 @@ export class LobServicesService {
      const url = `${this.apiBaseUrl}/api/lobs`; 
      return this.http.put(url, lobId);
   }
+  getLobById(lobId: number) {
+    const url = `${this.apiBaseUrl}/api/lobs/${lobId}`; 
+    return this.http.get<Lob>(url);
+  }
+  updateLob(lobId: number, lobData: any) {
+    const url = `${this.apiBaseUrl}/api/lobs/${lobId}`; 
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.put(url, lobData, { headers });
+  }
 }
