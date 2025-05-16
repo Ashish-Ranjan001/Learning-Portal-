@@ -120,10 +120,9 @@ export class ViewSmeComponent implements OnInit {
   }
 
   editSme(smeId: number): void {
-    console.log('Edit SME with ID:', smeId);
-    // Navigate to edit page with smeId
-    // this.router.navigate(['/edit-sme', smeId]);
-  }
+  console.log('Navigating to Edit SME:', smeId);
+  this.router.navigate(['/dashboard/sme/edit', smeId]); // Ensure this route exists in routing module
+}
 
   changePassword(smeId: number): void {
     console.log('Change password for SME with ID:', smeId);

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 interface Category {
   id: number;
@@ -29,7 +30,7 @@ export class ViewCategoryComponent implements OnInit {
   totalPages: number = 1;
   pages: number[] = [1];
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient,private router:Router) {}
 
   ngOnInit(): void {
     // Sample data - will be replaced with API call
@@ -146,6 +147,7 @@ export class ViewCategoryComponent implements OnInit {
 
   editCategory(category: Category): void {
     // Implementation for edit functionality
-    console.log('Edit category:', category);
+    console.log('Edit category:', category.id);
+    this.router.navigate(['/dashboard/category/edit', category.id]); // Ensure this route exists in routing module
   }
 }

@@ -282,17 +282,18 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 import { LobServicesService  , Lob} from '../../../services/lobs/lob-services.service';
 
 @Component({
   selector: 'app-view-lob',
   standalone: true,
-  imports: [CommonModule, FormsModule, HttpClientModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './view-lob.component.html',
   styleUrls: ['./view-lob.component.css']
 })
+
 
 
 export class ViewLobComponent implements OnInit {
@@ -304,7 +305,7 @@ export class ViewLobComponent implements OnInit {
   error: string | null = null;
   
  // Replace with your actual API base URL
-  
+  constructor(private router:Router) { }
  lobService:any=inject(LobServicesService)
 
   ngOnInit(): void {
@@ -368,11 +369,9 @@ export class ViewLobComponent implements OnInit {
     this.currentPage = this.totalPages;
   }
 
-  editLob(lobId: number): void {
-    // This would be implemented to navigate to edit page or open a modal
-    console.log(`Edit LOB ID: ${lobId}`);
-    // You can add navigation logic here
-  }
+  editLob(lobId: number) {
+  this.router.navigate([`/dashboard/lob/edit/${lobId}`]);
+}
 
   // Helper method to get status display text
   getStatusText(status: boolean): string {
