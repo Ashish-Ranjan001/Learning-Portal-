@@ -10,6 +10,9 @@ import { ViewCategoryComponent } from './components/dashboard/view-category/view
 import { AddCourseComponent } from './components/dashboard/add-course/add-course.component';
 import { CourseCreatorComponent } from './components/dashboard/course-creator/course-creator.component';
 import { ViewCourseComponent } from './components/dashboard/view-course/view-course.component';
+import { EditLobComponent } from './components/dashboard/edit-lob/edit-lob.component';
+import { EditSmeComponent } from './components/dashboard/edit-sme/edit-sme.component';
+import { EditCategoryComponent } from './components/dashboard/edit-category/edit-category.component';
 
 
 export const routes: Routes = [
@@ -24,7 +27,8 @@ export const routes: Routes = [
         {path: 'course/viewCategory',component:ViewCategoryComponent },
         {path: 'course/addcourse',component:CourseCreatorComponent },
         {path: 'course/viewcourse',component:ViewCourseComponent },
-
-        
+        { path: 'lob/edit/:id', component: EditLobComponent },
+        {path : 'sme/edit/:id',component:EditSmeComponent},
+        {path: 'category/edit/:id', component: EditCategoryComponent},
      ] }
 ];
