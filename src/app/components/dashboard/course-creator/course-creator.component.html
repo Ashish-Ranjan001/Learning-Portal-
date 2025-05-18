@@ -1,45 +1,8 @@
 
-<!-- 
-<div class="course-creator-container">
-  <div class="scrollable-content">
-    <div class="steps-container">
-      <div class="step-item" *ngFor="let step of steps; let i = index">
-        <div class="step-number" [ngClass]="{'active': currentStep === i, 'completed': step.completed}">
-          {{ i + 1 }}
-        </div>
-        <div class="step-label" [ngClass]="{'active': currentStep === i, 'completed': step.completed}">
-          {{ step.name }}
-        </div>
-        <div class="step-connector" *ngIf="i < steps.length - 1" [ngClass]="{'completed': steps[i].completed}"></div>
-      </div>
-    </div>
-
-    <div class="form-container">
-      <div *ngIf="currentStep === 0">
-        <app-course-form [courseData]="courseData" (formDataChange)="onCourseDataChange($event)"></app-course-form>
-      </div>
-
-      <div *ngIf="currentStep === 1">
-        <app-quiz-form [quizData]="quizData" (formDataChange)="onQuizDataChange($event)"></app-quiz-form>
-      </div>
-
-      <div *ngIf="currentStep === 2">
-        <app-module-form [moduleData]="moduleData" (formDataChange)="onModuleDataChange($event)"></app-module-form>
-      </div>
-    </div>
-  </div>
-
-  <div class="navigation-buttons">
-    <button class="btn btn-secondary" [disabled]="currentStep === 0" (click)="goToStep(currentStep - 1)">Previous</button>
-    <button *ngIf="currentStep < steps.length - 1" class="btn btn-primary" (click)="goToStep(currentStep + 1)">Next</button>
-    <button *ngIf="currentStep === steps.length - 1" class="btn btn-success" (click)="submitCourse()">Save Changes</button>
-  </div>
-</div>
- -->
 
 
  <div class="course-creator-container">
-  <!-- Steps Navigation - Always Visible -->
+
   <div class="steps-container">
     <div class="step-item" *ngFor="let step of steps; let i = index">
       <div class="step-number" [ngClass]="{'active': currentStep === i, 'completed': step.completed}">
@@ -52,7 +15,7 @@
     </div>
   </div>
 
-  <!-- Scrollable Component Section -->
+
   <div class="scrollable-content">
     <div class="form-container">
       <div *ngIf="currentStep === 0">
@@ -67,10 +30,12 @@
     </div>
   </div>
 
-  <!-- Navigation Buttons - Always Visible -->
+
   <div class="navigation-buttons">
     <button class="btn btn-secondary" [disabled]="currentStep === 0" (click)="goToStep(currentStep - 1)">Previous</button>
     <button *ngIf="currentStep < steps.length - 1" class="btn btn-primary" (click)="goToStep(currentStep + 1)">Next</button>
     <button *ngIf="currentStep === steps.length - 1" class="btn btn-success" (click)="submitCourse()">Save Changes</button>
   </div>
-</div>
+</div> 
+
+

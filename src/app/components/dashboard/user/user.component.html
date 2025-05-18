@@ -1,0 +1,162 @@
+<div class="user-container">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12 mb-4">
+        <h2 class="page-title">Create New User</h2>
+      </div>
+    </div>
+<form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="user-form">
+  <div class="row">
+    <!-- Name Field -->
+    <div class="col-md-6 mb-3">
+      <label for="name" class="form-label">Name</label>
+      <input 
+        type="text" 
+        id="name" 
+        class="form-control"
+        placeholder="Enter Name"
+        formControlName="name">
+      <div *ngIf="userForm.get('name')?.invalid && userForm.get('name')?.touched" class="error-message">
+        Name is required
+      </div>
+    </div>
+
+    <!-- Email Field -->
+    <div class="col-md-6 mb-3">
+      <label for="email" class="form-label">Email</label>
+      <input 
+        type="email" 
+        id="email" 
+        class="form-control"
+        placeholder="Enter Email"
+        formControlName="email">
+      <div *ngIf="userForm.get('email')?.invalid && userForm.get('email')?.touched" class="error-message">
+        Valid email is required
+      </div>
+    </div>
+
+    <!-- Phone Field -->
+    <div class="col-md-6 mb-3">
+      <label for="phone" class="form-label">Phone</label>
+      <input 
+        type="text" 
+        id="phone" 
+        class="form-control"
+        placeholder="Enter Phone"
+        formControlName="phone">
+      <div *ngIf="userForm.get('phone')?.invalid && userForm.get('phone')?.touched" class="error-message">
+        Phone is required
+      </div>
+    </div>
+
+    <!-- Course Applicability Field -->
+    <div class="col-md-6 mb-3">
+      <label for="courseApplicability" class="form-label">Course Applicability</label>
+      <select 
+        id="courseApplicability" 
+        class="form-select custom-select"
+        formControlName="courseApplicability"
+        placeholder="Select LOB">
+        <option value="" disabled selected>Select LOB</option>
+        <option *ngFor="let course of courseOptions" [value]="course">{{course}}</option>
+      </select>
+      <div *ngIf="userForm.get('courseApplicability')?.invalid && userForm.get('courseApplicability')?.touched" class="error-message">
+        Course applicability is required
+      </div>
+    </div>
+
+    <!-- Designation Field -->
+    <div class="col-md-6 mb-3">
+      <label for="designation" class="form-label">Designation</label>
+      <input 
+        type="text" 
+        id="designation" 
+        class="form-control"
+        placeholder="Enter Designation"
+        formControlName="designation">
+      <div *ngIf="userForm.get('designation')?.invalid && userForm.get('designation')?.touched" class="error-message">
+        Designation is required
+      </div>
+    </div>
+
+    <!-- Grade Field -->
+    <div class="col-md-6 mb-3">
+      <label for="grade" class="form-label">Grade</label>
+      <input 
+        type="text" 
+        id="grade" 
+        class="form-control"
+        placeholder="Enter Grade"
+        formControlName="grade">
+      <div *ngIf="userForm.get('grade')?.invalid && userForm.get('grade')?.touched" class="error-message">
+        Grade is required
+      </div>
+    </div>
+
+    <!-- Date of Joining Field -->
+    <div class="col-md-6 mb-3">
+      <label for="dateOfJoining" class="form-label">Date of Joining</label>
+      <input 
+        type="date" 
+        id="dateOfJoining" 
+        class="form-control"
+        placeholder="mm/dd/yyyy"
+        formControlName="dateOfJoining">
+      <div *ngIf="userForm.get('dateOfJoining')?.invalid && userForm.get('dateOfJoining')?.touched" class="error-message">
+        Date of joining is required
+      </div>
+    </div>
+
+    <!-- Gender Field -->
+    <div class="col-md-6 mb-3">
+      <label for="gender" class="form-label">Gender</label>
+      <input 
+        type="text" 
+        id="gender" 
+        class="form-control"
+        placeholder="Enter Gender"
+        formControlName="gender">
+      <div *ngIf="userForm.get('gender')?.invalid && userForm.get('gender')?.touched" class="error-message">
+        Gender is required
+      </div>
+    </div>
+
+    <!-- Sub Lob Field -->
+    <div class="col-md-6 mb-3">
+      <label for="subLob" class="form-label">Sub Lob</label>
+      <input 
+        type="text" 
+        id="subLob" 
+        class="form-control"
+        placeholder="Enter Sub Lob"
+        formControlName="subLob">
+      <div *ngIf="userForm.get('subLob')?.invalid && userForm.get('subLob')?.touched" class="error-message">
+        Sub lob is required
+      </div>
+    </div>
+
+    <!-- College Name Field -->
+    <div class="col-md-6 mb-3">
+      <label for="collegeName" class="form-label">College Name</label>
+      <input 
+        type="text" 
+        id="collegeName" 
+        class="form-control"
+        placeholder="Enter College Name"
+        formControlName="collegeName">
+      <div *ngIf="userForm.get('collegeName')?.invalid && userForm.get('collegeName')?.touched" class="error-message">
+        College name is required
+      </div>
+    </div>
+  </div>
+
+  <!-- Submit and Reset Buttons -->
+  <div class="row mt-4">
+    <div class="col-12 d-flex justify-content-center button-group">
+      <button type="submit" class="btn btn-primary me-3">Submit</button>
+      <button type="button" class="btn btn-secondary" (click)="resetForm()">Cancel</button>
+    </div>
+  </div>
+</form>
+  </div>
+</div>
