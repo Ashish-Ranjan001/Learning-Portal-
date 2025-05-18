@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { SmeServicesService } from '../../../services/smes/sme-services.service';
+// import { TaServicesService } from '../../../services/tas/ta-services.service';
 
-interface Sme {
-  smeId: number;
+interface Ta {
+  taId: number;
   adminId: number;
   name: string;
   email: string;
@@ -16,18 +16,17 @@ interface Sme {
 }
 
 @Component({
-  selector: 'app-view-sme',
+  selector: 'app-view-ta',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './view-sme.component.html',
-  styleUrls: ['./view-sme.component.css']
+  templateUrl: './view-ta.component.html',
+  styleUrls: ['./view-ta.component.css']
 })
-
-export class ViewSmeComponent implements OnInit {
-  smes: Sme[] = [];
+export class ViewTaComponent implements OnInit {
+  tas: Ta[] = [];
   searchTerm: string = '';
-  filteredSmes: Sme[] = [];
-  paginatedSmes: Sme[] = [];
+  filteredTas: Ta[] = [];
+  paginatedTas: Ta[] = [];
   isLoading: boolean = true;
   error: string | null = null;
 
@@ -37,45 +36,45 @@ export class ViewSmeComponent implements OnInit {
   pages: number[] = [];
 
   constructor(
-    private smeService: SmeServicesService,
+    // private taService: TaServicesService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
-    this.loadSmes();
+    this.loadTas();
   }
 
-  loadSmes(): void {
+  loadTas(): void {
     this.isLoading = true;
     this.error = null;
-    
-    this.smeService.viewSmes().subscribe({
-      next: (response: any) => {
-        this.smes = response;
-        this.filterSmes();
-        this.isLoading = false;
-      },
-      error: (error:any) => {
-        console.error('Error fetching SMEs:', error);
-        this.error = 'Failed to load SME data. Please try again later.';
-        this.isLoading = false;
-      }
-    });
+
+    // this.taService.viewTas().subscribe({
+    //   next: (response: any) => {
+    //     this.tas = response;
+    //     this.filterTas();
+    //     this.isLoading = false;
+    //   },
+    //   error: (error: any) => {
+    //     console.error('Error fetching TAs:', error);
+    //     this.error = 'Failed to load TA data. Please try again later.';
+    //     this.isLoading = false;
+    //   }
+    // });
   }
 
   search(): void {
-    this.currentPage = 1; // Reset to first page when searching
-    this.filterSmes();
+    this.currentPage = 1;
+    this.filterTas();
   }
 
-  filterSmes(): void {
+  filterTas(): void {
     if (!this.searchTerm.trim()) {
-      this.filteredSmes = [...this.smes];
+      this.filteredTas = [...this.tas];
     } else {
       const term = this.searchTerm.toLowerCase().trim();
-      this.filteredSmes = this.smes.filter(sme => 
-        sme.name.toLowerCase().includes(term) || 
-        sme.email.toLowerCase().includes(term)
+      this.filteredTas = this.tas.filter(ta =>
+        ta.name.toLowerCase().includes(term) ||
+        ta.email.toLowerCase().includes(term)
       );
     }
 
@@ -84,7 +83,7 @@ export class ViewSmeComponent implements OnInit {
   }
 
   calculateTotalPages(): void {
-    this.totalPages = Math.ceil(this.filteredSmes.length / this.itemsPerPage);
+    this.totalPages = Math.ceil(this.filteredTas.length / this.itemsPerPage);
     this.generatePageArray();
   }
 
@@ -94,7 +93,7 @@ export class ViewSmeComponent implements OnInit {
 
   updatePagination(): void {
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    this.paginatedSmes = this.filteredSmes.slice(startIndex, startIndex + this.itemsPerPage);
+    this.paginatedTas = this.filteredTas.slice(startIndex, startIndex + this.itemsPerPage);
   }
 
   goToPage(page: number): void {
@@ -120,15 +119,14 @@ export class ViewSmeComponent implements OnInit {
     this.goToPage(this.currentPage + 1);
   }
 
-  editSme(smeId: number): void {
-  console.log('Navigating to Edit SME:', smeId);
-  this.router.navigate(['/dashboard/sme/edit', smeId]); // Ensure this route exists in routing module
-}
+  editTa(taId: number): void {
+    console.log('Navigating to Edit TA:', taId);
+    this.router.navigate(['/dashboard/ta/edit', taId]); // Adjust route as per app routing
+  }
 
-  changePassword(smeId: number): void {
-    console.log('Change password for SME with ID:', smeId);
-    // Navigate to change password page with smeId
-    // this.router.navigate(['/change-password', smeId]);
+  changePassword(taId: number): void {
+    console.log('Change password for TA with ID:', taId);
+    // this.router.navigate(['/change-password', taId]);
   }
 
   getStatusClass(status: boolean): string {

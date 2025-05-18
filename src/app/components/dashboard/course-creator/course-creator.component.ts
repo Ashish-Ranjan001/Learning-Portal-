@@ -137,3 +137,4 @@ export class CourseCreatorComponent {
     alert('Course submitted successfully!');
   }
 }
+

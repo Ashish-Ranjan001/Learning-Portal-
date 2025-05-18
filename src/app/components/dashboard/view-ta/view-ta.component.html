@@ -1,7 +1,5 @@
-
-
 <div class="container-fluid">
- 
+
   <div class="row mb-3 justify-content-end">
     <div class="col-md-4 text-end">
       <div class="input-group">
@@ -11,49 +9,65 @@
           class="form-control"
           [(ngModel)]="searchTerm" 
           (input)="search()" 
-          placeholder="Search courses...">
+          placeholder="Search TAs...">
       </div>
     </div>
   </div>
 
-  <div class="table-responsive">
+  <div class="text-center my-4" *ngIf="isLoading">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="mt-2">Loading TA data...</p>
+  </div>
+
+  <div class="alert alert-danger" *ngIf="error">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+    {{ error }}
+  </div>
+
+  <div class="text-center my-4" *ngIf="!isLoading && !error && filteredTas.length === 0">
+    <div class="empty-state">
+      <i class="bi bi-person-x fs-1 text-muted"></i>
+      <p class="mt-3">No TAs found.</p>
+      <p class="text-muted small">Try adjusting your search criteria.</p>
+    </div>
+  </div>
+
+  <div class="table-responsive" *ngIf="!isLoading && !error && paginatedTas.length > 0">
     <table class="table table-bordered">
       <thead>
         <tr>
-          <th class="image-column">Image</th>
           <th>Name</th>
-          <th>Sub Set</th>
+          <th>Email</th>
+          <th>Phone</th>
           <th>Status</th>
           <th>Actions</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let course of paginatedCourses">
-          <td class="image-column">
-            <div class="course-image-container">
-              <img [src]="course.imageUrl" alt="{{ course.name }}" class="course-image">
-            </div>
-          </td>
-          <td>{{ course.name }}</td>
-          <td>{{ course.name }}</td>
-          <td>
-            <div class="status-indicator">
-              <span class="status-dot" [ngClass]="{'active': course.status === 'Published'}"></span>
-              <span>{{ course.status }}</span>
-            </div>
+        <tr *ngFor="let ta of paginatedTas">
+          <td>{{ ta.name }}</td>
+          <td>{{ ta.email }}</td>
+          <td>{{ ta.phone }}</td>
+          <td class="col-status">
+            <span class="status-badge" [ngClass]="getStatusText(ta.status).toLowerCase()">
+              <span class="status-dot"></span>
+              {{ getStatusText(ta.status) }}
+            </span>
           </td>
           <td class="actions-column">
-            <button class="btn btn-sm btn-outline-primary">Edit</button>
+            <button class="btn btn-sm btn-outline-primary me-2" (click)="editTa(ta.taId)">Edit</button>
+            <button class="btn btn-sm btn-outline-secondary" (click)="changePassword(ta.taId)">Change Password</button>
           </td>
         </tr>
       </tbody>
     </table>
   </div>
 
-
-  <div class="row">
+  <div class="row" *ngIf="!isLoading && !error && filteredTas.length > 0">
     <div class="col-12">
-      <nav aria-label="Course pagination">
+      <nav aria-label="TA pagination">
         <ul class="pagination justify-content-center">
           <li class="page-item" [class.disabled]="currentPage === 1">
             <a class="page-link" href="javascript:void(0)" (click)="goToFirstPage()">&laquo;</a>
@@ -61,11 +75,9 @@
           <li class="page-item" [class.disabled]="currentPage === 1">
             <a class="page-link" href="javascript:void(0)" (click)="goToPreviousPage()">&lsaquo;</a>
           </li>
-          
           <li class="page-item" *ngFor="let page of pages" [class.active]="page === currentPage">
             <a class="page-link" href="javascript:void(0)" (click)="goToPage(page)">{{ page }}</a>
           </li>
-          
           <li class="page-item" [class.disabled]="currentPage === totalPages">
             <a class="page-link" href="javascript:void(0)" (click)="goToNextPage()">&rsaquo;</a>
           </li>
