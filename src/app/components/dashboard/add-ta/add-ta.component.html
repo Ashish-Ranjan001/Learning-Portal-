@@ -1,7 +1,6 @@
-
- <div class="add-sme-container">
+<div class="add-ta-container">
   <h2>Create New TA</h2>
-  <form [formGroup]="smeForm">
+  <form [formGroup]="taForm">
     <div class="form-row">
       <div class="form-group">
         <label for="name">Name</label>
@@ -10,9 +9,9 @@
           id="name"
           formControlName="name"
           placeholder="Enter Name"
-          [ngClass]="{'invalid': smeForm.get('name')?.invalid && smeForm.get('name')?.touched}"
+          [ngClass]="{'invalid': taForm.get('name')?.invalid && taForm.get('name')?.touched}"
         >
-        <div class="error" *ngIf="smeForm.get('name')?.touched && smeForm.get('name')?.invalid">
+        <div class="error" *ngIf="taForm.get('name')?.touched && taForm.get('name')?.invalid">
           Name is required.
         </div>
       </div>
@@ -24,9 +23,9 @@
           id="email"
           formControlName="email"
           placeholder="Enter Email"
-          [ngClass]="{'invalid': smeForm.get('email')?.invalid && smeForm.get('email')?.touched}"
+          [ngClass]="{'invalid': taForm.get('email')?.invalid && taForm.get('email')?.touched}"
         >
-        <div class="error" *ngIf="smeForm.get('email')?.touched && smeForm.get('email')?.invalid">
+        <div class="error" *ngIf="taForm.get('email')?.touched && taForm.get('email')?.invalid">
           Valid email is required.
         </div>
       </div>
@@ -39,9 +38,9 @@
         id="phone"
         formControlName="phone"
         placeholder="Enter Phone"
-        [ngClass]="{'invalid': smeForm.get('phone')?.invalid && smeForm.get('phone')?.touched}"
+        [ngClass]="{'invalid': taForm.get('phone')?.invalid && taForm.get('phone')?.touched}"
       >
-      <div class="error" *ngIf="smeForm.get('phone')?.touched && smeForm.get('phone')?.invalid">
+      <div class="error" *ngIf="taForm.get('phone')?.touched && taForm.get('phone')?.invalid">
         Valid 10-digit phone is required.
       </div>
     </div>
