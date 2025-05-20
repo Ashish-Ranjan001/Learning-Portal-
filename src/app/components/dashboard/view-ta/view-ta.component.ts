@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-// import { TaServicesService } from '../../../services/tas/ta-services.service';
+import { TaServiceService } from '../../../services/tas/ta-service.service';
 
 interface Ta {
   taId: number;
@@ -32,13 +32,10 @@ export class ViewTaComponent implements OnInit {
 
   currentPage: number = 1;
   itemsPerPage: number = 5;
-  totalPages: number = 1;
-  pages: number[] = [];
+  totalPages: number = 0;
+  pages: number[] = []; // ✅ Added for pagination
 
-  constructor(
-    // private taService: TaServicesService,
-    private router: Router
-  ) {}
+  constructor(private taService: TaServiceService, private router: Router) {}
 
   ngOnInit(): void {
     this.loadTas();
@@ -48,47 +45,39 @@ export class ViewTaComponent implements OnInit {
     this.isLoading = true;
     this.error = null;
 
-    // this.taService.viewTas().subscribe({
-    //   next: (response: any) => {
-    //     this.tas = response;
-    //     this.filterTas();
-    //     this.isLoading = false;
-    //   },
-    //   error: (error: any) => {
-    //     console.error('Error fetching TAs:', error);
-    //     this.error = 'Failed to load TA data. Please try again later.';
-    //     this.isLoading = false;
-    //   }
-    // });
+    this.taService.viewTas().subscribe({
+      next: (response: Ta[]) => {
+        console.log('API Response:', response);
+        this.tas = response;
+        this.filteredTas = [...this.tas]; // Sync filtered list
+        this.calculateTotalPages();
+        this.updatePagination();
+        this.isLoading = false;
+      },
+      error: (error: any) => {
+        console.error('Error fetching TAs:', error);
+        this.error = 'Failed to load TA data. Please try again later.';
+        this.isLoading = false;
+      }
+    });
   }
 
   search(): void {
+    this.filteredTas = this.searchTerm.trim()
+      ? this.tas.filter(ta =>
+          ta.name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+          ta.email.toLowerCase().includes(this.searchTerm.toLowerCase())
+        )
+      : [...this.tas];
+
     this.currentPage = 1;
-    this.filterTas();
-  }
-
-  filterTas(): void {
-    if (!this.searchTerm.trim()) {
-      this.filteredTas = [...this.tas];
-    } else {
-      const term = this.searchTerm.toLowerCase().trim();
-      this.filteredTas = this.tas.filter(ta =>
-        ta.name.toLowerCase().includes(term) ||
-        ta.email.toLowerCase().includes(term)
-      );
-    }
-
     this.calculateTotalPages();
     this.updatePagination();
   }
 
   calculateTotalPages(): void {
     this.totalPages = Math.ceil(this.filteredTas.length / this.itemsPerPage);
-    this.generatePageArray();
-  }
-
-  generatePageArray(): void {
-    this.pages = Array.from({ length: this.totalPages }, (_, i) => i + 1);
+    this.pages = Array.from({ length: this.totalPages }, (_, i) => i + 1); // ✅ Populate pages
   }
 
   updatePagination(): void {
@@ -103,37 +92,14 @@ export class ViewTaComponent implements OnInit {
     }
   }
 
-  goToFirstPage(): void {
-    this.goToPage(1);
-  }
+  goToFirstPage(): void { this.goToPage(1); }
+  goToLastPage(): void { this.goToPage(this.totalPages); }
+  goToPreviousPage(): void { this.goToPage(this.currentPage - 1); }
+  goToNextPage(): void { this.goToPage(this.currentPage + 1); }
 
-  goToLastPage(): void {
-    this.goToPage(this.totalPages);
-  }
+  editTa(taId: number): void { this.router.navigate(['/dashboard/ta/edit', taId]); }
+  changePassword(taId: number): void { console.log('Change password for TA with ID:', taId); }
 
-  goToPreviousPage(): void {
-    this.goToPage(this.currentPage - 1);
-  }
-
-  goToNextPage(): void {
-    this.goToPage(this.currentPage + 1);
-  }
-
-  editTa(taId: number): void {
-    console.log('Navigating to Edit TA:', taId);
-    this.router.navigate(['/dashboard/ta/edit', taId]); // Adjust route as per app routing
-  }
-
-  changePassword(taId: number): void {
-    console.log('Change password for TA with ID:', taId);
-    // this.router.navigate(['/change-password', taId]);
-  }
-
-  getStatusClass(status: boolean): string {
-    return status ? 'active' : 'inactive';
-  }
-
-  getStatusText(status: boolean): string {
-    return status ? 'Active' : 'Inactive';
-  }
+  getStatusClass(status: boolean): string { return status ? 'active' : 'inactive'; }
+  getStatusText(status: boolean): string { return status ? 'Active' : 'Inactive'; }
 }
