@@ -15,7 +15,7 @@
 // }
 
 export interface Course {
-  id?: string;
+  id?: string | number;
   thumbnailUrl?: string;
   name: string;
   category: string;

@@ -1,6 +1,6 @@
 export interface CourseModule {
-  id?: string;
-  courseId?: string;
+  id?: string | number;
+  courseId?: string | number;
   name: string;
   duration: string;
   description: string;
