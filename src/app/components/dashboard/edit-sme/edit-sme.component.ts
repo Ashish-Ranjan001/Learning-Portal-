@@ -47,7 +47,7 @@ export class EditSmeComponent implements OnInit {
 
   onSave() {
     console.log('Saved Status:', this.smeForm.value);
-    this.smeService.updateSme(this.smeId, { status: this.smeForm.value.status }).subscribe(() => {
+    this.smeService.updateSme(this.smeId).subscribe(() => {
       console.log('SME Status Updated Successfully');
       this.router.navigate(['/dashboard/sme/view']);
     });
