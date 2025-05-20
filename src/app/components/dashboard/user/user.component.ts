@@ -409,6 +409,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { LobServicesService } from '../../../services/lobs/lob-services.service';
+import { UserServiceService } from '../../../services/User/user-service.service';
 
 @Component({
   selector: 'app-add-user',
@@ -427,7 +428,8 @@ export class UserComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private lobService: LobServicesService
+    private lobService: LobServicesService,
+    private userService: UserServiceService
   ) { }
 
   ngOnInit(): void {
@@ -528,22 +530,20 @@ export class UserComponent implements OnInit {
 
     console.log('Selected LOB:', {id: selectedLobId, name: lobName});
 
-    // Here you would make the API call to create the user
-    // For example:
-    // this.userService.createUser(userData).subscribe({
-    //   next: (response) => {
-    //     console.log('User created successfully', response);
-    //     alert('User created successfully!');
-    //     this.resetForm();
-    //   },
-    //   error: (error) => {
-    //     console.error('Error creating user:', error);
-    //     alert('Error creating user. Please try again.');
-    //   }
-    // });
+ 
+    this.userService.addUser(userData).subscribe({
+      next: (response) => {
+        console.log('User created successfully', response);
+        alert('User created successfully!');
+        this.resetForm();
+      },
+      error: (error) => {
+        console.error('Error creating user:', error);
+        alert('Error creating user. Please try again.');
+      }
+    });
 
-    // Placeholder alert until the actual service is implemented
-    alert('User created successfully!');
-    this.resetForm();
+   
+   
   }
 }
