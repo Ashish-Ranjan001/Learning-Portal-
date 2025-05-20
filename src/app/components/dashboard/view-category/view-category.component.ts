@@ -141,7 +141,7 @@
 // }
 
 
-import { Component, inject, OnInit } from '@angular/core';
+// import { Component, inject, OnInit } from '@angular/core';
 // import { Component, OnInit } from '@angular/core';
 // import { CommonModule } from '@angular/common';
 // import { FormsModule } from '@angular/forms';
@@ -298,16 +298,15 @@ import { Component, inject, OnInit } from '@angular/core';
 
 
 
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 interface Category {
   id: number;
   name: string;
-  subset: string;
-  imagepath: string;
   subset: string;
   imagepath: string;
   status: 'Active' | 'Inactive';
@@ -338,46 +337,7 @@ ngOnInit(): void {
   this.loadCategories();
 }
 
-// loadCategories(): void {
-//   this.http.get<{ categories: Category[] }>('https://localhost:7264/api/Categories').subscribe({
-//   next: (data) => {
-//     this.categories = data.categories; // ✅ Extract nested array
-//     this.filterCategories();
-//     this.calculateTotalPages();
-//   },
-//   error: (error) => {
-//     console.error('Error fetching categories:', error);
-//   }
-// });
-// }
 
-loadCategories(): void {
-  this.http.get<{ success: boolean; message: string; data: Category[] }>('https://localhost:7264/api/Categories')
-    .subscribe({
-      next: (response) => {
-        console.log('API Response:', response);
-        if (response && response.success && Array.isArray(response.data)) {
-          this.categories = response.data; // ✅ Extract data correctly
-        } else {
-          console.error('Invalid response format:', response);
-          this.categories = []; // Set empty array to prevent errors
-        }
-ngOnInit(): void {
-  this.loadCategories();
-}
-
-// loadCategories(): void {
-//   this.http.get<{ categories: Category[] }>('https://localhost:7264/api/Categories').subscribe({
-//   next: (data) => {
-//     this.categories = data.categories; // ✅ Extract nested array
-//     this.filterCategories();
-//     this.calculateTotalPages();
-//   },
-//   error: (error) => {
-//     console.error('Error fetching categories:', error);
-//   }
-// });
-// }
 
 loadCategories(): void {
   this.http.get<{ success: boolean; message: string; data: Category[] }>('https://localhost:7264/api/Categories')
@@ -393,6 +353,7 @@ loadCategories(): void {
         this.filterCategories();
         this.calculateTotalPages();
       },
+
       error: (error) => {
         console.error('Error fetching categories:', error);
       }
@@ -413,11 +374,11 @@ loadCategories(): void {
       this.filteredCategories = this.categories.filter(category => 
         category.name.toLowerCase().includes(term) ||
         category.subset.toLowerCase().includes(term)
-        category.subset.toLowerCase().includes(term)
+        
       );
     }
     
-    // Apply pagination
+    
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
     this.filteredCategories = this.filteredCategories.slice(startIndex, startIndex + this.itemsPerPage);
   }
@@ -431,7 +392,6 @@ loadCategories(): void {
       const term = this.searchTerm.toLowerCase().trim();
       filteredCount = this.categories.filter(category => 
         category.name.toLowerCase().includes(term) ||
-        category.subset.toLowerCase().includes(term)
         category.subset.toLowerCase().includes(term)
       ).length;
     }

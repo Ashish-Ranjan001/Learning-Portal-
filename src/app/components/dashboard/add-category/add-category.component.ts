@@ -1,8 +1,8 @@
+
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CategoriesServiceService } from '../../../services/Categories/categories-service.service';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
 import { Router } from '@angular/router';
 
 @Component({
@@ -87,9 +87,7 @@ export class AddCategoryComponent implements OnInit {
     }
   }
 
-  cancel(): void {
-    this.resetForm();
-  }
+ 
 
   cancel(): void {
     this.resetForm();
