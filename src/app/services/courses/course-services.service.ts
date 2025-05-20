@@ -9,20 +9,12 @@ export class CourseServicesService {
   constructor(private client:HttpClient) { }
     private apiBaseUrl = 'https://localhost:7264';
 
-    addCategory(categoryData: any) {
-      const url = `${this.apiBaseUrl}/api/Categories`;
-      return this.client.post(url, categoryData);
-    }
-    viewCategories() {
-      const url = `${this.apiBaseUrl}/api/Categories`;
-      return this.client.get(url);
-    }
-    addCourse(courseData: any) {
-      const url = `${this.apiBaseUrl}/api/Courses`;
+    addCourse(courseData: FormData) {
+      const url = `${this.apiBaseUrl}/api/Course`;
       return this.client.post(url, courseData);
     } 
     viewCourses() {
-      const url = `${this.apiBaseUrl}/api/Courses`;
+      const url = `${this.apiBaseUrl}/api/Course`;
       return this.client.get(url);
     }
     getCategoryById(categoryId: number) {
@@ -33,4 +25,10 @@ export class CourseServicesService {
       const url = `${this.apiBaseUrl}/api/Categories/${categoryId}`;
       return this.client.put(url, categoryData);
     }
+
+    addModule(data:FormData){
+      const url = `${this.apiBaseUrl}/api/Module`;
+      return this.client.post(url, data); 
+    }
+
 }

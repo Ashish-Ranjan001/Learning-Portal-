@@ -318,7 +318,7 @@
           required
         >
           <option value="" disabled selected>Select category</option>
-          <option *ngFor="let category of categories" [value]="category">{{ category }}</option>
+          <option *ngFor="let category of categories" [value]="category.id">{{ category.name }}</option>
         </select>
       </div>
      
