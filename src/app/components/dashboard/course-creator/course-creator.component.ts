@@ -993,6 +993,7 @@ export class CourseCreatorComponent {
       }
       
       this.successMessage = 'Course and module created successfully!';
+      alert( 'Course and module created successfully!');
     } catch (error) {
       console.error('Error during submission:', error);
       this.errorMessage = 'An error occurred during submission. Please try again.';

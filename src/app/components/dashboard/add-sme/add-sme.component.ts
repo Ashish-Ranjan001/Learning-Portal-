@@ -71,7 +71,8 @@ export class AddSmeComponent implements OnInit {
     this.smeForm = this.fb.group({
       name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      phone: ['', [Validators.required, Validators.pattern(/^\d{9}$/)]]
+      // phone: ['', [Validators.required, Validators.pattern(/^\d{9}$/)]]
+        phone: ['', [Validators.required]]
     });
   }
 

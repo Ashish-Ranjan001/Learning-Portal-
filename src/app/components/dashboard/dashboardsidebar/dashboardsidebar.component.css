@@ -259,4 +259,10 @@ nav {
     padding-left: 2.5rem;
     font-size: 0.85rem;
   }
-  
+  .sidebar-header {
+    padding: 1.5rem 0;
+}
+.sidebar-header .sidebar-logo {
+  max-height: 50px; /* Increase the max height */
+  width: 100px; /* Maintain aspect ratio */
+}

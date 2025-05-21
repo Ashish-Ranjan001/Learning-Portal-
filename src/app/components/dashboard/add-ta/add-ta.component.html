@@ -40,9 +40,9 @@
         placeholder="Enter Phone"
         [ngClass]="{'invalid': taForm.get('phone')?.invalid && taForm.get('phone')?.touched}"
       >
-      <div class="error" *ngIf="taForm.get('phone')?.touched && taForm.get('phone')?.invalid">
+      <!-- <div class="error" *ngIf="taForm.get('phone')?.touched && taForm.get('phone')?.invalid">
         Valid 10-digit phone is required.
-      </div>
+      </div> -->
     </div>
 
     <div class="button-group">
