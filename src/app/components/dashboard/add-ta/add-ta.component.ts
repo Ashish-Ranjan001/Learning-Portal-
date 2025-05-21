@@ -29,7 +29,8 @@ export class AddTaComponent implements OnInit {
     this.taForm = this.fb.group({
       name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      phone: ['', [Validators.required, Validators.pattern(/^\d{9}$/)]]
+      // phone: ['', [Validators.required, Validators.pattern(/^\d{9}$/)]]
+        phone: ['', [Validators.required]]
     });
   }
 

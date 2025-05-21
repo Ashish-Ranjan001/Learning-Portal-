@@ -39,7 +39,7 @@ export class EditCategoryComponent implements OnInit {
   //     if (category) {
   //       this.categoryForm.patchValue({
   //         Name: category.name,
-  //         SubSet: category.subSet,
+  //         SubSet: category.subset,
   //         imageUrl: category.imageUrl,
   //         status: category.status
   //       });
@@ -73,6 +73,6 @@ export class EditCategoryComponent implements OnInit {
 
   onCancel() {
     console.log('Edit cancelled');
-    this.router.navigate(['/dashboard/category/view']);
+    this.router.navigate(['dashboard/course/viewCategory']);
   }
 }
