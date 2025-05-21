@@ -39,7 +39,7 @@
 //   //     if (category) {
 //   //       this.categoryForm.patchValue({
 //   //         Name: category.name,
-//   //         SubSet: category.subset,
+//   //         SubSet: category.subSet,
 //   //         imageUrl: category.imageUrl,
 //   //         status: category.status
 //   //       });
@@ -73,7 +73,7 @@
 
 //   onCancel() {
 //     console.log('Edit cancelled');
-//     this.router.navigate(['dashboard/course/viewCategory']);
+//     this.router.navigate(['/dashboard/category/view']);
 //   }
 // }
 

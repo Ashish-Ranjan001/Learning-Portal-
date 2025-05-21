@@ -1,3 +1,5 @@
+
+
 // import { Component, OnInit } from '@angular/core';
 // import { CommonModule } from '@angular/common';
 // import { FormsModule } from '@angular/forms';
@@ -101,110 +103,109 @@
 //   }
 // }
 
-// import { Component, OnInit } from '@angular/core';
-// import { CommonModule } from '@angular/common';
-// import { FormsModule } from '@angular/forms';
-// import { HttpClient } from '@angular/common/http';
+// // import { Component, OnInit } from '@angular/core';
+// // import { CommonModule } from '@angular/common';
+// // import { FormsModule } from '@angular/forms';
+// // import { HttpClient } from '@angular/common/http';
 
-// interface Course {
-//   id: number;
-//   name: string;
-//   imageUrl: string;
-//   subSet: string;
-//   status: 'Active' | 'Inactive';
-// }
+// // interface Course {
+// //   id: number;
+// //   name: string;
+// //   imageUrl: string;
+// //   subSet: string;
+// //   status: 'Active' | 'Inactive';
+// // }
 
-// @Component({
-//   selector: 'app-view-course',
-//   standalone: true,
-//   imports: [CommonModule, FormsModule],
-//   templateUrl: './view-course.component.html',
-//   styleUrls: ['./view-course.component.css']
-// })
-// export class ViewCourseComponent implements OnInit {
-//   courses: Course[] = [];
+// // @Component({
+// //   selector: 'app-view-course',
+// //   standalone: true,
+// //   imports: [CommonModule, FormsModule],
+// //   templateUrl: './view-course.component.html',
+// //   styleUrls: ['./view-course.component.css']
+// // })
+// // export class ViewCourseComponent implements OnInit {
+// //   courses: Course[] = [];
     
 
-//   searchTerm: string = '';
-//   filteredCourses: Course[] = [];
-//   paginatedCourses: Course[] = [];
-//   isLoading: boolean = true;
-//   error: string | null = null;
-//   currentPage: number = 1;
-//   itemsPerPage: number = 3;
-//   totalPages: number = 1;
-//   pages: number[] = [];
+// //   searchTerm: string = '';
+// //   filteredCourses: Course[] = [];
+// //   paginatedCourses: Course[] = [];
+// //   isLoading: boolean = true;
+// //   error: string | null = null;
+// //   currentPage: number = 1;
+// //   itemsPerPage: number = 3;
+// //   totalPages: number = 1;
+// //   pages: number[] = [];
 
-//   constructor(private http: HttpClient) {}
+// //   constructor(private http: HttpClient) {}
 
-//   ngOnInit(): void {
-//     this.filterCourses();
-//   }
+// //   ngOnInit(): void {
+// //     this.filterCourses();
+// //   }
 
-//   search(): void {
-//     this.currentPage = 1; // Reset page
-//     this.filterCourses();
-//   }
+// //   search(): void {
+// //     this.currentPage = 1; // Reset page
+// //     this.filterCourses();
+// //   }
 
-//   filterCourses(): void {
-//     if (!this.searchTerm.trim()) {
-//       this.filteredCourses = [...this.courses];
-//     } else {
-//       const term = this.searchTerm.toLowerCase().trim();
-//       this.filteredCourses = this.courses.filter(course => 
-//         course.name.toLowerCase().includes(term) || 
-//         course.subSet.toLowerCase().includes(term)
-//       );
-//     }
+// //   filterCourses(): void {
+// //     if (!this.searchTerm.trim()) {
+// //       this.filteredCourses = [...this.courses];
+// //     } else {
+// //       const term = this.searchTerm.toLowerCase().trim();
+// //       this.filteredCourses = this.courses.filter(course => 
+// //         course.name.toLowerCase().includes(term) || 
+// //         course.subSet.toLowerCase().includes(term)
+// //       );
+// //     }
 
-//     this.calculateTotalPages();
-//     this.updatePagination();
-//   }
+// //     this.calculateTotalPages();
+// //     this.updatePagination();
+// //   }
 
-//   calculateTotalPages(): void {
-//     this.totalPages = Math.ceil(this.filteredCourses.length / this.itemsPerPage);
-//     this.generatePageArray();
-//   }
+// //   calculateTotalPages(): void {
+// //     this.totalPages = Math.ceil(this.filteredCourses.length / this.itemsPerPage);
+// //     this.generatePageArray();
+// //   }
 
-//   generatePageArray(): void {
-//     this.pages = Array.from({ length: this.totalPages }, (_, i) => i + 1);
-//   }
+// //   generatePageArray(): void {
+// //     this.pages = Array.from({ length: this.totalPages }, (_, i) => i + 1);
+// //   }
 
-//   updatePagination(): void {
-//     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-//     this.paginatedCourses = this.filteredCourses.slice(startIndex, startIndex + this.itemsPerPage);
-//   }
+// //   updatePagination(): void {
+// //     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+// //     this.paginatedCourses = this.filteredCourses.slice(startIndex, startIndex + this.itemsPerPage);
+// //   }
 
-//   goToPage(page: number): void {
-//     if (page >= 1 && page <= this.totalPages) {
-//       this.currentPage = page;
-//       this.updatePagination();
-//     }
-//   }
+// //   goToPage(page: number): void {
+// //     if (page >= 1 && page <= this.totalPages) {
+// //       this.currentPage = page;
+// //       this.updatePagination();
+// //     }
+// //   }
 
-//   goToFirstPage(): void {
-//     this.goToPage(1);
-//   }
+// //   goToFirstPage(): void {
+// //     this.goToPage(1);
+// //   }
 
-//   goToLastPage(): void {
-//     this.goToPage(this.totalPages);
-//   }
+// //   goToLastPage(): void {
+// //     this.goToPage(this.totalPages);
+// //   }
 
-//   goToPreviousPage(): void {
-//     this.goToPage(this.currentPage - 1);
-//   }
+// //   goToPreviousPage(): void {
+// //     this.goToPage(this.currentPage - 1);
+// //   }
 
-//   goToNextPage(): void {
-//     this.goToPage(this.currentPage + 1);
-//   }
+// //   goToNextPage(): void {
+// //     this.goToPage(this.currentPage + 1);
+// //   }
 
-//   editCourse(course: Course): void {
-//     console.log('Edit course:', course);
-//   }
-// }
+// //   editCourse(course: Course): void {
+// //     console.log('Edit course:', course);
+// //   }
+// // }
 
 
-// --------------------------------------------------------final code---------------
 
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -251,6 +252,7 @@ export class ViewCourseComponent implements OnInit {
       next: (response: any) => {
         // Handle the API response - assuming it returns an array of courses
         this.courses = Array.isArray(response) ? response : [response];
+        console.log('Courses loaded:', this.courses);
         this.isLoading = false;
         this.filterCourses();
       },

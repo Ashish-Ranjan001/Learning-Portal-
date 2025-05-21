@@ -79,8 +79,6 @@
 </div> -->
 
 
-<!-- ------------- final code  -->
-
 
 
 <div class="container-fluid">
@@ -134,8 +132,8 @@
       <tr *ngFor="let course of paginatedCourses">
         <td class="image-column">
           <div class="course-image-container">
-            <img [src]="'https://localhost:7264'+course.imagepath" alt="{{ course.course_name }}" class="course-image"
-              onerror="this.src='assets/images/placeholder.png'">
+            <img [src]="'https://localhost:7264' + course.imagepath" alt="{{ course.course_name }}" class="course-image"
+              >
           </div>
         </td>
         <td>{{ course.course_name }}</td>
