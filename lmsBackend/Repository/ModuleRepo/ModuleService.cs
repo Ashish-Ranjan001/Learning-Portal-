@@ -28,7 +28,7 @@ namespace lmsBackend.Repository.ModuleRepo
             return _mapper.Map<IEnumerable<ResponseModuleDtos>>(modules);
         }
 
-        public async Task<ResponseModuleDtos?> GetByIdAsync(int id)
+        public async Task<ResponseModuleDtos?> GetByIdAsync(string id)
         {
             var module = await _context.Modules.Include(m => m.Course)
                 .FirstOrDefaultAsync(m => m.module_id == id);

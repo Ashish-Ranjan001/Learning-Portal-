@@ -6,10 +6,10 @@ namespace lmsBackend.Models
     public class Ta
     {
         [Key]
-        public int TaId { get; set; }
+        public string TaId { get; set; }
 
         [Required]
-        public int AdminId { get; set; }
+        public string AdminId { get; set; }
 
         [Required]
         [StringLength(255)]

@@ -6,7 +6,7 @@ namespace lmsBackend.Repository.ModuleRepo
     public interface IModule
     {
         Task<IEnumerable<ResponseModuleDtos>> GetAllAsync();
-        Task<ResponseModuleDtos?> GetByIdAsync(int id);
+        Task<ResponseModuleDtos?> GetByIdAsync(string id);
         Task AddAsync(CreateModuleDtos moduleDto);
         Task UpdateAsync(int id, CreateModuleDtos moduleDto);
 

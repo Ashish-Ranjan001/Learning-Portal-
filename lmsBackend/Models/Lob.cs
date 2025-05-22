@@ -5,7 +5,7 @@ namespace lmsBackend.Models
     public class Lob
     {
         [Key]
-        public int LobId { get; set; }
+        public string LobId { get; set; } = string.Empty;
 
         [Required]
         [StringLength(255)]

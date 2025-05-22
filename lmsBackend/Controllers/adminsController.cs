@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
+
 namespace lmsBackend.Controllers
 {
     [ApiController]
@@ -24,23 +25,39 @@ namespace lmsBackend.Controllers
         public async Task<ActionResult<List<AdminResponseDto>>> GetAdmins()
         {
             var admins = await _adminService.GetAdminsAsync();
-            return Ok(admins);
+            return Ok(new
+            {
+                data = admins,
+                msg = "All Admins  data send as response"
+            });
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<AdminResponseDto>> GetAdmin(int id)
+        public async Task<ActionResult<AdminResponseDto>> GetAdmin(string id)
         {
             var admin = await _adminService.GetAdminByIdAsync(id);
             if (admin == null) return NotFound();
-            return Ok(admin);
+            return Ok(new
+            {
+                data = admin,
+                msg = "Admin by id data send as response"
+            } );
         }
 
         [HttpPost]
         public async Task<ActionResult<AdminResponseDto>> CreateAdmin(CreateAdminDto createAdminDto)
         {
             var admin = await _adminService.CreateAdminAsync(createAdminDto);
-            if (admin == null) return BadRequest("Invalid User ID or User is already an admin.");
-            return CreatedAtAction(nameof(GetAdmin), new { id = admin.AdminId }, admin);
+            if (admin == null) return BadRequest(new
+            {
+                msg = "Invalid User ID or User is already an admin."
+            });
+            return Ok(
+                new
+                {
+                    data = admin,
+                    msg = "Admin is created successfully"
+                });
         }
     }
 }

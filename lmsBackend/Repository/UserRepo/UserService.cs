@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Google.Protobuf.WellKnownTypes;
 using lmsBackend.DataAccessLayer;
 using lmsBackend.Dtos.User;
 using lmsBackend.Models;
@@ -27,7 +28,7 @@ namespace lmsBackend.Repository.UserRepo
             return _mapper.Map<List<UserResponseDto>>(users);
         }
 
-        public async Task<UserResponseDto?> GetUserByIdAsync(int id)
+        public async Task<UserResponseDto?> GetUserByIdAsync(string id)
         {
             var user = await _context.Users
                 .Include(u => u.Role)
@@ -44,6 +45,10 @@ namespace lmsBackend.Repository.UserRepo
 
             var user = _mapper.Map<User>(createUserDto);
             user.LobId = createUserDto.LobId;
+            string timestamp = DateTime.UtcNow.ToString("yyyyMMdd-HHmmss");
+            string randomString = Guid.NewGuid().ToString().Substring(0,6).ToUpper();
+            string name = createUserDto.Name.Split('_')[0].ToUpper();
+            user.Id = $"USER-{name}-{timestamp}-{randomString}";
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 

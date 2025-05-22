@@ -61,7 +61,7 @@ namespace lmsBackend.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> GetById(string id)
         {
             var data = await _repository.GetCategoriesById(id);
             if (data == null) return NotFound();

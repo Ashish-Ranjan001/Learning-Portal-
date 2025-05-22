@@ -6,7 +6,8 @@ namespace lmsBackend.Repository.TaRepo
     public interface ITa
     {
         Task<IEnumerable<TaResponseDtos>> GetTaAsync();
-        Task<TaResponseDtos?> GetTaByIdAsync(int id);
+        Task<TaResponseDtos?> GetTaByIdAsync(string id);
         Task<TaResponseDtos?> CreateTaAsync(CreateTaDtos createTaDto);
+
     }
 }

@@ -4,7 +4,7 @@ namespace lmsBackend.Models
 {
     public class Categories
     {
-        public int id { get; set; }
+        public string id { get; set; }
 
         [Required]
         [StringLength(255)]

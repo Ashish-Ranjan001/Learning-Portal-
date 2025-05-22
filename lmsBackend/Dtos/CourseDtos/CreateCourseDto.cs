@@ -15,7 +15,7 @@ namespace lmsBackend.Dtos.CourseDtos
 
         public string lob_id { get; set; } = string.Empty;
 
-        public int category_id { get; set; }  // Changed from Category to category_id
+        public string category_id { get; set; }  // Changed from Category to category_id
 
         public string author { get; set; } = string.Empty;
 

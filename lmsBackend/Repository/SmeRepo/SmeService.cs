@@ -24,7 +24,7 @@ namespace lmsBackend.Repository.SmeRepo
             return _mapper.Map<IEnumerable<SmeResponseDto>>(smes);
         }
 
-        public async Task<SmeResponseDto?> GetSmeByIdAsync(int id)
+        public async Task<SmeResponseDto?> GetSmeByIdAsync(string id)
         {
             var sme = await _context.Smes.Include(s => s.Admin).FirstOrDefaultAsync(s => s.SmeId == id);
             return sme == null ? null : _mapper.Map<SmeResponseDto>(sme);
@@ -37,23 +37,23 @@ namespace lmsBackend.Repository.SmeRepo
 
             var sme = _mapper.Map<Sme>(createSmeDto);
             sme.AdminId = admin.AdminId;
-            sme.Password = "evs@123";
+            sme.Password = BCrypt.Net.BCrypt.HashPassword("Evs@1234");
+            string timestamp = DateTime.UtcNow.ToString("yyyyMMdd-HHmmss");
+            string randomString = Guid.NewGuid().ToString().Substring(0, 6).ToUpper();
+            string name = createSmeDto.Name.Split('_')[0].ToUpper();
+            sme.SmeId = $"SME-{name}-{timestamp}-{randomString}";
+            admin.SmeId =sme.SmeId ;
             _context.Smes.Add(sme);
-
-            string smeIdValue = $"SME{DateTime.Now.ToString("yyyyMMddHHmmss")}";
-            admin.SmeId = smeIdValue;
             _context.Entry(admin).State = EntityState.Modified;
-
             admin.User.RoleId = 3;
             _context.Entry(admin.User).State = EntityState.Modified;
-
             await _context.SaveChangesAsync();
 
             sme = await _context.Smes.Include(s => s.Admin).FirstOrDefaultAsync(s => s.SmeId == sme.SmeId);
             return sme == null ? null : _mapper.Map<SmeResponseDto>(sme);
         }
 
-        public async Task<SmeResponseDto> updateSme(int id)
+        public async Task<SmeResponseDto> updateSme(string id)
         {
             var sme = await _context.Smes.Include(s => s.Admin).FirstOrDefaultAsync(s => s.SmeId == id);
             if (sme == null) throw new Exception("SME not found");
@@ -61,6 +61,16 @@ namespace lmsBackend.Repository.SmeRepo
             _context.Entry(sme).State = EntityState.Modified;
             await _context.SaveChangesAsync();
             return _mapper.Map<SmeResponseDto>(sme);
+        }
+        
+
+        public async Task<List<SmeCourseDetailDto>> SmeAllCoures(string id)
+        {
+            var sme = await _context.Smes.Include(s => s.Courses).FirstOrDefaultAsync(s => s.SmeId == id);
+            if(sme == null) throw new Exception("SME not found");
+            
+           return  _mapper.Map<List<SmeCourseDetailDto>>(sme.Courses);
+
         }
     }
 }

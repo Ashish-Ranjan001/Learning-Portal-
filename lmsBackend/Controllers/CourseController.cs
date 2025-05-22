@@ -30,7 +30,7 @@ namespace lmsBackend.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> GetById(string id)
         {
             var courseDto = await _repository.GetByIdAsync(id);
             if (courseDto == null) return NotFound();
@@ -49,7 +49,7 @@ namespace lmsBackend.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, CreateCourseDto courseDto)
+        public async Task<IActionResult> Update(string id, CreateCourseDto courseDto)
         {
             await _repository.UpdateAsync(courseDto, id);
             return Ok("Course updated");

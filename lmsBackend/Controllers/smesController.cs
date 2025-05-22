@@ -28,7 +28,7 @@ namespace lmsBackend.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<SmeResponseDto>> GetSme(int id)
+        public async Task<ActionResult<SmeResponseDto>> GetSme(string id)
         {
             var sme = await _smeService.GetSmeByIdAsync(id);
             if (sme == null) return NotFound();
@@ -43,11 +43,36 @@ namespace lmsBackend.Controllers
             return CreatedAtAction(nameof(GetSme), new { id = sme.SmeId }, sme);
         }
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateSme(int id)
+        public async Task<IActionResult> UpdateSme(string id)
         {
             var sme = await _smeService.updateSme(id);
             if (sme == null) return NotFound();
             return Ok(sme);
+        }
+
+        [HttpGet("{id}/allcourses")]
+        public async Task<IActionResult> GetAllCoursesBySmeId(string id)
+        {
+            try
+            {
+                var data = await _smeService.GetSmeByIdAsync(id);
+                return Ok(new
+                {
+                    msg = "All courses by sme id",
+                    data = data
+                });
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                   msg= ex.Message
+                });
+
+            }
+            
+
         }
     }
 
