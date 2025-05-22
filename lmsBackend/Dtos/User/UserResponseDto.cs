@@ -6,7 +6,7 @@
         public string Name { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public long? Phone { get; set; }
-        public int LobId { get; set; }
+        public string LobId { get; set; }
         public string LobName { get; set; } = string.Empty;
         public string Designation { get; set; } = string.Empty;
         public string Level { get; set; } = string.Empty;

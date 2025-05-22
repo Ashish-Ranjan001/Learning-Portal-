@@ -55,5 +55,15 @@ namespace lmsBackend.Repository.AdminRepo
             return admin == null ? null : _mapper.Map<AdminResponseDto>(admin);
 
         }
+
+        public async Task<AdminResponseDto?> statusChange(string id)
+        {
+            var admin = await _context.Admins.Include(a => a.User).FirstOrDefaultAsync(a => a.AdminId == id);
+            if (admin == null) return null;
+            admin.Status = !admin.Status;
+            _context.Entry(admin).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            return _mapper.Map<AdminResponseDto>(admin);
+        }
     }
 }

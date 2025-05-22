@@ -64,12 +64,15 @@ namespace lmsBackend.Repository.SmeRepo
         }
         
 
-        public async Task<List<SmeCourseDetailDto>> SmeAllCoures(string id)
+        public async Task<List<SmeCourseDetailDto?>> SmeAllCoures(string id)
         {
             var sme = await _context.Smes.Include(s => s.Courses).FirstOrDefaultAsync(s => s.SmeId == id);
-            if(sme == null) throw new Exception("SME not found");
+            if(sme == null)
+            {
+                return null;
+            }
             
-           return  _mapper.Map<List<SmeCourseDetailDto>>(sme.Courses);
+           return  _mapper.Map<List<SmeCourseDetailDto?>>(sme.Courses);
 
         }
     }

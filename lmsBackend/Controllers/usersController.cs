@@ -24,7 +24,11 @@ namespace lmsBackend.Controllers
         public async Task<IActionResult> GetUsers()
         {
             var users = await _userService.GetUsersAsync();
-            return Ok(users);
+            return Ok(new
+            {
+                data = users,
+                msg = "all users data fetched successfully"
+            });
         }
 
         [HttpGet("{id}")]
@@ -32,15 +36,39 @@ namespace lmsBackend.Controllers
         {
             var user = await _userService.GetUserByIdAsync(id);
             if (user == null) return NotFound();
-            return Ok(user);
+            return Ok(new
+            {
+                data = user,
+                msg = "user data fetched by id success"
+            });
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateUser(CreateUserDto createUserDto)
         {
             var user = await _userService.CreateUserAsync(createUserDto);
-            if (user == null) return BadRequest("Invalid LOB ID.");
-            return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user);
+            if (user == null) return BadRequest(new { msg = "Invalid LOB ID." });
+            return Ok(new
+            {
+                data = user,
+                msg = "user created successfully"
+            });
+
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateUser(string id, CreateUserDto updateUserDto)
+        {
+            var user = await _userService.UpdateUserAsync(id, updateUserDto);
+            if (user == null) return NotFound(new
+            {
+                msg= "user not found"
+            });
+            return Ok(new
+            {
+                data = user,
+                msg = "user updated successfully"
+            });
         }
     }
 }
