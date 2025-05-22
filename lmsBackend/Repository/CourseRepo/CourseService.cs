@@ -34,7 +34,7 @@ namespace lmsBackend.Repository.CourseRepo
             return _mapper.Map<IEnumerable<ResponseCourseDtos>>(courses);
         }
 
-        public async Task<ResponseCourseDtos?> GetByIdAsync(int id)
+        public async Task<ResponseCourseDtos?> GetByIdAsync(string id)
         {
             var course = await _context.Courses
                 .Include(c => c.Category)
@@ -74,7 +74,7 @@ namespace lmsBackend.Repository.CourseRepo
             return _mapper.Map<ResponseCourseDtos>(course);
         }
 
-        public async Task UpdateAsync(CreateCourseDto courseDto, int id)
+        public async Task UpdateAsync(CreateCourseDto courseDto, string id)
         {
             var existingCourse = await _context.Courses.FindAsync(id);
             if (existingCourse == null) return;

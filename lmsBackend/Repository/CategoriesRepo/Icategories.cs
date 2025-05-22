@@ -6,7 +6,7 @@ namespace lmsBackend.Repository.CategoriesRepo
     public interface Icategories
     {
         Task<IEnumerable<CategoriesResponseDtos>> GetAllCategories();
-        Task<CategoriesResponseDtos> GetCategoriesById(int id);
+        Task<CategoriesResponseDtos> GetCategoriesById(string id);
         Task AddCategories(CreatCategoriesDtos category);
         Task UpdateCategories(int id, CreatCategoriesDtos categoryDto);
 

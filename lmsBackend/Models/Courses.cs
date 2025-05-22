@@ -7,7 +7,7 @@ namespace lmsBackend.Models
     {
         [Key]
         [Required]
-        public int course_id { get; set; }
+        public string course_id { get; set; }
 
         [Required]
         public string course_name { get; set; } = string.Empty;
@@ -24,11 +24,14 @@ namespace lmsBackend.Models
         [Required]
         public string sme_id { get; set; } = string.Empty;
 
+        [ForeignKey("sme_id")]
+        public virtual Sme Sme { get; set; }
+
         [Required]
         public string lob_id { get; set; } = string.Empty;
 
         [Required]
-        public int category_id { get; set; }
+        public string category_id { get; set; }
 
         [ForeignKey("category_id")]
         public Categories Category { get; set; }

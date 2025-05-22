@@ -22,6 +22,7 @@ namespace lmsBackend.AutomapperProfile
                 .ForMember(dest => dest.LobName, opt => opt.MapFrom(src => src.Lob.LobName))
                 .ForMember(dest => dest.RoleName, opt => opt.MapFrom(src => src.Role.RoleName));
 
+
             // Admin mappings
             CreateMap<CreateAdminDto, Admin>();
             CreateMap<Admin, AdminResponseDto>()
@@ -32,6 +33,13 @@ namespace lmsBackend.AutomapperProfile
             // SME mappings
             CreateMap<CreateSmeDto, Sme>();
             CreateMap<Sme, SmeResponseDto>();
+            CreateMap<Courses, SmeCourseDetailDto>()
+                .ForMember(dest => dest.courseName, opt => opt.MapFrom(src => src.course_name))
+                .ForMember(dest => dest.courseId, opt => opt.MapFrom(src => src.course_id))
+                .ForMember(dest => dest.category, opt => opt.MapFrom(src => src.Category.name))
+                .ForMember(dest => dest.status, opt => opt.MapFrom(src => src.status))
+                .ForMember(dest => dest.courseDescription, opt => opt.MapFrom(src=>src.description));
+
 
             // LOB mappings
             CreateMap<CreateLobDto, Lob>();

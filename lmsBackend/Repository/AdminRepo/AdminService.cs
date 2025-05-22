@@ -22,14 +22,14 @@ namespace lmsBackend.Repository.AdminRepo
                 .ToListAsync();
             return _mapper.Map<List<AdminResponseDto>>(admins);
         }
-        public async Task<AdminResponseDto?> GetAdminByIdAsync(int id)
+        public async Task<AdminResponseDto?> GetAdminByIdAsync(string id)
         {
             var admin = await _context.Admins
                 .Include(a => a.User)
                 .FirstOrDefaultAsync(a => a.AdminId == id);
             if (admin == null)
             {
-                return null;
+              return null;
             }
             return _mapper.Map<AdminResponseDto>(admin);
         }
@@ -45,10 +45,12 @@ namespace lmsBackend.Repository.AdminRepo
             _context.Entry(user).State = EntityState.Modified;
 
             var admin = _mapper.Map<Admin>(createAdminDto);
+            string timestamp = DateTime.UtcNow.ToString("yyyyMMdd-HHmmss");
+            string name=user.Name.Split(' ')[0].ToUpper();
+            string randomString = Guid.NewGuid().ToString().Substring(0, 6).ToUpper();
+            admin.AdminId = $"ADMIN-{name}-{timestamp}-{randomString}";
             _context.Admins.Add(admin);
-
             await _context.SaveChangesAsync();
-
             admin = await _context.Admins.Include(a => a.User).FirstOrDefaultAsync(a => a.AdminId == admin.AdminId);
             return admin == null ? null : _mapper.Map<AdminResponseDto>(admin);
 

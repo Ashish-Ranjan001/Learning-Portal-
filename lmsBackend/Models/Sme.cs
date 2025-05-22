@@ -6,10 +6,10 @@ namespace lmsBackend.Models
     public class Sme
     {
         [Key]
-        public int SmeId { get; set; }
+        public string SmeId { get; set; }
 
         [Required]
-        public int AdminId { get; set; }
+        public string AdminId { get; set; }
 
         [Required]
         [StringLength(255)]
@@ -42,5 +42,7 @@ namespace lmsBackend.Models
 
         [ForeignKey("AdminId")]
         public virtual Admin Admin { get; set; }
+
+        public virtual ICollection<Courses> Courses { get; set; }
     }
 }

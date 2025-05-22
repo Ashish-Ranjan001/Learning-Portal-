@@ -23,7 +23,7 @@ namespace lmsBackend.Repository.TaRepo
             return _mapper.Map<IEnumerable<TaResponseDtos>>(tas);
         }
 
-        public async Task<TaResponseDtos?> GetTaByIdAsync(int id)
+        public async Task<TaResponseDtos?> GetTaByIdAsync(string id)
         {
             var ta = await _context.Tas.Include(t => t.Admin).FirstOrDefaultAsync(t => t.TaId == id);
             return ta == null ? null : _mapper.Map<TaResponseDtos>(ta);

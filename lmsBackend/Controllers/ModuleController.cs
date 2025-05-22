@@ -29,7 +29,7 @@ namespace lmsBackend.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> GetById(string id)
         {
             var module = await _repository.GetByIdAsync(id);
             if (module == null) return NotFound();

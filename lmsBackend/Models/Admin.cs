@@ -6,10 +6,10 @@ namespace lmsBackend.Models
     public class Admin
     {
         [Key]
-        public int AdminId { get; set; }
+        public string AdminId { get; set; }
 
         [Required]
-        public int UserId { get; set; }
+        public string UserId { get; set; }
 
         public string SmeId { get; set; } = string.Empty;
 

@@ -53,6 +53,11 @@ namespace lmsBackend.DataAccessLayer
                 .HasIndex(m => m.modulename)
                 .IsUnique();
 
+
+            //-----------------------------------------------------------------------------
+
+
+
             // User and Lob relationship
             modelBuilder.Entity<User>()
                 .HasOne(u => u.Lob)
@@ -79,12 +84,25 @@ namespace lmsBackend.DataAccessLayer
                 .HasForeignKey(s => s.AdminId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            //TA
+           
+
+
             modelBuilder.Entity<Ta>()
                .HasOne(t => t.Admin)
                .WithMany()
                .HasForeignKey(t => t.AdminId)
                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Courses>()
+            .HasOne(c => c.Sme)
+             .WithMany(s => s.Courses)
+                .HasForeignKey(c => c.sme_id)
+                 .OnDelete(DeleteBehavior.Restrict); 
+
+
+
+
+
         }
     }
 }

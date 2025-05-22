@@ -21,7 +21,7 @@ namespace lmsBackend.Dtos.User
         public long? Phone { get; set; }
 
         [Required]
-        public int LobId { get; set; }
+        public string LobId { get; set; }
 
        
 

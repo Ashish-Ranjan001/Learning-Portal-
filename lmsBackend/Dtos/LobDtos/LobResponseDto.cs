@@ -2,7 +2,7 @@
 {
     public class LobResponseDto
     {
-        public int LobId { get; set; }
+        public string LobId { get; set; } = string.Empty;
         public string LobName { get; set; } = string.Empty;
         public string LobDescription { get; set; } = string.Empty;
         public bool Status { get; set; }

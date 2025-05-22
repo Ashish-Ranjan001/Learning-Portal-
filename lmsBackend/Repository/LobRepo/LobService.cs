@@ -23,7 +23,7 @@ namespace lmsBackend.Repository.LobRepo
             return _mapper.Map<IEnumerable<LobResponseDto>>(lobs);
         }
 
-        public async Task<LobResponseDto?> GetLobByIdAsync(int id)
+        public async Task<LobResponseDto?> GetLobByIdAsync(string id)
         {
             var lob = await _context.Lobs.FindAsync(id);
             return lob == null ? null : _mapper.Map<LobResponseDto>(lob);
@@ -32,30 +32,18 @@ namespace lmsBackend.Repository.LobRepo
         public async Task<LobResponseDto?> CreateLobAsync(CreateLobDto createLobDto)
         {
             var lob = _mapper.Map<Lob>(createLobDto);
+            string timestamp = DateTime.UtcNow.ToString("yyyyMMdd-HHmmss");
+            string randomString = Guid.NewGuid().ToString().Substring(0, 6).ToUpper();
+            string name = createLobDto.LobName.Split('_')[0].ToUpper();
+            lob.LobId = $"LOB-{name}-{timestamp}-{randomString}";
+
             _context.Lobs.Add(lob);
             await _context.SaveChangesAsync();
             return _mapper.Map<LobResponseDto>(lob);
         }
 
-        public async Task<LobResponseDto?> EditLobAsync(int id, LobResponseDto createLobDto)
-        {
-            var existingLob = await _context.Lobs.FirstOrDefaultAsync(l => l.LobId == id);
-            if (existingLob == null)
-            {
-                throw new InvalidOperationException($"LOB with ID {id} not found.");
-            }
-
-            // Update properties
-            existingLob.LobName = createLobDto.LobName;
-            existingLob.LobDescription = createLobDto.LobDescription;
-            existingLob.Status = createLobDto.Status;
-
-            await _context.SaveChangesAsync(); // Save changes
-
-            return _mapper.Map<LobResponseDto>(existingLob);
-        }
-
-        public async Task<LobResponseDto?> UpdateLobAsync(int id, LobResponseDto updateLobDto)
+       
+        public async Task<LobResponseDto?> UpdateLobAsync(string id, LobResponseDto updateLobDto)
         {
             var existingLob = await _context.Lobs.FindAsync(id);
             if (existingLob == null)

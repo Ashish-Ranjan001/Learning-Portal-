@@ -28,7 +28,7 @@ namespace lmsBackend.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<TaResponseDtos>> GetTa(int id)
+        public async Task<ActionResult<TaResponseDtos>> GetTa(string id)
         {
             var ta = await _taService.GetTaByIdAsync(id);
             if (ta == null) return NotFound();

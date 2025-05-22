@@ -8,7 +8,7 @@ namespace lmsBackend.Models
     public class User
     {
         [Key]
-        public int Id { get; set; }
+        public string Id { get; set; }
 
         [Required]
         [StringLength(255)]
@@ -30,8 +30,8 @@ namespace lmsBackend.Models
         public long? Phone { get; set; }
 
         [Required]
-        [StringLength(255)]
-        public int LobId { get; set; }
+       
+        public string LobId { get; set; }
 
         [Required]
         [StringLength(255)]

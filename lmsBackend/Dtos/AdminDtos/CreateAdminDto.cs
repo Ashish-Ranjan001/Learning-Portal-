@@ -5,6 +5,6 @@ namespace lmsBackend.Dtos.AdminDtos
     public class CreateAdminDto
     {
         [Required]
-        public int UserId { get; set; }
+        public string UserId { get; set; }
     }
 }

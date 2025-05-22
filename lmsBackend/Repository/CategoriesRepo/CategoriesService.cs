@@ -23,7 +23,7 @@ namespace lmsBackend.Repository.CategoriesRepo
             return _mapper.Map<IEnumerable<CategoriesResponseDtos>>(categories);
         }
 
-        public async Task<CategoriesResponseDtos> GetCategoriesById(int id)
+        public async Task<CategoriesResponseDtos> GetCategoriesById(string id)
         {
             var category = await _context.Categories.Include(c => c.Courses).FirstOrDefaultAsync(c => c.id == id);
             return _mapper.Map<CategoriesResponseDtos>(category);

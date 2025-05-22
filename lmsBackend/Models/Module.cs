@@ -7,33 +7,40 @@ namespace lmsBackend.Models
     {
         [Required]
         [Key]
-        public int module_id { get; set; }
+        public string module_id { get; set; }
 
         [Required]
-        public int course_id { get; set; }
+        public string course_id { get; set; }
+
 
         [ForeignKey("course_id")]
         public Courses Course { get; set; }
 
+
         [Required]
         [StringLength(255)]
-
         public string modulename { get; set; } = string.Empty;
+
 
         [Required]
         public string description { get; set; } = string.Empty;
 
+
         [Required]
         public int duration { get; set; }
+
 
         [Required]
         public string videopath { get; set; } = string.Empty;
 
+
         [Required]
         public string documentpath { get; set; } = string.Empty;
 
+
         [Required]
         public string supdocumentpath { get; set; } = string.Empty;
+
 
         [Required]
         public bool status { get; set; } = true;
