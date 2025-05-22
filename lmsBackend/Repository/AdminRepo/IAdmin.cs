@@ -10,5 +10,7 @@ namespace lmsBackend.Repository.AdminRepo
         Task<AdminResponseDto?> GetAdminByIdAsync(string id);
         Task<AdminResponseDto?> CreateAdminAsync(CreateAdminDto createAdminDto);
 
+        Task<AdminResponseDto?> statusChange(string id);
+
     }
 }

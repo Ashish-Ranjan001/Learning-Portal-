@@ -59,5 +59,20 @@ namespace lmsBackend.Controllers
                     msg = "Admin is created successfully"
                 });
         }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> statusChange(string id)
+        {
+            var admin = await _adminService.statusChange(id);
+            if (admin == null) return NotFound(new
+            {
+                msg = "Admin not found"
+            });
+            return Ok(new
+            {
+                data = admin,
+                msg = "Admin status change successfully"
+            });
+        }
     }
 }

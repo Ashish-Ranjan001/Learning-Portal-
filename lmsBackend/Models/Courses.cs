@@ -22,7 +22,7 @@ namespace lmsBackend.Models
         public string assignment { get; set; } = string.Empty;
 
         [Required]
-        public string sme_id { get; set; } = string.Empty;
+        public string? sme_id { get; set; } 
 
         [ForeignKey("sme_id")]
         public virtual Sme Sme { get; set; }

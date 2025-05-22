@@ -97,10 +97,7 @@ namespace lmsBackend.DataAccessLayer
             .HasOne(c => c.Sme)
              .WithMany(s => s.Courses)
                 .HasForeignKey(c => c.sme_id)
-                 .OnDelete(DeleteBehavior.Restrict); 
-
-
-
+                 .OnDelete(DeleteBehavior.SetNull); 
 
 
         }
