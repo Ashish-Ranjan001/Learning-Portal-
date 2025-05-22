@@ -59,5 +59,19 @@ namespace lmsBackend.Repository.UserRepo
 
             return user == null ? null : _mapper.Map<UserResponseDto>(user);
         }
+
+        public async Task<UserResponseDto?> UpdateUserAsync(string id, CreateUserDto updateUserDto)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user == null) return null;
+            _mapper.Map(updateUserDto, user);
+            _context.Entry(user).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            user = await _context.Users
+                .Include(u => u.Role)
+                .Include(u => u.Lob)
+                .FirstOrDefaultAsync(u => u.Id == user.Id);
+            return  _mapper.Map<UserResponseDto>(user);
+        }
     }
 }

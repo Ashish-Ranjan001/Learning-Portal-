@@ -1,11 +1,6 @@
-﻿using AutoMapper;
-using lmsBackend.DataAccessLayer;
-using lmsBackend.Dtos.SmeDtos;
-using lmsBackend.Models;
+﻿using lmsBackend.Dtos.SmeDtos;
 using lmsBackend.Repository.SmeRepo;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace lmsBackend.Controllers
 {
@@ -24,7 +19,11 @@ namespace lmsBackend.Controllers
         public async Task<ActionResult<IEnumerable<SmeResponseDto>>> GetSmes()
         {
             var smes = await _smeService.GetSmesAsync();
-            return Ok(smes);
+            return Ok(new
+            {
+                data = smes,
+                msg = "All Sme data send successfully"
+            });
         }
 
         [HttpGet("{id}")]
@@ -32,7 +31,11 @@ namespace lmsBackend.Controllers
         {
             var sme = await _smeService.GetSmeByIdAsync(id);
             if (sme == null) return NotFound();
-            return Ok(sme);
+            return Ok(new
+            {
+                data = sme,
+                msg = "Sme data send successfully"
+            });
         }
 
         [HttpPost]
@@ -40,40 +43,39 @@ namespace lmsBackend.Controllers
         {
             var sme = await _smeService.CreateSmeAsync(createSmeDto);
             if (sme == null) return BadRequest("Invalid Admin ID.");
-            return CreatedAtAction(nameof(GetSme), new { id = sme.SmeId }, sme);
+            return Ok(new
+            {
+                data = sme,
+                msg = "Sme created successfully"
+            });
         }
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateSme(string id)
         {
             var sme = await _smeService.updateSme(id);
             if (sme == null) return NotFound();
-            return Ok(sme);
+            return Ok(new
+            {
+                data = sme,
+                msg = "Sme updated successfully"
+            });
         }
 
         [HttpGet("{id}/allcourses")]
         public async Task<IActionResult> GetAllCoursesBySmeId(string id)
         {
-            try
+           var smeCourses = await _smeService.SmeAllCoures(id);
+            if (smeCourses == null) return NotFound(new
             {
-                var data = await _smeService.GetSmeByIdAsync(id);
-                return Ok(new
-                {
-                    msg = "All courses by sme id",
-                    data = data
-                });
-
-            }
-            catch (Exception ex)
+                msg = "No courses found for this SME"
+            });
+            return Ok(new
             {
-                return BadRequest(new
-                {
-                   msg= ex.Message
-                });
-
-            }
-            
-
+                data = smeCourses,
+                msg = "Sme courses data send successfully"
+            });
         }
+
     }
 
 }
