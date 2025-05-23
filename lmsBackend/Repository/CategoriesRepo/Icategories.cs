@@ -8,7 +8,7 @@ namespace lmsBackend.Repository.CategoriesRepo
         Task<IEnumerable<CategoriesResponseDtos>> GetAllCategories();
         Task<CategoriesResponseDtos> GetCategoriesById(string id);
         Task AddCategories(CreatCategoriesDtos category);
-        Task UpdateCategories(int id, CreatCategoriesDtos categoryDto);
+        Task UpdateCategories(string id, CreatCategoriesDtos categoryDto);
 
     }
 }

@@ -6,7 +6,7 @@ namespace lmsBackend.Models
     public class Ta
     {
         [Key]
-        public string TaId { get; set; }
+        public string TaId { get; set; } = string.Empty;
 
         [Required]
         public string AdminId { get; set; }

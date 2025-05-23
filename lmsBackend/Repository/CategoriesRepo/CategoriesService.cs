@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using lmsBackend.DataAccessLayer;
 using lmsBackend.Dtos.CategoriesDtos;
+using lmsBackend.Dtos.LobDtos;
 using lmsBackend.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -105,6 +106,10 @@ namespace lmsBackend.Repository.CategoriesRepo
             // Map DTO to Entity
             var category = _mapper.Map<Categories>(categoryDto);
             category.imagepath = imagePath; // ✅ Save the full URL in DB
+            string timestamp = DateTime.UtcNow.ToString("yyyyMMdd-HHmmss");
+            string randomString = Guid.NewGuid().ToString().Substring(0, 6).ToUpper();
+            string name = categoryDto.name.Split('_')[0].ToUpper();
+            category.id=$"CAT-{name}-{timestamp}-{randomString}";
 
             _context.Categories.Add(category);
             await _context.SaveChangesAsync();
@@ -148,7 +153,7 @@ namespace lmsBackend.Repository.CategoriesRepo
         //}
 
 
-        public async Task UpdateCategories(int id, CreatCategoriesDtos categoryDto)
+        public async Task UpdateCategories(string id, CreatCategoriesDtos categoryDto)
         {
             var existingCategory = await _context.Categories.FindAsync(id);
 

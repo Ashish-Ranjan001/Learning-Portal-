@@ -25,7 +25,11 @@ namespace lmsBackend.Controllers
         public async Task<IActionResult> GetAll()
         {
             var modules = await _repository.GetAllAsync();
-            return Ok(modules);
+            return Ok(new
+            {
+                data = modules,
+                msg = "all module fetched sucessfully"
+            });
         }
 
         [HttpGet("{id}")]
@@ -33,7 +37,12 @@ namespace lmsBackend.Controllers
         {
             var module = await _repository.GetByIdAsync(id);
             if (module == null) return NotFound();
-            return Ok(module);
+            return Ok(new
+            {
+                data = module,
+                msg = "module fetched by id is successfull"
+            }
+            );
         }
 
         [HttpPost]
@@ -47,10 +56,14 @@ namespace lmsBackend.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromForm] CreateModuleDtos moduleDto)
+        public async Task<IActionResult> Update(string id, [FromForm] CreateModuleDtos moduleDto)
         {
             await _repository.UpdateAsync(id, moduleDto);
-            return Ok("Module updated successfully");
+            return Ok(new
+            {
+                msg = "Module updated successfully"
+            }
+            );
         }
 
         //[HttpDelete("{id}")]
