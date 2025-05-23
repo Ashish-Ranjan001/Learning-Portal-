@@ -2,6 +2,8 @@
 using lmsBackend.DataAccessLayer;
 using lmsBackend.Dtos.CourseDtos;
 using lmsBackend.Models;
+using lmsBackend.Repository.AdminRepo;
+using lmsBackend.Repository.UserRepo;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -55,7 +57,12 @@ namespace lmsBackend.Repository.CourseRepo
                 category_id = courseDto.category_id,
                 author = courseDto.author,
                 isquiz = courseDto.quizPath != null ? 1 : 0
+                
             };
+            string timestamp = DateTime.UtcNow.ToString("yyyyMMdd-HHmmss");
+            string name = courseDto.course_name.Split(' ')[0].ToUpper();
+            string randomString = Guid.NewGuid().ToString().Substring(0, 6).ToUpper();
+            course.course_id = $"COURSE-{name}-{timestamp}-{randomString}";
 
             // ✅ Handle Image Upload
             if (courseDto.imagepath != null)
@@ -68,7 +75,7 @@ namespace lmsBackend.Repository.CourseRepo
             {
                 course.quizpath = SaveFile(courseDto.quizPath, "uploadQuiz");
             }
-
+            
             _context.Courses.Add(course);
             await _context.SaveChangesAsync();
             return _mapper.Map<ResponseCourseDtos>(course);

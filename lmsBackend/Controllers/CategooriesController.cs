@@ -64,8 +64,15 @@ namespace lmsBackend.Controllers
         public async Task<IActionResult> GetById(string id)
         {
             var data = await _repository.GetCategoriesById(id);
-            if (data == null) return NotFound();
-            return Ok(_mapper.Map<CategoriesResponseDtos>(data));
+            if (data == null) return NotFound(new
+            {
+                msg = "category doest exist"
+            });
+            return Ok(new
+            {
+                data = _mapper.Map<CategoriesResponseDtos>(data),
+                msg = "category by id fetched successfully"
+            });
         }
 
         [HttpPost]
@@ -80,7 +87,7 @@ namespace lmsBackend.Controllers
        
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromForm] CreatCategoriesDtos categoryDto)
+        public async Task<IActionResult> Update(string id, [FromForm] CreatCategoriesDtos categoryDto)
         {
             try
             {

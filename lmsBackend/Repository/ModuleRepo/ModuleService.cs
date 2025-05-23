@@ -2,6 +2,8 @@
 using lmsBackend.DataAccessLayer;
 using lmsBackend.Dtos.ModuleDtos;
 using lmsBackend.Models;
+using lmsBackend.Repository.AdminRepo;
+using lmsBackend.Repository.UserRepo;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -52,12 +54,17 @@ namespace lmsBackend.Repository.ModuleRepo
                 createdat = DateTime.UtcNow,
                 updatedat = DateTime.UtcNow
             };
+            string timestamp = DateTime.UtcNow.ToString("yyyyMMdd-HHmmss");
+            string name = moduleDto.modulename.Split(' ')[0].ToUpper();
+            string randomString = Guid.NewGuid().ToString().Substring(0, 6).ToUpper();
+            module.module_id = $"Module-{name}-{timestamp}-{randomString}";
+         
 
             _context.Modules.Add(module);
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(int id, CreateModuleDtos moduleDto)
+        public async Task UpdateAsync(string id, CreateModuleDtos moduleDto)
         {
             var existingModule = await _context.Modules.FindAsync(id);
             if (existingModule == null) return;

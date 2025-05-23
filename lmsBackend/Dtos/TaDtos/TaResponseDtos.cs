@@ -2,8 +2,8 @@
 {
     public class TaResponseDtos
     {
-        public int TaId { get; set; }
-        public int AdminId { get; set; }
+        public string TaId { get; set; }
+        public string AdminId { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public long? Phone { get; set; }

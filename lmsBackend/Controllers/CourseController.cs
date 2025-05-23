@@ -26,15 +26,26 @@ namespace lmsBackend.Controllers
         public async Task<IActionResult> GetAll()
         {
             var coursesDto = await _repository.GetAllAsync();
-            return Ok(coursesDto); // Ensure only the DTOs are being returned
+            return Ok(new
+            {
+                data = coursesDto,
+                msg = "all course fethecd successfully"
+            }); // Ensure only the DTOs are being returned
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(string id)
         {
             var courseDto = await _repository.GetByIdAsync(id);
-            if (courseDto == null) return NotFound();
-            return Ok(courseDto);
+            if (courseDto == null) return NotFound(new
+            {
+                msg= "course not found",
+            });
+            return Ok(new
+            {
+                data = courseDto,
+                msg = "course fetched sucessfully"
+            });
         }
 
         [HttpPost]
@@ -52,7 +63,10 @@ namespace lmsBackend.Controllers
         public async Task<IActionResult> Update(string id, CreateCourseDto courseDto)
         {
             await _repository.UpdateAsync(courseDto, id);
-            return Ok("Course updated");
+            return Ok(new
+            {
+                msg = "Course updated"
+            });
         }
     }
 }

@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using Google.Protobuf.WellKnownTypes;
 using lmsBackend.DataAccessLayer;
 using lmsBackend.Dtos.SmeDtos;
 using lmsBackend.Dtos.TaDtos;
 using lmsBackend.Models;
+using lmsBackend.Repository.UserRepo;
 using Microsoft.EntityFrameworkCore;
 
 namespace lmsBackend.Repository.TaRepo
@@ -103,12 +105,14 @@ namespace lmsBackend.Repository.TaRepo
             string name = createTaDto.Name.Split('_')[0].ToUpper();
             ta.TaId = $"TA-{name}-{timestamp}-{randomString}";
             ta.AdminId = admin.AdminId;
-            ta.Password = "Evs@1234";
 
-            // Add TA to context
+            ta.Password = "evs@123";
+             string timestamp = DateTime.UtcNow.ToString("yyyyMMdd-HHmmss");
+            string name = createTaDto.Name.Split(' ')[0].ToUpper();
+            string randomString = Guid.NewGuid().ToString().Substring(0, 6).ToUpper();
+            ta.TaId = $"TA-{name}-{timestamp}-{randomString}";
             _context.Tas.Add(ta);
 
-            // Update Admin with TA ID
             admin.TaId = ta.TaId;
             _context.Entry(admin).State = EntityState.Modified;
 
