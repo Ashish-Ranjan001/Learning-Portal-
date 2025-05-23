@@ -5,8 +5,8 @@ import { Router } from '@angular/router';
 import { SmeServicesService } from '../../../services/smes/sme-services.service';
 
 interface Sme {
-  smeId: number;
-  adminId: number;
+  smeId: string;
+  adminId: string;
   name: string;
   email: string;
   phone: number;
@@ -51,7 +51,7 @@ export class ViewSmeComponent implements OnInit {
     
     this.smeService.viewSmes().subscribe({
       next: (response: any) => {
-        this.smes = response;
+        this.smes = response.data;
         this.filterSmes();
         this.isLoading = false;
       },

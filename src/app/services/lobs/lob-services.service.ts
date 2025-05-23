@@ -2,7 +2,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 export interface Lob {
-  lobId: number;
+  lobId: string;
   lobName: string;
   lobDescription: string;
   status: boolean;
@@ -30,15 +30,15 @@ export class LobServicesService {
      const url = `${this.apiBaseUrl}/api/lobs`; 
     return this.http.get(url);
   }
-  changeStatus(lobId: number) {
+  changeStatus(lobId: string) {
      const url = `${this.apiBaseUrl}/api/lobs`; 
      return this.http.put(url, lobId);
   }
-  getLobById(lobId: number) {
+  getLobById(lobId: string) {
     const url = `${this.apiBaseUrl}/api/lobs/${lobId}`; 
     return this.http.get<Lob>(url);
   }
-  updateLob(lobId: number, lobData: any) {
+  updateLob(lobId: string, lobData: any) {
     const url = `${this.apiBaseUrl}/api/lobs/${lobId}`; 
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.http.put(url, lobData, { headers });

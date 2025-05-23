@@ -96,7 +96,7 @@ standalone: true
 })
 export class EditCategoryComponent implements OnInit {
 categoryForm: FormGroup;
-categoryId!: number;
+categoryId!: string;
 selectedFile: File | null = null;
 isSubmitting = false;
 successMessage = '';
@@ -118,7 +118,7 @@ ngOnInit() {
 this.route.paramMap.subscribe(params => {
 const id = params.get('id');
 if (id) {
-this.categoryId = Number(id);
+this.categoryId =(id);
 this.loadCategoryDetails();
 } else {
 this.errorMessage = 'Category ID is missing';

@@ -468,10 +468,10 @@ export class UserComponent implements OnInit {
 
     this.lobService.viewLobs().subscribe({
       next: (response: any) => {
-        console.log('LOBs received:', response);
+        console.log('LOBs received:', response.data);
         
-        if (Array.isArray(response)) {
-          this.lobList = response;
+        if (Array.isArray(response.data)) {
+          this.lobList = response.data;
         } else if (response && response.data && Array.isArray(response.data)) {
           this.lobList = response.data;
         } else {

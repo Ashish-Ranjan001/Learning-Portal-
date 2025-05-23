@@ -13,7 +13,7 @@ import { Router } from '@angular/router';
 })
 export class EditSmeComponent implements OnInit {
   smeForm: FormGroup;
-  smeId!: number;
+  smeId!: string;
 
   constructor(private route: ActivatedRoute, private fb: FormBuilder, private smeService: SmeServicesService, private router: Router) {
     this.smeForm = this.fb.group({
@@ -23,7 +23,7 @@ export class EditSmeComponent implements OnInit {
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
-      this.smeId = Number(params.get('id'));
+      this.smeId = params.get('id')as string;
       if (this.smeId) {
         this.loadSmeStatus();
       }
