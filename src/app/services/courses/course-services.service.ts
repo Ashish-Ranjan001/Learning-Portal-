@@ -17,11 +17,11 @@ export class CourseServicesService {
       const url = `${this.apiBaseUrl}/api/Course`;
       return this.client.get(url);
     }
-    getCategoryById(categoryId: number) {
+    getCategoryById(categoryId: string) {
       const url = `${this.apiBaseUrl}/api/Categories/${categoryId}`;
       return this.client.get(url);
     }
-    updateCategory(categoryId: number, categoryData: any) {
+    updateCategory(categoryId: string, categoryData: any) {
       const url = `${this.apiBaseUrl}/api/Categories/${categoryId}`;
       return this.client.put(url, categoryData);
     }

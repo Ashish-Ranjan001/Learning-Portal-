@@ -5,8 +5,8 @@ import { Router } from '@angular/router';
 import { SmeServicesService } from '../../../services/smes/sme-services.service';
 
 interface Sme {
-  smeId: number;
-  adminId: number;
+  smeId: string;
+  adminId: string;
   name: string;
   email: string;
   phone: number;
@@ -51,7 +51,7 @@ export class ViewSmeComponent implements OnInit {
     
     this.smeService.viewSmes().subscribe({
       next: (response: any) => {
-        this.smes = response;
+        this.smes = response.data;
         this.filterSmes();
         this.isLoading = false;
       },
@@ -120,12 +120,12 @@ export class ViewSmeComponent implements OnInit {
     this.goToPage(this.currentPage + 1);
   }
 
-  editSme(smeId: number): void {
+  editSme(smeId: string): void {
   console.log('Navigating to Edit SME:', smeId);
   this.router.navigate(['/dashboard/sme/edit', smeId]); // Ensure this route exists in routing module
 }
 
-  changePassword(smeId: number): void {
+  changePassword(smeId: string): void {
     console.log('Change password for SME with ID:', smeId);
     // Navigate to change password page with smeId
     // this.router.navigate(['/change-password', smeId]);

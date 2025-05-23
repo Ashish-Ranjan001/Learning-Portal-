@@ -16,7 +16,7 @@ export class CategoriesServiceService {
   }
 
   // Get a specific category by ID
-  getCategoryById(id: number): Observable<any> {
+  getCategoryById(id: string): Observable<any> {
     return this.http.get<any>(`${this.baseUrl}/${id}`);
   }
 
@@ -26,7 +26,7 @@ export class CategoriesServiceService {
   }
 
   // Update an existing category
-  updateCategory(id: number, formData: FormData): Observable<any> {
+  updateCategory(id: string, formData: FormData): Observable<any> {
     return this.http.put<any>(`${this.baseUrl}/${id}`, formData);
   }
 }

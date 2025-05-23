@@ -318,7 +318,8 @@ export class ViewLobComponent implements OnInit {
     
     this.lobService.viewLobs().subscribe({
       next: (data:any) => {
-        this.lobList = data;
+        console.log(data);
+        this.lobList = data.data;
         this.loading = false;
       },
       error: (err:any) => {
@@ -369,7 +370,7 @@ export class ViewLobComponent implements OnInit {
     this.currentPage = this.totalPages;
   }
 
-  editLob(lobId: number) {
+  editLob(lobId: string) {
   this.router.navigate([`/dashboard/lob/edit/${lobId}`]);
 }
 

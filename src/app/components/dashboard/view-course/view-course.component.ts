@@ -213,7 +213,7 @@ import { FormsModule } from '@angular/forms';
 import { CourseServicesService } from '../../../services/courses/course-services.service';
 
 interface Course {
-  course_id: number;
+  course_id: string;
   course_name: string;
   imagepath: string;
   status: boolean;
@@ -250,7 +250,7 @@ export class ViewCourseComponent implements OnInit {
     this.courseService.viewCourses().subscribe({
       next: (response: any) => {
         // Handle the API response - assuming it returns an array of courses
-        this.courses = Array.isArray(response) ? response : [response];
+        this.courses = Array.isArray(response.data) ? response.data : [response];
         console.log('Courses loaded:', this.courses);
         this.isLoading = false;
         this.filterCourses();

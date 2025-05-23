@@ -31,12 +31,12 @@ export class SmeServicesService {
   constructor(private http: HttpClient) {}
 
   
-  getSmeById(smeId: number) {
+  getSmeById(smeId: string) {
     const url = `${this.apiBaseUrl}/api/smes/${smeId}`;
     return this.http.get<{ status: boolean }>(url);
   }
 
-  updateSme(smeId: number) {
+  updateSme(smeId: string) {
     const url = `${this.apiBaseUrl}/api/smes/${smeId}`;
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.http.put(url, { headers });
