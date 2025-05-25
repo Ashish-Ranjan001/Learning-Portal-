@@ -19,6 +19,7 @@ import { ViewTaComponent } from './components/dashboard/view-ta/view-ta.componen
 import { ViewAdminComponent } from './components/dashboard/view-admin/view-admin.component';
 import { AddAdminComponent } from './components/dashboard/add-admin/add-admin.component';
 import { LoginComponent } from './components/main/login/login.component';
+import { ViewUserComponent } from './components/dashboard/view-user/view-user.component';
 
 
 export const routes: Routes = [
@@ -36,7 +37,8 @@ export const routes: Routes = [
         { path: 'lob/edit/:id', component: EditLobComponent },
         {path : 'sme/edit/:id',component:EditSmeComponent},
         {path: 'category/edit/:id', component: EditCategoryComponent},
-        {path: 'user', component: UserComponent},
+        {path: 'user/add', component: UserComponent},
+        {path: 'user/view', component: ViewUserComponent},
         {path: 'ta/add', component: AddTaComponent},
         {path: 'ta/view', component: ViewTaComponent},
         {path: 'admin/view', component: ViewAdminComponent},

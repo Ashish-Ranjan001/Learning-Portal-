@@ -3,13 +3,19 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { AdminserviceService } from '../../../services/Admin/adminservice.service';
+
 
 interface Admin {
-  id: number;
-  name: string;
+  adminId: string;
+  userId: string;
+  userName: string;
   email: string;
-  phone: string;
-  status: 'Active' | 'Inactive';
+  phone: number;
+  smeId: string;
+  status: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 @Component({
@@ -20,22 +26,9 @@ interface Admin {
   styleUrls: ['./view-admin.component.css']
 })
 export class ViewAdminComponent implements OnInit {
-  // Static admin data
-  admins: Admin[] = [
-    { id: 1, name: 'Super Admin', email: 'university@evalueserve.com', phone: '8000000006', status: 'Active' },
-    { id: 2, name: 'John Doe', email: 'john.doe@evalueserve.com', phone: '8000000001', status: 'Active' },
-    { id: 3, name: 'Jane Smith', email: 'jane.smith@evalueserve.com', phone: '8000000002', status: 'Active' },
-    { id: 4, name: 'Michael Johnson', email: 'michael.johnson@evalueserve.com', phone: '8000000003', status: 'Inactive' },
-    { id: 5, name: 'Emily Brown', email: 'emily.brown@evalueserve.com', phone: '8000000004', status: 'Active' },
-    { id: 6, name: 'David Wilson', email: 'david.wilson@evalueserve.com', phone: '8000000005', status: 'Inactive' },
-    { id: 7, name: 'Sarah Davis', email: 'sarah.davis@evalueserve.com', phone: '8000000007', status: 'Active' },
-    { id: 8, name: 'Robert Miller', email: 'robert.miller@evalueserve.com', phone: '8000000008', status: 'Active' },
-    { id: 9, name: 'Jennifer Taylor', email: 'jennifer.taylor@evalueserve.com', phone: '8000000009', status: 'Inactive' },
-    { id: 10, name: 'William Anderson', email: 'william.anderson@evalueserve.com', phone: '8000000010', status: 'Active' },
-    { id: 11, name: 'Lisa Thomas', email: 'lisa.thomas@evalueserve.com', phone: '8000000011', status: 'Active' },
-    { id: 12, name: 'James White', email: 'james.white@evalueserve.com', phone: '8000000012', status: 'Inactive' }
-  ];
-
+  // Admin data from backend
+  admins: Admin[] = [];
+  
   // Filtered admins (based on search)
   filteredAdmins: Admin[] = [];
   
@@ -47,10 +40,13 @@ export class ViewAdminComponent implements OnInit {
   // Search functionality
   searchControl = new FormControl('');
   
+  // Loading state
+  isLoading: boolean = true;
+  
+  constructor(private adminService: AdminserviceService) {}
+  
   ngOnInit(): void {
-    // Initialize filtered admins with all admins
-    this.filteredAdmins = [...this.admins];
-    this.calculateTotalPages();
+    this.loadAdmins();
     
     // Set up search with debounce
     this.searchControl.valueChanges
@@ -63,15 +59,33 @@ export class ViewAdminComponent implements OnInit {
       });
   }
   
+  loadAdmins(): void {
+    this.isLoading = true;
+    this.adminService.getAdmins().subscribe({
+      next: (response:any) => {
+        if (response && response.data) {
+          this.admins = response.data;
+          this.filteredAdmins = [...this.admins];
+          this.calculateTotalPages();
+        }
+        this.isLoading = false;
+      },
+      error: (error:any) => {
+        console.error('Error loading admins:', error);
+        this.isLoading = false;
+      }
+    });
+  }
+  
   search(term: string): void {
     if (!term.trim()) {
       this.filteredAdmins = [...this.admins];
     } else {
       const lowerCaseTerm = term.toLowerCase();
       this.filteredAdmins = this.admins.filter(admin => 
-        admin.name.toLowerCase().includes(lowerCaseTerm) ||
+        admin.userName.toLowerCase().includes(lowerCaseTerm) ||
         admin.email.toLowerCase().includes(lowerCaseTerm) ||
-        admin.phone.includes(term)
+        admin.phone.toString().includes(term)
       );
     }
     
@@ -120,14 +134,13 @@ export class ViewAdminComponent implements OnInit {
     return Array.from({ length: this.totalPages }, (_, i) => i + 1);
   }
   
-  // Actions
-  editAdmin(admin: Admin): void {
-    console.log('Edit admin:', admin);
-    // Implement edit functionality
+  // Get status display text
+  getStatusText(status: boolean): string {
+    return status ? 'Active' : 'Inactive';
   }
   
-  changePassword(admin: Admin): void {
-    console.log('Change password for admin:', admin);
-    // Implement change password functionality
+  // Actions
+  editAdmin(admin: Admin): void {
+    alert(`Admin ID: ${admin.adminId}`);
   }
 }

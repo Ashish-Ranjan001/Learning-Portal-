@@ -18,8 +18,16 @@
             </div>
           </div>
           
+          <!-- Loading indicator -->
+          <div *ngIf="isLoading" class="text-center py-4">
+            <div class="spinner-border" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2">Loading admins...</p>
+          </div>
+          
           <!-- Admin table -->
-          <div class="table-responsive">
+          <div class="table-responsive" *ngIf="!isLoading">
             <table class="table table-bordered admin-table">
               <thead>
                 <tr>
@@ -32,21 +40,20 @@
               </thead>
               <tbody>
                 <tr *ngFor="let admin of getCurrentPageItems()">
-                  <td>{{ admin.name }}</td>
+                  <td>{{ admin.userName }}</td>
                   <td>{{ admin.email }}</td>
                   <td>{{ admin.phone }}</td>
                   <td class="status-cell">
-                    <span class="status-badge" [ngClass]="admin.status === 'Active' ? 'active' : 'inactive'">
+                    <span class="status-badge" [ngClass]="admin.status ? 'active' : 'inactive'">
                       <span class="status-dot"></span>
-                      {{ admin.status }}
+                      {{ getStatusText(admin.status) }}
                     </span>
                   </td>
                   <td class="actions-cell">
                     <button class="btn btn-edit" (click)="editAdmin(admin)">Edit</button>
-                    <button class="btn btn-change-password" (click)="changePassword(admin)">Change Password</button>
                   </td>
                 </tr>
-                <tr *ngIf="getCurrentPageItems().length === 0">
+                <tr *ngIf="getCurrentPageItems().length === 0 && !isLoading">
                   <td colspan="5" class="text-center">No admin records found</td>
                 </tr>
               </tbody>
@@ -54,7 +61,7 @@
           </div>
           
           <!-- Pagination -->
-          <div class="row mt-3">
+          <div class="row mt-3" *ngIf="!isLoading">
             <div class="col-12">
               <nav aria-label="Admin pagination" *ngIf="filteredAdmins.length > 0">
                 <ul class="pagination justify-content-end">
