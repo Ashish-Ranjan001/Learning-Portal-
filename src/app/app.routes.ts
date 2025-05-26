@@ -18,13 +18,17 @@ import { AddTaComponent } from './components/dashboard/add-ta/add-ta.component';
 import { ViewTaComponent } from './components/dashboard/view-ta/view-ta.component';
 import { ViewAdminComponent } from './components/dashboard/view-admin/view-admin.component';
 import { AddAdminComponent } from './components/dashboard/add-admin/add-admin.component';
+import { LoginComponent } from './components/main/login/login.component';
+<<<<<<<<< Temporary merge branch 1
 import { ViewUserComponent } from './components/dashboard/view-user/view-user.component';
+=========
 import { EditCourseComponent } from './components/dashboard/edit-course/edit-course.component';
 import { AddModuleComponent } from './components/dashboard/add-module/add-module.component';
 import { EditModuleComponent } from './components/dashboard/edit-module/edit-module.component';
 import { LandingPageComponent } from './components/main/landingpage/landingpage.component';
 import { LoginComponent } from './components/main/login/login.component';
 
+>>>>>>>>> Temporary merge branch 2
 
 
 export const routes: Routes = [
