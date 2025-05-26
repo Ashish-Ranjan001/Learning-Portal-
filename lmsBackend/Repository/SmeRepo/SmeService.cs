@@ -53,16 +53,28 @@ namespace lmsBackend.Repository.SmeRepo
             return sme == null ? null : _mapper.Map<SmeResponseDto>(sme);
         }
 
-        public async Task<SmeResponseDto> updateSme(string id)
+        //public async Task<SmeResponseDto> updateSme(string id)
+        //{
+        //    var sme = await _context.Smes.Include(s => s.Admin).FirstOrDefaultAsync(s => s.SmeId == id);
+        //    if (sme == null) throw new Exception("SME not found");
+        //    sme.Status = !sme.Status;
+        //    _context.Entry(sme).State = EntityState.Modified;
+        //    await _context.SaveChangesAsync();
+        //    return _mapper.Map<SmeResponseDto>(sme);
+        //}
+
+        public async Task<SmeResponseDto?> UpdateSmeAsync(string id, UpdateSmeStatusRequest  request)
         {
             var sme = await _context.Smes.Include(s => s.Admin).FirstOrDefaultAsync(s => s.SmeId == id);
             if (sme == null) throw new Exception("SME not found");
-            sme.Status = !sme.Status;
+
+            // Set the status to the value sent from frontend
+            sme.Status = request.Status;
             _context.Entry(sme).State = EntityState.Modified;
             await _context.SaveChangesAsync();
+
             return _mapper.Map<SmeResponseDto>(sme);
         }
-        
 
         public async Task<List<SmeCourseDetailDto?>> SmeAllCoures(string id)
         {

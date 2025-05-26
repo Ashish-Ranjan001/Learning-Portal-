@@ -50,9 +50,9 @@ namespace lmsBackend.Controllers
             });
         }
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateSme(string id)
+        public async Task<IActionResult> UpdateSme(string id,[FromBody] UpdateSmeStatusRequest request)
         {
-            var sme = await _smeService.updateSme(id);
+            var sme = await _smeService.UpdateSmeAsync(id, request);
             if (sme == null) return NotFound();
             return Ok(new
             {
