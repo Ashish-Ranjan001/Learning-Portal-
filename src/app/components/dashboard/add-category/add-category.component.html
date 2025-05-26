@@ -1,4 +1,4 @@
- <div class="add-category-container">
+ <!-- <div class="add-category-container">
     <h2 class="header">Create New category</h2>
     
     <div class="separator"></div>
@@ -47,4 +47,54 @@
     </form>
   </div> 
 
-  
+   -->
+
+
+    <div class="add-category-container">
+    <h2 class="header">Create New category</h2>
+    
+    <div class="separator"></div>
+    
+    <form [formGroup]="categoryForm">
+      <div class="form-group">
+        <label for="name">Name</label>
+        <input 
+          type="text" 
+          id="name" 
+          formControlName="name" 
+          placeholder="Enter Name" 
+          class="form-control"
+          [ngClass]="{'invalid': categoryForm.get('name')?.invalid && categoryForm.get('name')?.touched}">
+      </div>
+      
+      <div class="form-group">
+        <label for="subSet">Sub Set</label>
+        <input 
+          type="text" 
+          id="subSet" 
+          formControlName="subSet" 
+          placeholder="Enter Sub Set" 
+          class="form-control"
+          [ngClass]="{'invalid': categoryForm.get('subSet')?.invalid && categoryForm.get('subSet')?.touched}">
+      </div>
+      
+      <div class="form-group">
+        <label for="image">Image</label>
+        <div class="file-input-container">
+          <label for="file-upload" class="file-input-label">Choose File</label>
+          <input 
+            type="file" 
+            id="file-upload" 
+            (change)="onFileSelected($event)" 
+            accept="image/*"
+            class="file-input">
+          <span class="file-name">{{ selectedFileName }}</span>
+        </div>
+      </div>
+      
+      <div class="actions">
+        <button type="button" class="btn cancel-btn" (click)="cancel()">Cancel</button>
+        <button type="button" class="btn save-btn" (click)="saveCategory()" [disabled]="categoryForm.invalid">Save Changes</button>
+      </div>
+    </form>
+  </div> 

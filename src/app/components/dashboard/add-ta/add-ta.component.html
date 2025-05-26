@@ -1,0 +1,52 @@
+<div class="add-ta-container">
+  <h2>Create New TA</h2>
+  <form [formGroup]="taForm">
+    <div class="form-row">
+      <div class="form-group">
+        <label for="name">Name</label>
+        <input
+          type="text"
+          id="name"
+          formControlName="name"
+          placeholder="Enter Name"
+          [ngClass]="{'invalid': taForm.get('name')?.invalid && taForm.get('name')?.touched}"
+        >
+        <div class="error" *ngIf="taForm.get('name')?.touched && taForm.get('name')?.invalid">
+          Name is required.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input
+          type="email"
+          id="email"
+          formControlName="email"
+          placeholder="Enter Email"
+          [ngClass]="{'invalid': taForm.get('email')?.invalid && taForm.get('email')?.touched}"
+        >
+        <div class="error" *ngIf="taForm.get('email')?.touched && taForm.get('email')?.invalid">
+          Valid email is required.
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group full-width">
+      <label for="phone">Phone</label>
+      <input
+        type="tel"
+        id="phone"
+        formControlName="phone"
+        placeholder="Enter Phone"
+        [ngClass]="{'invalid': taForm.get('phone')?.invalid && taForm.get('phone')?.touched}"
+      >
+      <!-- <div class="error" *ngIf="taForm.get('phone')?.touched && taForm.get('phone')?.invalid">
+        Valid 10-digit phone is required.
+      </div> -->
+    </div>
+
+    <div class="button-group">
+      <button type="button" class="btn-save" (click)="onSubmit()">Save Changes</button>
+    </div>
+  </form>
+</div>

@@ -7,30 +7,45 @@ import { Injectable } from '@angular/core';
 export class CourseServicesService {
 
   constructor(private client:HttpClient) { }
-    private apiBaseUrl = 'https://localhost:7264';
+    private apiBaseUrl = 'http://localhost:5053';
 
-    addCategory(categoryData: any) {
-      const url = `${this.apiBaseUrl}/api/Categories`;
-      return this.client.post(url, categoryData);
-    }
-    viewCategories() {
-      const url = `${this.apiBaseUrl}/api/Categories`;
-      return this.client.get(url);
-    }
-    addCourse(courseData: any) {
-      const url = `${this.apiBaseUrl}/api/Courses`;
+    addCourse(courseData: FormData) {
+      const url = `${this.apiBaseUrl}/api/Course`;
       return this.client.post(url, courseData);
     } 
     viewCourses() {
-      const url = `${this.apiBaseUrl}/api/Courses`;
+      const url = `${this.apiBaseUrl}/api/Course`;
       return this.client.get(url);
     }
-    getCategoryById(categoryId: number) {
-      const url = `${this.apiBaseUrl}/api/Categories/${categoryId}`;
-      return this.client.get(url);
+    getCourseById(courseId: string) {
+      const url = `${this.apiBaseUrl}/api/Course/${courseId}`;
+      return this.client.get<any>(url);
     }
-    updateCategory(categoryId: number, categoryData: any) {
-      const url = `${this.apiBaseUrl}/api/Categories/${categoryId}`;
-      return this.client.put(url, categoryData);
+    
+    updateCourse(courseId: string, courseData: FormData) {
+      const url = `${this.apiBaseUrl}/api/Course/${courseId}`;
+      return this.client.put(url, courseData);
     }
+    
+    addModule(data:FormData){
+      const url = `${this.apiBaseUrl}/api/Module`;
+      return this.client.post(url, data); 
+    }
+
+    getAllModules() {
+      const url = `${this.apiBaseUrl}/api/Module`;
+      return this.client.get<any[]>(url);
+    }
+  
+    getModuleById(moduleId: string) {
+      const url = `${this.apiBaseUrl}/api/Module/${moduleId}`;
+      return this.client.get<any>(url);
+    }
+  
+    updateModule(moduleId: string, moduleData: FormData) {
+      const url = `${this.apiBaseUrl}/api/Module/${moduleId}`;
+      return this.client.put(url, moduleData);
+    }
+  
+
 }

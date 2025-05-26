@@ -13,10 +13,26 @@ import { ViewCourseComponent } from './components/dashboard/view-course/view-cou
 import { EditLobComponent } from './components/dashboard/edit-lob/edit-lob.component';
 import { EditSmeComponent } from './components/dashboard/edit-sme/edit-sme.component';
 import { EditCategoryComponent } from './components/dashboard/edit-category/edit-category.component';
+import { UserComponent } from './components/dashboard/user/user.component';
+import { AddTaComponent } from './components/dashboard/add-ta/add-ta.component';
+import { ViewTaComponent } from './components/dashboard/view-ta/view-ta.component';
+import { ViewAdminComponent } from './components/dashboard/view-admin/view-admin.component';
+import { AddAdminComponent } from './components/dashboard/add-admin/add-admin.component';
+import { LoginComponent } from './components/main/login/login.component';
+
+import { ViewUserComponent } from './components/dashboard/view-user/view-user.component';
+
+import { EditCourseComponent } from './components/dashboard/edit-course/edit-course.component';
+import { AddModuleComponent } from './components/dashboard/add-module/add-module.component';
+import { EditModuleComponent } from './components/dashboard/edit-module/edit-module.component';
+
+
 
 
 export const routes: Routes = [
-    {path: '', component:HomeComponent},
+    {path: '', component:LoginComponent},
+
+  
 
     { path: 'dashboard',component:DashboardhomeComponent , children: [
         { path: 'lob/add', component: AddLobComponent },
@@ -30,5 +46,15 @@ export const routes: Routes = [
         { path: 'lob/edit/:id', component: EditLobComponent },
         {path : 'sme/edit/:id',component:EditSmeComponent},
         {path: 'category/edit/:id', component: EditCategoryComponent},
+        {path: 'user/add', component: UserComponent},
+        {path: 'user/view', component: ViewUserComponent},
+        {path: 'ta/add', component: AddTaComponent},
+        {path: 'ta/view', component: ViewTaComponent},
+        {path: 'admin/view', component: ViewAdminComponent},
+        {path: 'admin/add', component: AddAdminComponent},
+        {path: 'course/edit/:id', component: EditCourseComponent},
+        {path: 'module/add/:id', component:AddModuleComponent},
+        {path: 'module/edit/:id', component:EditModuleComponent}
+        
      ] }
 ];

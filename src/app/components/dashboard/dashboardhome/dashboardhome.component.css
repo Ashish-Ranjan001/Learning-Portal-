@@ -49,7 +49,10 @@
   }
    */
 
-   /* dashboardhome.component.scss */
+
+   /* ---------------------------------------------------------------------------------------- */
+
+/*    
 .app-container {
     display: flex;
     flex-direction: column;
@@ -60,20 +63,49 @@
   .main-content {
     display: flex;
     flex: 1;
-    margin-top: 60px; /* Match header height */
+    margin-top: 60px; 
   }
   
   .content {
     flex: 1;
     padding: 20px;
     overflow-y: auto;
-    margin-left: 250px; /* Default margin for sidebar width */
+    margin-left: 250px;
     transition: margin-left 0.3s ease;
   
     &.expanded {
-      margin-left: 0; /* No margin when sidebar is closed */
+      margin-left: 0; 
     }
   }
   .content {
-  min-height: calc(100vh - 60px); /* Ensures full space below header */
+  min-height: calc(100vh - 60px); 
+} */
+
+/* dashboardhome.component.scss */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.main-content {
+  display: flex;
+  flex: 1;
+  margin-top: 60px; /* Match header height */
+  overflow: hidden; /* Prevent overflow at this level */
+}
+
+.content {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto; /* Enable vertical scrolling */
+  margin-left: 250px; /* Default margin for sidebar width */
+  transition: margin-left 0.3s ease;
+  position: relative; /* Add positioning context */
+  height: calc(100vh - 120px); /* Account for header and footer */
+
+  &.expanded {
+    margin-left: 0; /* No margin when sidebar is closed */
+  }
 }

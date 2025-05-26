@@ -1,4 +1,4 @@
-<div class="edit-category-container card shadow-lg p-4">
+<!-- <div class="edit-category-container card shadow-lg p-4">
     <h2 class="text-center mb-4">Edit Category</h2>
 
     <form [formGroup]="categoryForm">
@@ -59,4 +59,81 @@
             <button type="button" class="btn btn-primary" (click)="onSave()">Save Changes</button>
         </div>
     </form>
+</div> -->
+
+<div class="edit-category-container card shadow p-4">
+  <h2 class="text-center mb-4 text-primary fw-bold">Edit Category</h2>
+
+  <div class="alert alert-success" *ngIf="successMessage">
+    {{ successMessage }}
+  </div>
+  <div class="alert alert-danger" *ngIf="errorMessage">
+    {{ errorMessage }}
+  </div>
+
+  <form [formGroup]="categoryForm" (ngSubmit)="onSave()">
+    <div class="mb-4 text-center">
+      <label for="category-image" class="form-label">Category Image:</label>
+      <div class="category-image-container">
+        <img [src]="categoryForm.get('imageUrl')?.value || 'assets/placeholder-image.png'"
+             alt="Category Image"
+             class="img-fluid rounded"
+             style="max-height: 200px; max-width: 100%; object-fit: contain;">
+      </div>
+      <input
+        id="category-image"
+        type="file"
+        class="form-control mt-3"
+        (change)="onFileSelected($event)"
+        accept="image/*">
+    </div>
+
+    <div class="mb-3">
+      <label for="CategoryName" class="form-label">Name</label>
+      <input
+        type="text"
+        id="CategoryName"
+        formControlName="name"
+        class="form-control"
+        placeholder="Enter Category Name"
+        [ngClass]="{'is-invalid': categoryForm.get('name')?.invalid && categoryForm.get('name')?.touched}">
+      <div class="invalid-feedback" *ngIf="categoryForm.get('name')?.invalid && categoryForm.get('name')?.touched">
+        Name is required.
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="CategorySubSet" class="form-label">Sub Set</label>
+      <input
+        type="text"
+        id="CategorySubSet"
+        formControlName="subset"
+        class="form-control"
+        placeholder="Enter Sub Set"
+        [ngClass]="{'is-invalid': categoryForm.get('subset')?.invalid && categoryForm.get('subset')?.touched}">
+      <div class="invalid-feedback" *ngIf="categoryForm.get('subset')?.invalid && categoryForm.get('subset')?.touched">
+        Sub Set is required.
+      </div>
+    </div>
+
+    <div class="mb-4 d-flex align-items-center">
+      <label for="Status" class="form-label me-3">Active Status:</label>
+      <div class="form-check form-switch">
+        <input
+          type="checkbox"
+          id="Status"
+          formControlName="status"
+          class="form-check-input toggle-switch">
+      </div>
+      <span class="ms-3 fw-semibold">{{ categoryForm.get('status')?.value ? 'Active' : 'Inactive' }}</span>
+    </div>
+
+    <div class="d-flex justify-content-end gap-3">
+      <button type="button" class="btn btn-outline-secondary" (click)="onCancel()">Cancel</button>
+      <button type="submit" class="btn btn-primary" [disabled]="categoryForm.invalid || isSubmitting">
+        <span class="spinner-border spinner-border-sm me-2" *ngIf="isSubmitting"></span>
+        Save Changes
+      </button>
+    </div>
+  </form>
 </div>

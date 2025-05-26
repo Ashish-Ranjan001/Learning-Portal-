@@ -1,0 +1,146 @@
+<!-- <div class="container-fluid add-admin-container">
+  <div class="row">
+    <div class="col-12">
+      <h2 class="page-title">Create New Admin</h2>
+    </div>
+  </div>
+  
+  <div class="card">
+    <div class="card-body">
+      <form [formGroup]="adminForm" (ngSubmit)="onSubmit()">
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input 
+              type="text" 
+              class="form-control" 
+              id="name" 
+              placeholder="Enter Name" 
+              formControlName="name"
+              [ngClass]="{'is-invalid': nameControl?.invalid && nameControl?.touched}">
+            <div class="invalid-feedback" *ngIf="nameControl?.invalid && nameControl?.touched">
+              Name is required
+            </div>
+          </div>
+          
+          <div class="col-md-6 mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input 
+              type="email" 
+              class="form-control" 
+              id="email" 
+              placeholder="Enter Email" 
+              formControlName="email"
+              [ngClass]="{'is-invalid': emailControl?.invalid && emailControl?.touched}">
+            <div class="invalid-feedback" *ngIf="emailControl?.invalid && emailControl?.touched">
+              <span *ngIf="emailControl?.errors?.['required']">Email is required</span>
+              <span *ngIf="emailControl?.errors?.['email']">Please enter a valid email address</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="phone" class="form-label">Phone</label>
+            <input 
+              type="tel" 
+              class="form-control" 
+              id="phone" 
+              placeholder="Enter Phone" 
+              formControlName="phone"
+              [ngClass]="{'is-invalid': phoneControl?.invalid && phoneControl?.touched}">
+            <div class="invalid-feedback" *ngIf="phoneControl?.invalid && phoneControl?.touched">
+              <span *ngIf="phoneControl?.errors?.['required']">Phone number is required</span>
+              <span *ngIf="phoneControl?.errors?.['pattern']">Please enter a valid 10-digit phone number</span>
+            </div>
+          </div>
+          
+          <div class="col-md-6 mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input 
+              type="password" 
+              class="form-control" 
+              id="password" 
+              placeholder="Enter Password" 
+              formControlName="password"
+              [ngClass]="{'is-invalid': passwordControl?.invalid && passwordControl?.touched}">
+            <div class="invalid-feedback" *ngIf="passwordControl?.invalid && passwordControl?.touched">
+              <span *ngIf="passwordControl?.errors?.['required']">Password is required</span>
+              <span *ngIf="passwordControl?.errors?.['minlength']">Password must be at least 8 characters</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="row">
+          <div class="col-12 text-end">
+            <button type="submit" class="btn btn-primary save-btn">Save Changes</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div> -->
+
+
+<div class="container-fluid add-admin-container">
+  <div class="row">
+    <div class="col-12">
+      <h2 class="page-title">Create New Admin</h2>
+    </div>
+  </div>
+  
+  <div class="card">
+    <div class="card-body">
+      <form [formGroup]="adminForm" (ngSubmit)="onSubmit()">
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input 
+              type="email" 
+              class="form-control" 
+              id="email" 
+              placeholder="Enter Email" 
+              formControlName="email"
+              [ngClass]="{'is-invalid': emailControl?.invalid && emailControl?.touched}">
+            <div class="invalid-feedback" *ngIf="emailControl?.invalid && emailControl?.touched">
+              <span *ngIf="emailControl?.errors?.['required']">Email is required</span>
+              <span *ngIf="emailControl?.errors?.['email']">Please enter a valid email address</span>
+            </div>
+          </div>
+          
+          <div class="col-md-6 mb-3">
+            <label for="phone" class="form-label">Phone</label>
+            <input 
+              type="tel" 
+              class="form-control" 
+              id="phone" 
+              placeholder="Enter Phone" 
+              formControlName="phone"
+              [ngClass]="{'is-invalid': phoneControl?.invalid && phoneControl?.touched}">
+            <div class="invalid-feedback" *ngIf="phoneControl?.invalid && phoneControl?.touched">
+              <span *ngIf="phoneControl?.errors?.['required']">Phone number is required</span>
+              <span *ngIf="phoneControl?.errors?.['pattern']">Please enter a valid 10-digit phone number</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="row">
+          <div class="col-12 text-end">
+            <button type="submit" class="btn btn-primary save-btn" [disabled]="isLoading">
+              <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status"></span>
+              {{ isLoading ? 'Creating Admin...' : 'Create Admin' }}
+            </button>
+          </div>
+        </div>
+      </form>
+      
+      <!-- Success/Error Messages -->
+      <div class="alert alert-success mt-3" *ngIf="successMessage">
+        {{ successMessage }}
+      </div>
+      <div class="alert alert-danger mt-3" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </div>
+    </div>
+  </div>
+</div>
