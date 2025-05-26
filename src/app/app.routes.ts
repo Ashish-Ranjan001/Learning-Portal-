@@ -18,13 +18,19 @@ import { AddTaComponent } from './components/dashboard/add-ta/add-ta.component';
 import { ViewTaComponent } from './components/dashboard/view-ta/view-ta.component';
 import { ViewAdminComponent } from './components/dashboard/view-admin/view-admin.component';
 import { AddAdminComponent } from './components/dashboard/add-admin/add-admin.component';
-import { LoginComponent } from './components/main/login/login.component';
+
 import { ViewUserComponent } from './components/dashboard/view-user/view-user.component';
+import { EditCourseComponent } from './components/dashboard/edit-course/edit-course.component';
+import { AddModuleComponent } from './components/dashboard/add-module/add-module.component';
+import { EditModuleComponent } from './components/dashboard/edit-module/edit-module.component';
+import { LandingPageComponent } from './components/main/landingpage/landingpage.component';
+import { LoginComponent } from './components/main/login/login.component';
+
 
 
 export const routes: Routes = [
-    {path: '', component:LoginComponent},
-
+    {path: '', component:LandingPageComponent},
+    { path: 'login', component: LoginComponent },
     { path: 'dashboard',component:DashboardhomeComponent , children: [
         { path: 'lob/add', component: AddLobComponent },
         {path: 'lob/view', component:ViewLobComponent },
@@ -43,5 +49,9 @@ export const routes: Routes = [
         {path: 'ta/view', component: ViewTaComponent},
         {path: 'admin/view', component: ViewAdminComponent},
         {path: 'admin/add', component: AddAdminComponent},
+        {path: 'course/edit/:id', component: EditCourseComponent},
+        {path: 'module/add/:id', component:AddModuleComponent},
+        {path: 'module/edit/:id', component:EditModuleComponent}
+        
      ] }
 ];
