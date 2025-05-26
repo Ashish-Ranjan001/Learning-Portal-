@@ -1,634 +1,634 @@
 
-user componnet ts file 
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
-import { LobServicesService } from '../../../services/lobs/lob-services.service';
+// user componnet ts file 
+// import { Component, OnInit } from '@angular/core';
+// import { CommonModule } from '@angular/common';
+// import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+// import { HttpClientModule } from '@angular/common/http';
+// import { LobServicesService } from '../../../services/lobs/lob-services.service';
 
-@Component({
-  selector: 'app-add-user',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, HttpClientModule],
-  templateUrl: './user.component.html',
-  styleUrls: ['./user.component.css']
-})
-export class UserComponent implements OnInit {
-  userForm!: FormGroup;
+// @Component({
+//   selector: 'app-add-user',
+//   standalone: true,
+//   imports: [CommonModule, ReactiveFormsModule, HttpClientModule],
+//   templateUrl: './user.component.html',
+//   styleUrls: ['./user.component.css']
+// })
+// export class UserComponent implements OnInit {
+//   userForm!: FormGroup;
 
-  // LOB list for the dropdown
-  lobList: any[] = [];
-  loadingData: boolean = false;
-  errorMessage: string = '';
+//   // LOB list for the dropdown
+//   lobList: any[] = [];
+//   loadingData: boolean = false;
+//   errorMessage: string = '';
 
-  constructor(
-    private fb: FormBuilder,
-    private lobService: LobServicesService
-  ) { }
+//   constructor(
+//     private fb: FormBuilder,
+//     private lobService: LobServicesService
+//   ) { }
 
-  ngOnInit(): void {
-    this.initializeForm();
-    this.loadLobs();
-  }
+//   ngOnInit(): void {
+//     this.initializeForm();
+//     this.loadLobs();
+//   }
 
-  initializeForm(): void {
-    this.userForm = this.fb.group({
-      Name: ['', [Validators.required, Validators.maxLength(255)]],
-      Email: ['', [Validators.required, Validators.email, Validators.maxLength(255)]],
-      Password: ['', [Validators.required, Validators.maxLength(255)]],
-      Phone: ['', [Validators.required]],
-      LobId: ['', [Validators.required]],
-      Designation: ['', [Validators.required, Validators.maxLength(255)]],
-      Level: ['', [Validators.required, Validators.maxLength(255)]],
-      Gender: ['', [Validators.required, Validators.maxLength(200)]],
-      SubLob: ['', [Validators.required, Validators.maxLength(200)]],
-      CollegeName: ['', [Validators.required, Validators.maxLength(200)]],
-      Location: ['', [Validators.required, Validators.maxLength(200)]],
-      Specialization: ['', [Validators.required, Validators.maxLength(200)]],
-      CollegeLocation: ['', [Validators.required, Validators.maxLength(200)]],
-      OfferReleaseSpoc: ['', [Validators.required, Validators.maxLength(200)]],
-      Doj: ['', [Validators.required]],
-      Trf: ['', [Validators.required, Validators.maxLength(200)]],
-      ExpectanceDate: ['', [Validators.required]],
-      CollegeTier: ['', [Validators.required, Validators.maxLength(200)]],
-      Qualification: ['', [Validators.required, Validators.maxLength(250)]],
-      JoinerStatus: ['', [Validators.required, Validators.maxLength(200)]],
-      Uploader: ['', [Validators.required, Validators.maxLength(255)]]
-    });
-  }
+//   initializeForm(): void {
+//     this.userForm = this.fb.group({
+//       Name: ['', [Validators.required, Validators.maxLength(255)]],
+//       Email: ['', [Validators.required, Validators.email, Validators.maxLength(255)]],
+//       Password: ['', [Validators.required, Validators.maxLength(255)]],
+//       Phone: ['', [Validators.required]],
+//       LobId: ['', [Validators.required]],
+//       Designation: ['', [Validators.required, Validators.maxLength(255)]],
+//       Level: ['', [Validators.required, Validators.maxLength(255)]],
+//       Gender: ['', [Validators.required, Validators.maxLength(200)]],
+//       SubLob: ['', [Validators.required, Validators.maxLength(200)]],
+//       CollegeName: ['', [Validators.required, Validators.maxLength(200)]],
+//       Location: ['', [Validators.required, Validators.maxLength(200)]],
+//       Specialization: ['', [Validators.required, Validators.maxLength(200)]],
+//       CollegeLocation: ['', [Validators.required, Validators.maxLength(200)]],
+//       OfferReleaseSpoc: ['', [Validators.required, Validators.maxLength(200)]],
+//       Doj: ['', [Validators.required]],
+//       Trf: ['', [Validators.required, Validators.maxLength(200)]],
+//       ExpectanceDate: ['', [Validators.required]],
+//       CollegeTier: ['', [Validators.required, Validators.maxLength(200)]],
+//       Qualification: ['', [Validators.required, Validators.maxLength(250)]],
+//       JoinerStatus: ['', [Validators.required, Validators.maxLength(200)]],
+//       Uploader: ['', [Validators.required, Validators.maxLength(255)]]
+//     });
+//   }
 
-  loadLobs(): void {
-    this.loadingData = true;
+//   loadLobs(): void {
+//     this.loadingData = true;
 
-    this.lobService.viewLobs().subscribe({
-      next: (response: any) => {
-        console.log('LOBs received:', response);
+//     this.lobService.viewLobs().subscribe({
+//       next: (response: any) => {
+//         console.log('LOBs received:', response);
         
-        if (Array.isArray(response)) {
-          this.lobList = response;
-        } else if (response && response.data && Array.isArray(response.data)) {
-          this.lobList = response.data;
-        } else {
-          console.error('Unexpected LOB response format:', response);
-          this.lobList = [];
-          this.errorMessage = 'Failed to load LOB data. Please refresh the page.';
-        }
+//         if (Array.isArray(response)) {
+//           this.lobList = response;
+//         } else if (response && response.data && Array.isArray(response.data)) {
+//           this.lobList = response.data;
+//         } else {
+//           console.error('Unexpected LOB response format:', response);
+//           this.lobList = [];
+//           this.errorMessage = 'Failed to load LOB data. Please refresh the page.';
+//         }
         
-        console.log('LOB List after processing:', this.lobList);
-        this.loadingData = false;
-      },
-      error: (error: any) => {
-        console.error('Error loading LOBs:', error);
-        this.lobList = [];
-        this.errorMessage = 'Failed to load LOB data. Please refresh the page.';
-        this.loadingData = false;
-      }
-    });
-  }
+//         console.log('LOB List after processing:', this.lobList);
+//         this.loadingData = false;
+//       },
+//       error: (error: any) => {
+//         console.error('Error loading LOBs:', error);
+//         this.lobList = [];
+//         this.errorMessage = 'Failed to load LOB data. Please refresh the page.';
+//         this.loadingData = false;
+//       }
+//     });
+//   }
 
-  onSubmit(): void {
-    if (this.userForm.valid) {
-      console.log('Form submitted:', this.userForm.value);
+//   onSubmit(): void {
+//     if (this.userForm.valid) {
+//       console.log('Form submitted:', this.userForm.value);
       
-      // Convert the phone number string to a number
-      const formData = {
-        ...this.userForm.value,
-        Phone: Number(this.userForm.value.Phone),
-        LobId: Number(this.userForm.value.LobId)
-      };
+//       // Convert the phone number string to a number
+//       const formData = {
+//         ...this.userForm.value,
+//         Phone: Number(this.userForm.value.Phone),
+//         LobId: Number(this.userForm.value.LobId)
+//       };
       
-      console.log('Formatted data for submission:', formData);
+//       console.log('Formatted data for submission:', formData);
       
-      // Here you would call your service to save the user
-      this.saveUser(formData);
-    } else {
-      // Mark all form controls as touched to trigger validation messages
-      Object.keys(this.userForm.controls).forEach(key => {
-        const control = this.userForm.get(key);
-        control?.markAsTouched();
-      });
-    }
-  }
+//       // Here you would call your service to save the user
+//       this.saveUser(formData);
+//     } else {
+//       // Mark all form controls as touched to trigger validation messages
+//       Object.keys(this.userForm.controls).forEach(key => {
+//         const control = this.userForm.get(key);
+//         control?.markAsTouched();
+//       });
+//     }
+//   }
 
-  // Method to reset form
-  resetForm(): void {
-    this.userForm.reset();
-  }
+//   // Method to reset form
+//   resetForm(): void {
+//     this.userForm.reset();
+//   }
 
-  // Save user method
-  saveUser(userData: any): void {
-    // Get selected LOB name for display purpose
-    const selectedLobId = userData.LobId;
-    const selectedLob = this.lobList.find(lob => lob.lobId === selectedLobId);
-    const lobName = selectedLob ? selectedLob.lobName : 'Unknown LOB';
+//   // Save user method
+//   saveUser(userData: any): void {
+//     // Get selected LOB name for display purpose
+//     const selectedLobId = userData.LobId;
+//     const selectedLob = this.lobList.find(lob => lob.lobId === selectedLobId);
+//     const lobName = selectedLob ? selectedLob.lobName : 'Unknown LOB';
 
-    console.log('Selected LOB:', {id: selectedLobId, name: lobName});
+//     console.log('Selected LOB:', {id: selectedLobId, name: lobName});
 
-    // Here you would make the API call to create the user
-    // For example:
-    // this.userService.createUser(userData).subscribe({
-    //   next: (response) => {
-    //     console.log('User created successfully', response);
-    //     alert('User created successfully!');
-    //     this.resetForm();
-    //   },
-    //   error: (error) => {
-    //     console.error('Error creating user:', error);
-    //     alert('Error creating user. Please try again.');
-    //   }
-    // });
+//     // Here you would make the API call to create the user
+//     // For example:
+//     // this.userService.createUser(userData).subscribe({
+//     //   next: (response) => {
+//     //     console.log('User created successfully', response);
+//     //     alert('User created successfully!');
+//     //     this.resetForm();
+//     //   },
+//     //   error: (error) => {
+//     //     console.error('Error creating user:', error);
+//     //     alert('Error creating user. Please try again.');
+//     //   }
+//     // });
 
-    // Placeholder alert until the actual service is implemented
-    alert('User created successfully!');
-    this.resetForm();
-  }
-}
-
-
---------------------------------------------
-
-user component html 
-<div class="user-container">
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-12 mb-4">
-        <h2 class="page-title">Create New User</h2>
-      </div>
-    </div>
-    <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="user-form">
-      <div class="row">
-        <!-- Personal Information -->
-        <div class="col-12 mb-3">
-          <h3>Personal Information</h3>
-        </div>
-
-        <!-- Name Field -->
-        <div class="col-md-6 mb-3">
-          <label for="Name" class="form-label">Name <span class="required">*</span></label>
-          <input 
-            type="text" 
-            id="Name" 
-            class="form-control"
-            placeholder="Enter Name"
-            formControlName="Name">
-          <div *ngIf="userForm.get('Name')?.invalid && userForm.get('Name')?.touched" class="error-message">
-            Name is required
-          </div>
-        </div>
-
-        <!-- Email Field -->
-        <div class="col-md-6 mb-3">
-          <label for="Email" class="form-label">Email <span class="required">*</span></label>
-          <input 
-            type="email" 
-            id="Email" 
-            class="form-control"
-            placeholder="Enter Email"
-            formControlName="Email">
-          <div *ngIf="userForm.get('Email')?.invalid && userForm.get('Email')?.touched" class="error-message">
-            Valid email is required
-          </div>
-        </div>
-
-        <!-- Password Field -->
-        <div class="col-md-6 mb-3">
-          <label for="Password" class="form-label">Password <span class="required">*</span></label>
-          <input 
-            type="password" 
-            id="Password" 
-            class="form-control"
-            placeholder="Enter Password"
-            formControlName="Password">
-          <div *ngIf="userForm.get('Password')?.invalid && userForm.get('Password')?.touched" class="error-message">
-            Password is required
-          </div>
-        </div>
-
-        <!-- Phone Field -->
-        <div class="col-md-6 mb-3">
-          <label for="Phone" class="form-label">Phone <span class="required">*</span></label>
-          <input 
-            type="text" 
-            id="Phone" 
-            class="form-control"
-            placeholder="Enter Phone"
-            formControlName="Phone">
-          <div *ngIf="userForm.get('Phone')?.invalid && userForm.get('Phone')?.touched" class="error-message">
-            Phone is required
-          </div>
-        </div>
-
-        <!-- Gender Field -->
-        <div class="col-md-6 mb-3">
-          <label for="Gender" class="form-label">Gender <span class="required">*</span></label>
-          <select
-            id="Gender" 
-            class="form-select custom-select"
-            formControlName="Gender">
-            <option value="" disabled selected>Select Gender</option>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-            <option value="Other">Other</option>
-          </select>
-          <div *ngIf="userForm.get('Gender')?.invalid && userForm.get('Gender')?.touched" class="error-message">
-            Gender is required
-          </div>
-        </div>
-
-        <!-- Job Information -->
-        <div class="col-12 mt-4 mb-3">
-          <h3>Job Information</h3>
-        </div>
-
-        <!-- LOB Field -->
-        <div class="col-md-6 mb-3">
-          <label for="LobId" class="form-label">LOB <span class="required">*</span></label>
-          <select 
-            id="LobId" 
-            class="form-select custom-select"
-            formControlName="LobId"
-            placeholder="Select LOB">
-            <option value="" disabled selected>Select LOB</option>
-            <option *ngFor="let lob of lobList" [value]="lob.lobId">{{lob.lobName || 'Unnamed LOB'}}</option>
-          </select>
-          <div *ngIf="lobList.length === 0" class="dropdown-info">Loading LOBs...</div>
-          <div *ngIf="userForm.get('LobId')?.invalid && userForm.get('LobId')?.touched" class="error-message">
-            LOB is required
-          </div>
-        </div>
-
-        <!-- Sub Lob Field -->
-        <div class="col-md-6 mb-3">
-          <label for="SubLob" class="form-label">Sub LOB <span class="required">*</span></label>
-          <input 
-            type="text" 
-            id="SubLob" 
-            class="form-control"
-            placeholder="Enter Sub LOB"
-            formControlName="SubLob">
-          <div *ngIf="userForm.get('SubLob')?.invalid && userForm.get('SubLob')?.touched" class="error-message">
-            Sub LOB is required
-          </div>
-        </div>
-
-        <!-- Designation Field -->
-        <div class="col-md-6 mb-3">
-          <label for="Designation" class="form-label">Designation <span class="required">*</span></label>
-          <input 
-            type="text" 
-            id="Designation" 
-            class="form-control"
-            placeholder="Enter Designation"
-            formControlName="Designation">
-          <div *ngIf="userForm.get('Designation')?.invalid && userForm.get('Designation')?.touched" class="error-message">
-            Designation is required
-          </div>
-        </div>
-
-        <!-- Level Field -->
-        <div class="col-md-6 mb-3">
-          <label for="Level" class="form-label">Level <span class="required">*</span></label>
-          <input 
-            type="text" 
-            id="Level" 
-            class="form-control"
-            placeholder="Enter Level"
-            formControlName="Level">
-          <div *ngIf="userForm.get('Level')?.invalid && userForm.get('Level')?.touched" class="error-message">
-            Level is required
-          </div>
-        </div>
-
-        <!-- Date of Joining Field -->
-        <div class="col-md-6 mb-3">
-          <label for="Doj" class="form-label">Date of Joining <span class="required">*</span></label>
-          <input 
-            type="date" 
-            id="Doj" 
-            class="form-control"
-            placeholder="mm/dd/yyyy"
-            formControlName="Doj">
-          <div *ngIf="userForm.get('Doj')?.invalid && userForm.get('Doj')?.touched" class="error-message">
-            Date of joining is required
-          </div>
-        </div>
-
-        <!-- Location Field -->
-        <div class="col-md-6 mb-3">
-          <label for="Location" class="form-label">Location <span class="required">*</span></label>
-          <input 
-            type="text" 
-            id="Location" 
-            class="form-control"
-            placeholder="Enter Location"
-            formControlName="Location">
-          <div *ngIf="userForm.get('Location')?.invalid && userForm.get('Location')?.touched" class="error-message">
-            Location is required
-          </div>
-        </div>
-
-        <!-- Education Information -->
-        <div class="col-12 mt-4 mb-3">
-          <h3>Education Information</h3>
-        </div>
-
-        <!-- College Name Field -->
-        <div class="col-md-6 mb-3">
-          <label for="CollegeName" class="form-label">College Name <span class="required">*</span></label>
-          <input 
-            type="text" 
-            id="CollegeName" 
-            class="form-control"
-            placeholder="Enter College Name"
-            formControlName="CollegeName">
-          <div *ngIf="userForm.get('CollegeName')?.invalid && userForm.get('CollegeName')?.touched" class="error-message">
-            College name is required
-          </div>
-        </div>
-
-        <!-- College Location Field -->
-        <div class="col-md-6 mb-3">
-          <label for="CollegeLocation" class="form-label">College Location <span class="required">*</span></label>
-          <input 
-            type="text" 
-            id="CollegeLocation" 
-            class="form-control"
-            placeholder="Enter College Location"
-            formControlName="CollegeLocation">
-          <div *ngIf="userForm.get('CollegeLocation')?.invalid && userForm.get('CollegeLocation')?.touched" class="error-message">
-            College location is required
-          </div>
-        </div>
-
-        <!-- College Tier Field -->
-        <div class="col-md-6 mb-3">
-          <label for="CollegeTier" class="form-label">College Tier <span class="required">*</span></label>
-          <input 
-            type="text" 
-            id="CollegeTier" 
-            class="form-control"
-            placeholder="Enter College Tier"
-            formControlName="CollegeTier">
-          <div *ngIf="userForm.get('CollegeTier')?.invalid && userForm.get('CollegeTier')?.touched" class="error-message">
-            College tier is required
-          </div>
-        </div>
-
-        <!-- Qualification Field -->
-        <div class="col-md-6 mb-3">
-          <label for="Qualification" class="form-label">Qualification <span class="required">*</span></label>
-          <input 
-            type="text" 
-            id="Qualification" 
-            class="form-control"
-            placeholder="Enter Qualification"
-            formControlName="Qualification">
-          <div *ngIf="userForm.get('Qualification')?.invalid && userForm.get('Qualification')?.touched" class="error-message">
-            Qualification is required
-          </div>
-        </div>
-
-        <!-- Specialization Field -->
-        <div class="col-md-6 mb-3">
-          <label for="Specialization" class="form-label">Specialization <span class="required">*</span></label>
-          <input 
-            type="text" 
-            id="Specialization" 
-            class="form-control"
-            placeholder="Enter Specialization"
-            formControlName="Specialization">
-          <div *ngIf="userForm.get('Specialization')?.invalid && userForm.get('Specialization')?.touched" class="error-message">
-            Specialization is required
-          </div>
-        </div>
-
-        <!-- Onboarding Information -->
-        <div class="col-12 mt-4 mb-3">
-          <h3>Onboarding Information</h3>
-        </div>
-
-        <!-- Offer Release SPOC Field -->
-        <div class="col-md-6 mb-3">
-          <label for="OfferReleaseSpoc" class="form-label">Offer Release SPOC <span class="required">*</span></label>
-          <input 
-            type="text" 
-            id="OfferReleaseSpoc" 
-            class="form-control"
-            placeholder="Enter Offer Release SPOC"
-            formControlName="OfferReleaseSpoc">
-          <div *ngIf="userForm.get('OfferReleaseSpoc')?.invalid && userForm.get('OfferReleaseSpoc')?.touched" class="error-message">
-            Offer Release SPOC is required
-          </div>
-        </div>
-
-        <!-- TRF Field -->
-        <div class="col-md-6 mb-3">
-          <label for="Trf" class="form-label">TRF <span class="required">*</span></label>
-          <input 
-            type="text" 
-            id="Trf" 
-            class="form-control"
-            placeholder="Enter TRF"
-            formControlName="Trf">
-          <div *ngIf="userForm.get('Trf')?.invalid && userForm.get('Trf')?.touched" class="error-message">
-            TRF is required
-          </div>
-        </div>
-
-        <!-- Expectance Date Field -->
-        <div class="col-md-6 mb-3">
-          <label for="ExpectanceDate" class="form-label">Expectance Date <span class="required">*</span></label>
-          <input 
-            type="date" 
-            id="ExpectanceDate" 
-            class="form-control"
-            placeholder="mm/dd/yyyy"
-            formControlName="ExpectanceDate">
-          <div *ngIf="userForm.get('ExpectanceDate')?.invalid && userForm.get('ExpectanceDate')?.touched" class="error-message">
-            Expectance date is required
-          </div>
-        </div>
-
-        <!-- Joiner Status Field -->
-        <div class="col-md-6 mb-3">
-          <label for="JoinerStatus" class="form-label">Joiner Status <span class="required">*</span></label>
-          <select
-            id="JoinerStatus" 
-            class="form-select custom-select"
-            formControlName="JoinerStatus">
-            <option value="" disabled selected>Select Joiner Status</option>
-            <option value="Active">Active</option>
-            <option value="Pending">Pending</option>
-            <option value="Declined">Declined</option>
-          </select>
-          <div *ngIf="userForm.get('JoinerStatus')?.invalid && userForm.get('JoinerStatus')?.touched" class="error-message">
-            Joiner status is required
-          </div>
-        </div>
-
-        <!-- Uploader Field -->
-        <div class="col-md-6 mb-3">
-          <label for="Uploader" class="form-label">Uploader <span class="required">*</span></label>
-          <input 
-            type="text" 
-            id="Uploader" 
-            class="form-control"
-            placeholder="Enter Uploader"
-            formControlName="Uploader">
-          <div *ngIf="userForm.get('Uploader')?.invalid && userForm.get('Uploader')?.touched" class="error-message">
-            Uploader is required
-          </div>
-        </div>
-      </div>
-
-      <!-- Submit and Reset Buttons -->
-      <div class="row mt-4">
-        <div class="col-12 d-flex justify-content-center button-group">
-          <button type="submit" class="btn btn-primary me-3">Submit</button>
-          <button type="button" class="btn btn-secondary" (click)="resetForm()">Cancel</button>
-        </div>
-      </div>
-    </form>
-  </div>
-</div>
-
--------------------------------------------------
-
-user componet csss
+//     // Placeholder alert until the actual service is implemented
+//     alert('User created successfully!');
+//     this.resetForm();
+//   }
+// }
 
 
-.user-container {
-  padding: 20px 0;
-}
+// --------------------------------------------
 
-.page-title {
-  font-size: 24px;
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 20px;
-}
+// user component html 
+// <div class="user-container">
+//   <div class="container-fluid">
+//     <div class="row">
+//       <div class="col-12 mb-4">
+//         <h2 class="page-title">Create New User</h2>
+//       </div>
+//     </div>
+//     <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="user-form">
+//       <div class="row">
+//         <!-- Personal Information -->
+//         <div class="col-12 mb-3">
+//           <h3>Personal Information</h3>
+//         </div>
 
-.user-form {
-  width: 100%;
-}
+//         <!-- Name Field -->
+//         <div class="col-md-6 mb-3">
+//           <label for="Name" class="form-label">Name <span class="required">*</span></label>
+//           <input 
+//             type="text" 
+//             id="Name" 
+//             class="form-control"
+//             placeholder="Enter Name"
+//             formControlName="Name">
+//           <div *ngIf="userForm.get('Name')?.invalid && userForm.get('Name')?.touched" class="error-message">
+//             Name is required
+//           </div>
+//         </div>
 
-h3 {
-  font-size: 18px;
-  font-weight: 500;
-  color: #333;
-  margin-bottom: 15px;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 8px;
-}
+//         <!-- Email Field -->
+//         <div class="col-md-6 mb-3">
+//           <label for="Email" class="form-label">Email <span class="required">*</span></label>
+//           <input 
+//             type="email" 
+//             id="Email" 
+//             class="form-control"
+//             placeholder="Enter Email"
+//             formControlName="Email">
+//           <div *ngIf="userForm.get('Email')?.invalid && userForm.get('Email')?.touched" class="error-message">
+//             Valid email is required
+//           </div>
+//         </div>
 
-.form-label {
-  font-size: 14px;
-  font-weight: 500;
-  color: #333;
-  margin-bottom: 5px;
-  display: block;
-}
+//         <!-- Password Field -->
+//         <div class="col-md-6 mb-3">
+//           <label for="Password" class="form-label">Password <span class="required">*</span></label>
+//           <input 
+//             type="password" 
+//             id="Password" 
+//             class="form-control"
+//             placeholder="Enter Password"
+//             formControlName="Password">
+//           <div *ngIf="userForm.get('Password')?.invalid && userForm.get('Password')?.touched" class="error-message">
+//             Password is required
+//           </div>
+//         </div>
 
-.required {
-  color: #e53935;
-}
+//         <!-- Phone Field -->
+//         <div class="col-md-6 mb-3">
+//           <label for="Phone" class="form-label">Phone <span class="required">*</span></label>
+//           <input 
+//             type="text" 
+//             id="Phone" 
+//             class="form-control"
+//             placeholder="Enter Phone"
+//             formControlName="Phone">
+//           <div *ngIf="userForm.get('Phone')?.invalid && userForm.get('Phone')?.touched" class="error-message">
+//             Phone is required
+//           </div>
+//         </div>
 
-.form-control,
-.form-select {
-  width: 100%;
-  padding: 8px 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 14px;
-  transition: border-color 0.2s;
-}
+//         <!-- Gender Field -->
+//         <div class="col-md-6 mb-3">
+//           <label for="Gender" class="form-label">Gender <span class="required">*</span></label>
+//           <select
+//             id="Gender" 
+//             class="form-select custom-select"
+//             formControlName="Gender">
+//             <option value="" disabled selected>Select Gender</option>
+//             <option value="Male">Male</option>
+//             <option value="Female">Female</option>
+//             <option value="Other">Other</option>
+//           </select>
+//           <div *ngIf="userForm.get('Gender')?.invalid && userForm.get('Gender')?.touched" class="error-message">
+//             Gender is required
+//           </div>
+//         </div>
 
-.form-control:focus,
-.form-select:focus {
-  border-color: #007bff;
-  outline: none;
-  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-}
+//         <!-- Job Information -->
+//         <div class="col-12 mt-4 mb-3">
+//           <h3>Job Information</h3>
+//         </div>
 
-.form-control::placeholder {
-  color: #aaa;
-}
+//         <!-- LOB Field -->
+//         <div class="col-md-6 mb-3">
+//           <label for="LobId" class="form-label">LOB <span class="required">*</span></label>
+//           <select 
+//             id="LobId" 
+//             class="form-select custom-select"
+//             formControlName="LobId"
+//             placeholder="Select LOB">
+//             <option value="" disabled selected>Select LOB</option>
+//             <option *ngFor="let lob of lobList" [value]="lob.lobId">{{lob.lobName || 'Unnamed LOB'}}</option>
+//           </select>
+//           <div *ngIf="lobList.length === 0" class="dropdown-info">Loading LOBs...</div>
+//           <div *ngIf="userForm.get('LobId')?.invalid && userForm.get('LobId')?.touched" class="error-message">
+//             LOB is required
+//           </div>
+//         </div>
 
-.dropdown-info {
-  font-size: 12px;
-  color: #666;
-  margin-top: 5px;
-  font-style: italic;
-}
+//         <!-- Sub Lob Field -->
+//         <div class="col-md-6 mb-3">
+//           <label for="SubLob" class="form-label">Sub LOB <span class="required">*</span></label>
+//           <input 
+//             type="text" 
+//             id="SubLob" 
+//             class="form-control"
+//             placeholder="Enter Sub LOB"
+//             formControlName="SubLob">
+//           <div *ngIf="userForm.get('SubLob')?.invalid && userForm.get('SubLob')?.touched" class="error-message">
+//             Sub LOB is required
+//           </div>
+//         </div>
 
-.error-message {
-  color: #e53935;
-  font-size: 12px;
-  margin-top: 5px;
-}
+//         <!-- Designation Field -->
+//         <div class="col-md-6 mb-3">
+//           <label for="Designation" class="form-label">Designation <span class="required">*</span></label>
+//           <input 
+//             type="text" 
+//             id="Designation" 
+//             class="form-control"
+//             placeholder="Enter Designation"
+//             formControlName="Designation">
+//           <div *ngIf="userForm.get('Designation')?.invalid && userForm.get('Designation')?.touched" class="error-message">
+//             Designation is required
+//           </div>
+//         </div>
 
-.button-group {
-  margin-top: 30px;
-}
+//         <!-- Level Field -->
+//         <div class="col-md-6 mb-3">
+//           <label for="Level" class="form-label">Level <span class="required">*</span></label>
+//           <input 
+//             type="text" 
+//             id="Level" 
+//             class="form-control"
+//             placeholder="Enter Level"
+//             formControlName="Level">
+//           <div *ngIf="userForm.get('Level')?.invalid && userForm.get('Level')?.touched" class="error-message">
+//             Level is required
+//           </div>
+//         </div>
 
-.btn {
-  padding: 8px 20px;
-  font-size: 14px;
-  font-weight: 500;
-  border-radius: 4px;
-  transition: all 0.2s;
-}
+//         <!-- Date of Joining Field -->
+//         <div class="col-md-6 mb-3">
+//           <label for="Doj" class="form-label">Date of Joining <span class="required">*</span></label>
+//           <input 
+//             type="date" 
+//             id="Doj" 
+//             class="form-control"
+//             placeholder="mm/dd/yyyy"
+//             formControlName="Doj">
+//           <div *ngIf="userForm.get('Doj')?.invalid && userForm.get('Doj')?.touched" class="error-message">
+//             Date of joining is required
+//           </div>
+//         </div>
 
-.btn-primary {
-  background-color: #007bff;
-  border-color: #007bff;
-  color: #fff;
-}
+//         <!-- Location Field -->
+//         <div class="col-md-6 mb-3">
+//           <label for="Location" class="form-label">Location <span class="required">*</span></label>
+//           <input 
+//             type="text" 
+//             id="Location" 
+//             class="form-control"
+//             placeholder="Enter Location"
+//             formControlName="Location">
+//           <div *ngIf="userForm.get('Location')?.invalid && userForm.get('Location')?.touched" class="error-message">
+//             Location is required
+//           </div>
+//         </div>
 
-.btn-primary:hover {
-  background-color: #0069d9;
-  border-color: #0062cc;
-}
+//         <!-- Education Information -->
+//         <div class="col-12 mt-4 mb-3">
+//           <h3>Education Information</h3>
+//         </div>
 
-.btn-secondary {
-  background-color: #6c757d;
-  border-color: #6c757d;
-  color: #fff;
-}
+//         <!-- College Name Field -->
+//         <div class="col-md-6 mb-3">
+//           <label for="CollegeName" class="form-label">College Name <span class="required">*</span></label>
+//           <input 
+//             type="text" 
+//             id="CollegeName" 
+//             class="form-control"
+//             placeholder="Enter College Name"
+//             formControlName="CollegeName">
+//           <div *ngIf="userForm.get('CollegeName')?.invalid && userForm.get('CollegeName')?.touched" class="error-message">
+//             College name is required
+//           </div>
+//         </div>
 
-.btn-secondary:hover {
-  background-color: #5a6268;
-  border-color: #545b62;
-}
+//         <!-- College Location Field -->
+//         <div class="col-md-6 mb-3">
+//           <label for="CollegeLocation" class="form-label">College Location <span class="required">*</span></label>
+//           <input 
+//             type="text" 
+//             id="CollegeLocation" 
+//             class="form-control"
+//             placeholder="Enter College Location"
+//             formControlName="CollegeLocation">
+//           <div *ngIf="userForm.get('CollegeLocation')?.invalid && userForm.get('CollegeLocation')?.touched" class="error-message">
+//             College location is required
+//           </div>
+//         </div>
 
-/* Custom styling for select dropdowns */
-.custom-select {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23666%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
-  background-repeat: no-repeat;
-  background-position: right 12px center;
-  background-size: 10px;
-  padding-right: 25px;
-}
+//         <!-- College Tier Field -->
+//         <div class="col-md-6 mb-3">
+//           <label for="CollegeTier" class="form-label">College Tier <span class="required">*</span></label>
+//           <input 
+//             type="text" 
+//             id="CollegeTier" 
+//             class="form-control"
+//             placeholder="Enter College Tier"
+//             formControlName="CollegeTier">
+//           <div *ngIf="userForm.get('CollegeTier')?.invalid && userForm.get('CollegeTier')?.touched" class="error-message">
+//             College tier is required
+//           </div>
+//         </div>
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .button-group {
-    flex-direction: column;
-    align-items: center;
-  }
+//         <!-- Qualification Field -->
+//         <div class="col-md-6 mb-3">
+//           <label for="Qualification" class="form-label">Qualification <span class="required">*</span></label>
+//           <input 
+//             type="text" 
+//             id="Qualification" 
+//             class="form-control"
+//             placeholder="Enter Qualification"
+//             formControlName="Qualification">
+//           <div *ngIf="userForm.get('Qualification')?.invalid && userForm.get('Qualification')?.touched" class="error-message">
+//             Qualification is required
+//           </div>
+//         </div>
+
+//         <!-- Specialization Field -->
+//         <div class="col-md-6 mb-3">
+//           <label for="Specialization" class="form-label">Specialization <span class="required">*</span></label>
+//           <input 
+//             type="text" 
+//             id="Specialization" 
+//             class="form-control"
+//             placeholder="Enter Specialization"
+//             formControlName="Specialization">
+//           <div *ngIf="userForm.get('Specialization')?.invalid && userForm.get('Specialization')?.touched" class="error-message">
+//             Specialization is required
+//           </div>
+//         </div>
+
+//         <!-- Onboarding Information -->
+//         <div class="col-12 mt-4 mb-3">
+//           <h3>Onboarding Information</h3>
+//         </div>
+
+//         <!-- Offer Release SPOC Field -->
+//         <div class="col-md-6 mb-3">
+//           <label for="OfferReleaseSpoc" class="form-label">Offer Release SPOC <span class="required">*</span></label>
+//           <input 
+//             type="text" 
+//             id="OfferReleaseSpoc" 
+//             class="form-control"
+//             placeholder="Enter Offer Release SPOC"
+//             formControlName="OfferReleaseSpoc">
+//           <div *ngIf="userForm.get('OfferReleaseSpoc')?.invalid && userForm.get('OfferReleaseSpoc')?.touched" class="error-message">
+//             Offer Release SPOC is required
+//           </div>
+//         </div>
+
+//         <!-- TRF Field -->
+//         <div class="col-md-6 mb-3">
+//           <label for="Trf" class="form-label">TRF <span class="required">*</span></label>
+//           <input 
+//             type="text" 
+//             id="Trf" 
+//             class="form-control"
+//             placeholder="Enter TRF"
+//             formControlName="Trf">
+//           <div *ngIf="userForm.get('Trf')?.invalid && userForm.get('Trf')?.touched" class="error-message">
+//             TRF is required
+//           </div>
+//         </div>
+
+//         <!-- Expectance Date Field -->
+//         <div class="col-md-6 mb-3">
+//           <label for="ExpectanceDate" class="form-label">Expectance Date <span class="required">*</span></label>
+//           <input 
+//             type="date" 
+//             id="ExpectanceDate" 
+//             class="form-control"
+//             placeholder="mm/dd/yyyy"
+//             formControlName="ExpectanceDate">
+//           <div *ngIf="userForm.get('ExpectanceDate')?.invalid && userForm.get('ExpectanceDate')?.touched" class="error-message">
+//             Expectance date is required
+//           </div>
+//         </div>
+
+//         <!-- Joiner Status Field -->
+//         <div class="col-md-6 mb-3">
+//           <label for="JoinerStatus" class="form-label">Joiner Status <span class="required">*</span></label>
+//           <select
+//             id="JoinerStatus" 
+//             class="form-select custom-select"
+//             formControlName="JoinerStatus">
+//             <option value="" disabled selected>Select Joiner Status</option>
+//             <option value="Active">Active</option>
+//             <option value="Pending">Pending</option>
+//             <option value="Declined">Declined</option>
+//           </select>
+//           <div *ngIf="userForm.get('JoinerStatus')?.invalid && userForm.get('JoinerStatus')?.touched" class="error-message">
+//             Joiner status is required
+//           </div>
+//         </div>
+
+//         <!-- Uploader Field -->
+//         <div class="col-md-6 mb-3">
+//           <label for="Uploader" class="form-label">Uploader <span class="required">*</span></label>
+//           <input 
+//             type="text" 
+//             id="Uploader" 
+//             class="form-control"
+//             placeholder="Enter Uploader"
+//             formControlName="Uploader">
+//           <div *ngIf="userForm.get('Uploader')?.invalid && userForm.get('Uploader')?.touched" class="error-message">
+//             Uploader is required
+//           </div>
+//         </div>
+//       </div>
+
+//       <!-- Submit and Reset Buttons -->
+//       <div class="row mt-4">
+//         <div class="col-12 d-flex justify-content-center button-group">
+//           <button type="submit" class="btn btn-primary me-3">Submit</button>
+//           <button type="button" class="btn btn-secondary" (click)="resetForm()">Cancel</button>
+//         </div>
+//       </div>
+//     </form>
+//   </div>
+// </div>
+
+// -------------------------------------------------
+
+// user componet csss
+
+
+// .user-container {
+//   padding: 20px 0;
+// }
+
+// .page-title {
+//   font-size: 24px;
+//   font-weight: 600;
+//   color: #333;
+//   margin-bottom: 20px;
+// }
+
+// .user-form {
+//   width: 100%;
+// }
+
+// h3 {
+//   font-size: 18px;
+//   font-weight: 500;
+//   color: #333;
+//   margin-bottom: 15px;
+//   border-bottom: 1px solid #eee;
+//   padding-bottom: 8px;
+// }
+
+// .form-label {
+//   font-size: 14px;
+//   font-weight: 500;
+//   color: #333;
+//   margin-bottom: 5px;
+//   display: block;
+// }
+
+// .required {
+//   color: #e53935;
+// }
+
+// .form-control,
+// .form-select {
+//   width: 100%;
+//   padding: 8px 12px;
+//   border: 1px solid #ddd;
+//   border-radius: 4px;
+//   font-size: 14px;
+//   transition: border-color 0.2s;
+// }
+
+// .form-control:focus,
+// .form-select:focus {
+//   border-color: #007bff;
+//   outline: none;
+//   box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+// }
+
+// .form-control::placeholder {
+//   color: #aaa;
+// }
+
+// .dropdown-info {
+//   font-size: 12px;
+//   color: #666;
+//   margin-top: 5px;
+//   font-style: italic;
+// }
+
+// .error-message {
+//   color: #e53935;
+//   font-size: 12px;
+//   margin-top: 5px;
+// }
+
+// .button-group {
+//   margin-top: 30px;
+// }
+
+// .btn {
+//   padding: 8px 20px;
+//   font-size: 14px;
+//   font-weight: 500;
+//   border-radius: 4px;
+//   transition: all 0.2s;
+// }
+
+// .btn-primary {
+//   background-color: #007bff;
+//   border-color: #007bff;
+//   color: #fff;
+// }
+
+// .btn-primary:hover {
+//   background-color: #0069d9;
+//   border-color: #0062cc;
+// }
+
+// .btn-secondary {
+//   background-color: #6c757d;
+//   border-color: #6c757d;
+//   color: #fff;
+// }
+
+// .btn-secondary:hover {
+//   background-color: #5a6268;
+//   border-color: #545b62;
+// }
+
+// /* Custom styling for select dropdowns */
+// .custom-select {
+//   -webkit-appearance: none;
+//   -moz-appearance: none;
+//   appearance: none;
+//   background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23666%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+//   background-repeat: no-repeat;
+//   background-position: right 12px center;
+//   background-size: 10px;
+//   padding-right: 25px;
+// }
+
+// /* Responsive adjustments */
+// @media (max-width: 768px) {
+//   .button-group {
+//     flex-direction: column;
+//     align-items: center;
+//   }
   
-  .btn-primary {
-    margin-bottom: 10px;
-    margin-right: 0 !important;
-    width: 100%;
-    max-width: 200px;
-  }
+//   .btn-primary {
+//     margin-bottom: 10px;
+//     margin-right: 0 !important;
+//     width: 100%;
+//     max-width: 200px;
+//   }
   
-  .btn-secondary {
-    width: 100%;
-    max-width: 200px;
-  }
-}
+//   .btn-secondary {
+//     width: 100%;
+//     max-width: 200px;
+//   }
+// }
