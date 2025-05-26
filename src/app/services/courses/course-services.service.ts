@@ -7,7 +7,7 @@ import { Injectable } from '@angular/core';
 export class CourseServicesService {
 
   constructor(private client:HttpClient) { }
-    private apiBaseUrl = 'https://localhost:7264';
+    private apiBaseUrl = 'http://localhost:5053';
 
     addCourse(courseData: FormData) {
       const url = `${this.apiBaseUrl}/api/Course`;
@@ -17,18 +17,35 @@ export class CourseServicesService {
       const url = `${this.apiBaseUrl}/api/Course`;
       return this.client.get(url);
     }
-    getCategoryById(categoryId: string) {
-      const url = `${this.apiBaseUrl}/api/Categories/${categoryId}`;
-      return this.client.get(url);
+    getCourseById(courseId: string) {
+      const url = `${this.apiBaseUrl}/api/Course/${courseId}`;
+      return this.client.get<any>(url);
     }
-    updateCategory(categoryId: string, categoryData: any) {
-      const url = `${this.apiBaseUrl}/api/Categories/${categoryId}`;
-      return this.client.put(url, categoryData);
+    
+    updateCourse(courseId: string, courseData: FormData) {
+      const url = `${this.apiBaseUrl}/api/Course/${courseId}`;
+      return this.client.put(url, courseData);
     }
-
+    
     addModule(data:FormData){
       const url = `${this.apiBaseUrl}/api/Module`;
       return this.client.post(url, data); 
     }
+
+    getAllModules() {
+      const url = `${this.apiBaseUrl}/api/Module`;
+      return this.client.get<any[]>(url);
+    }
+  
+    getModuleById(moduleId: string) {
+      const url = `${this.apiBaseUrl}/api/Module/${moduleId}`;
+      return this.client.get<any>(url);
+    }
+  
+    updateModule(moduleId: string, moduleData: FormData) {
+      const url = `${this.apiBaseUrl}/api/Module/${moduleId}`;
+      return this.client.put(url, moduleData);
+    }
+  
 
 }
