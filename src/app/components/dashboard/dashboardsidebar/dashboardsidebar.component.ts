@@ -26,4 +26,5 @@ export class DashboardsidebarComponent {
   toggleTA()       { this.taOpen       = !this.taOpen; }
   toggleAdmin()    { this.adminOpen    = !this.adminOpen; }
   toggleCourse()   { this.courseOpen   = !this.courseOpen; }
+  toggleUser()   { this.usersOpen   = !this.usersOpen; }
 }

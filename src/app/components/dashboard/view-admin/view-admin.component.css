@@ -42,6 +42,11 @@
   outline: none;
 }
 
+/* Loading spinner */
+.spinner-border {
+  color: #4285f4;
+}
+
 /* Table styling */
 .admin-table {
   width: 100%;
@@ -132,15 +137,6 @@
   background-color: #e1ebfc;
 }
 
-.actions-cell .btn-change-password {
-  background-color: #e8f0fe;
-  color: #4285f4;
-}
-
-.actions-cell .btn-change-password:hover {
-  background-color: #d9e7fd;
-}
-
 /* Pagination styling */
 .pagination {
   margin-bottom: 0;
@@ -181,14 +177,14 @@
   .search-container {
     margin-bottom: 15px;
   }
-
+  
   .actions-cell .btn {
     display: block;
     width: 100%;
     margin-right: 0;
     margin-bottom: 5px;
   }
-
+  
   .actions-cell .btn:last-child {
     margin-bottom: 0;
   }
@@ -198,7 +194,7 @@
   .search-container {
     justify-content: flex-start;
   }
-
+  
   .admin-table {
     min-width: 800px;
   }

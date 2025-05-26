@@ -97,7 +97,7 @@
         </li>
       </ul>
     </li>
-
+<!-- 
     <ul class="nav flex-column mt-3">
       <li class="nav-item">
         <a routerLink="user" routerLinkActive="active" class="nav-link">
@@ -105,7 +105,32 @@
           <span>User</span>
         </a>
       </li>
-    </ul>
+    </ul> -->
+    
+      <li class="nav-item">
+        <a 
+        class="nav-link" 
+         [class.selected]="usersOpen"
+        (click)="toggleUser()">
+          <i class="bi bi-grid"></i>
+          <span>User</span>
+           <i
+            class="bi ms-auto"
+            [ngClass]="{
+              'bi-chevron-down': usersOpen,
+              'bi-chevron-right': !usersOpen
+            }"
+          ></i>
+        </a>
+        <ul class="nav flex-column child-nav" [class.show]="usersOpen">
+          <li class="nav-item">
+            <a routerLink="user/add" class="nav-link ps-4">Add User</a>
+          </li>
+          <li class="nav-item">
+            <a routerLink="user/view" class="nav-link ps-4">View User</a>
+          </li>
+        </ul>
+      </li>
 
       <li class="nav-item">
         <a class="nav-link" 
