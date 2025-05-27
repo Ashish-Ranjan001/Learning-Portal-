@@ -1,132 +1,132 @@
 <div class="auth-container">
-  <!-- Animated Background -->
-  <div class="animated-background">
-    <div class="floating-shapes">
-      <div class="shape shape-1"></div>
-      <div class="shape shape-2"></div>
-      <div class="shape shape-3"></div>
-      <div class="shape shape-4"></div>
-      <div class="shape shape-5"></div>
-      <div class="shape shape-6"></div>
+    <!-- Animated Background -->
+    <div class="animated-background">
+      <div class="floating-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+        <div class="shape shape-4"></div>
+        <div class="shape shape-5"></div>
+        <div class="shape shape-6"></div>
+      </div>
     </div>
-  </div>
-
-  <!-- Main Content -->
-  <div class="container-fluid h-100">
-    <div class="row h-100 justify-content-center align-items-center">
-      <div class="col-12">
-        <!-- Header Section -->
-        <div class="text-center mb-5">
-          <h1 class="main-title">
-            <span class="gradient-text">Welcome Back</span>
-          </h1>
-          <p class="subtitle">Choose your access level to continue</p>
-        </div>
-
-        <!-- Cards Container -->
-        <div class="row justify-content-center g-4">
-          <!-- User Card -->
-          <div class="col-lg-5 col-md-6 col-sm-8">
-            <div 
-              class="auth-card user-card"
-              [class.hovered]="userCardHovered"
-              (mouseenter)="onUserCardHover(true)"
-              (mouseleave)="onUserCardHover(false)"
-              (click)="signInAsUser()">
-              
-              <div class="card-glow user-glow"></div>
-              
-              <div class="card-content">
-                <div class="icon-container user-icon">
-                  <svg width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 12C14.7614 12 17 9.76142 17 7C17 4.23858 14.7614 2 12 2C9.23858 2 7 4.23858 7 7C7 9.76142 9.23858 12 12 12Z" fill="currentColor"/>
-                    <path d="M12 14C7.58172 14 4 17.5817 4 22H20C20 17.5817 16.4183 14 12 14Z" fill="currentColor"/>
-                  </svg>
+  
+    <!-- Main Content -->
+    <div class="container-fluid h-100">
+      <div class="row h-100 justify-content-center align-items-center">
+        <div class="col-12">
+          <!-- Header Section -->
+          <div class="text-center mb-5">
+            <h1 class="main-title">
+              <span class="gradient-text">Welcome Back</span>
+            </h1>
+            <p class="subtitle">Choose your access level to continue</p>
+          </div>
+  
+          <!-- Cards Container -->
+          <div class="row justify-content-center g-4">
+            <!-- User Card -->
+            <div class="col-lg-5 col-md-6 col-sm-8">
+              <div 
+                class="auth-card user-card"
+                [class.hovered]="userCardHovered"
+                (mouseenter)="onUserCardHover(true)"
+                (mouseleave)="onUserCardHover(false)"
+                (click)="signInAsUser()">
+                
+                <div class="card-glow user-glow"></div>
+                
+                <div class="card-content">
+                  <div class="icon-container user-icon">
+                    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 12C14.7614 12 17 9.76142 17 7C17 4.23858 14.7614 2 12 2C9.23858 2 7 4.23858 7 7C7 9.76142 9.23858 12 12 12Z" fill="currentColor"/>
+                      <path d="M12 14C7.58172 14 4 17.5817 4 22H20C20 17.5817 16.4183 14 12 14Z" fill="currentColor"/>
+                    </svg>
+                  </div>
+                  
+                  <h3 class="card-title">Sign in as User</h3>
+                  <p class="card-description">
+                    Access your personal dashboard with standard user privileges and features
+                  </p>
+                  
+                  <div class="features-list">
+                    <div class="feature-item">
+                      <span class="feature-icon">✓</span>
+                      <span>Personal Dashboard</span>
+                    </div>
+                    <div class="feature-item">
+                      <span class="feature-icon">✓</span>
+                      <span>Profile Management</span>
+                    </div>
+                    <div class="feature-item">
+                      <span class="feature-icon">✓</span>
+                      <span>Standard Features</span>
+                    </div>
+                  </div>
+                  
+                  <button class="btn auth-btn user-btn">
+                    <span class="btn-text">Continue as User</span>
+                    <span class="btn-arrow">→</span>
+                  </button>
                 </div>
+              </div>
+            </div>
+  
+            <!-- Admin Card -->
+            <div class="col-lg-5 col-md-6 col-sm-8">
+              <div 
+                class="auth-card admin-card"
+                [class.hovered]="adminCardHovered"
+                (mouseenter)="onAdminCardHover(true)"
+                (mouseleave)="onAdminCardHover(false)"
+                (click)="signInAsAdmin()">
                 
-                <h3 class="card-title">Sign in as User</h3>
-                <p class="card-description">
-                  Access your personal dashboard with standard user privileges and features
-                </p>
+                <div class="card-glow admin-glow"></div>
                 
-                <div class="features-list">
-                  <div class="feature-item">
-                    <span class="feature-icon">✓</span>
-                    <span>Personal Dashboard</span>
+                <div class="card-content">
+                  <div class="icon-container admin-icon">
+                    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 1L3 5V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V5L12 1Z" fill="currentColor"/>
+                      <path d="M10 17L6 13L7.41 11.59L10 14.17L16.59 7.58L18 9L10 17Z" fill="white"/>
+                    </svg>
                   </div>
-                  <div class="feature-item">
-                    <span class="feature-icon">✓</span>
-                    <span>Profile Management</span>
+                  
+                  <h3 class="card-title">Sign in as Admin</h3>
+                  <p class="card-description">
+                    Access administrative controls with full system privileges and management tools
+                  </p>
+                  
+                  <div class="features-list">
+                    <div class="feature-item">
+                      <span class="feature-icon">✓</span>
+                      <span>Full System Access</span>
+                    </div>
+                    <div class="feature-item">
+                      <span class="feature-icon">✓</span>
+                      <span>User Management</span>
+                    </div>
+                    <div class="feature-item">
+                      <span class="feature-icon">✓</span>
+                      <span>Advanced Analytics</span>
+                    </div>
                   </div>
-                  <div class="feature-item">
-                    <span class="feature-icon">✓</span>
-                    <span>Standard Features</span>
-                  </div>
+                  
+                  <button class="btn auth-btn admin-btn">
+                    <span class="btn-text">Continue as Admin</span>
+                    <span class="btn-arrow">→</span>
+                  </button>
                 </div>
-                
-                <button class="btn auth-btn user-btn">
-                  <span class="btn-text">Continue as User</span>
-                  <span class="btn-arrow">→</span>
-                </button>
               </div>
             </div>
           </div>
-
-          <!-- Admin Card -->
-          <div class="col-lg-5 col-md-6 col-sm-8">
-            <div 
-              class="auth-card admin-card"
-              [class.hovered]="adminCardHovered"
-              (mouseenter)="onAdminCardHover(true)"
-              (mouseleave)="onAdminCardHover(false)"
-              (click)="signInAsAdmin()">
-              
-              <div class="card-glow admin-glow"></div>
-              
-              <div class="card-content">
-                <div class="icon-container admin-icon">
-                  <svg width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 1L3 5V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V5L12 1Z" fill="currentColor"/>
-                    <path d="M10 17L6 13L7.41 11.59L10 14.17L16.59 7.58L18 9L10 17Z" fill="white"/>
-                  </svg>
-                </div>
-                
-                <h3 class="card-title">Sign in as Admin</h3>
-                <p class="card-description">
-                  Access administrative controls with full system privileges and management tools
-                </p>
-                
-                <div class="features-list">
-                  <div class="feature-item">
-                    <span class="feature-icon">✓</span>
-                    <span>Full System Access</span>
-                  </div>
-                  <div class="feature-item">
-                    <span class="feature-icon">✓</span>
-                    <span>User Management</span>
-                  </div>
-                  <div class="feature-item">
-                    <span class="feature-icon">✓</span>
-                    <span>Advanced Analytics</span>
-                  </div>
-                </div>
-                
-                <button class="btn auth-btn admin-btn">
-                  <span class="btn-text">Continue as Admin</span>
-                  <span class="btn-arrow">→</span>
-                </button>
-              </div>
-            </div>
+  
+          <!-- Footer -->
+          <div class="text-center mt-5">
+            <p class="footer-text">
+              Need help? <a href="#" class="help-link">Contact Support</a>
+            </p>
           </div>
-        </div>
-
-        <!-- Footer -->
-        <div class="text-center mt-5">
-          <p class="footer-text">
-            Need help? <a href="#" class="help-link">Contact Support</a>
-          </p>
         </div>
       </div>
     </div>
   </div>
-</div>

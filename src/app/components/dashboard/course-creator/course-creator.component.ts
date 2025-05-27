@@ -904,7 +904,7 @@ export class CourseCreatorComponent {
   quizData: Quiz = {};
   
   moduleData: CourseModule = {
-    name: '',
+    modulename: '',
     duration: '',
     description: ''
   };
@@ -959,7 +959,7 @@ export class CourseCreatorComponent {
 
   validateModuleForm(): boolean {
     // Check if required module fields are filled
-    return !!(this.moduleData.name && this.moduleData.duration && this.moduleData.description);
+    return !!(this.moduleData.modulename && this.moduleData.duration && this.moduleData.description);
   }
 
   onCourseDataChange(data: { course: Course, thumbnailImage?: File }): void {
@@ -1058,7 +1058,7 @@ export class CourseCreatorComponent {
 
       // Create FormData for module submission
       const moduleFormData = new FormData();
-      moduleFormData.append('modulename', this.moduleData.name);
+      moduleFormData.append('modulename', this.moduleData.modulename);
       moduleFormData.append('description', this.moduleData.description);
       moduleFormData.append('duration', this.moduleData.duration.toString());
       moduleFormData.append('course_id', this.createdCourseId.toString());

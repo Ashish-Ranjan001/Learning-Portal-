@@ -1,15 +1,14 @@
-import { Component, inject } from "@angular/core"
-import { CommonModule } from "@angular/common"
-import { Router } from "@angular/router"
+import { CommonModule } from '@angular/common';
+import { Component, inject } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
-  selector: "app-auth-selection",
-  standalone: true,
+  selector: 'app-landingpage',
   imports: [CommonModule],
-  templateUrl: "./landingpage.component.html",
-  styleUrls: ["./landingpage.component.css"],
+  templateUrl: './landingpage.component.html',
+  styleUrl: './landingpage.component.css'
 })
-export class LandingPageComponent {
+export class LandingpageComponent {
   userCardHovered = false
   adminCardHovered = false
 

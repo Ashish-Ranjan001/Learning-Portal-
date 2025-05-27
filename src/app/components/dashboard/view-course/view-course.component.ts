@@ -326,8 +326,8 @@ export class ViewCourseComponent implements OnInit {
   addModule(course: Course): void {
     this.router.navigate(['dashboard/module/add', course.course_id]);
   }
-  editModule(course: Course): void {
-    this.router.navigate(['dashboard/module/edit', course.course_id]);
+  viewModule(course: Course): void {
+    this.router.navigate(['dashboard/module/view', course.course_id]);
   }
   
   getStatusText(status: boolean): string {
