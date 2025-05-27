@@ -111,11 +111,20 @@
           <input 
             type="text" 
             id="moduleName" 
-            [(ngModel)]="moduleData.name" 
+            [(ngModel)]="moduleData.modulename" 
             (ngModelChange)="onFormChange()"
+            (blur)="moduleData.modulename = (moduleData.modulename || '').trim()"
             placeholder="Enter Module Name"
             required
+            minlength="2"
+            class="form-control"
+            [class.is-invalid]="!(moduleData.modulename)"
+            #moduleNameInput="ngModel"
           >
+          <div *ngIf="moduleNameInput.invalid && moduleNameInput.touched" class="error-message">
+            <small *ngIf="moduleNameInput.errors?.['required']">Module name is required</small>
+            <small *ngIf="moduleNameInput.errors?.['minlength']">Module name must be at least 2 characters</small>
+          </div>
         </div>
         
         <div class="form-group">
@@ -127,9 +136,17 @@
             id="duration" 
             [(ngModel)]="moduleData.duration" 
             (ngModelChange)="onFormChange()"
-            placeholder="Enter Duration"
+            (blur)="moduleData.duration = (moduleData.duration || '').trim()"
+            placeholder="Enter Duration (e.g., 45 minutes, 2 hours)"
             required
+            minlength="1"
+            class="form-control"
+            [class.is-invalid]="!(moduleData.duration)"
+            #durationInput="ngModel"
           >
+          <div *ngIf="durationInput.invalid && durationInput.touched" class="error-message">
+            <small *ngIf="durationInput.errors?.['required']">Duration is required</small>
+          </div>
         </div>
       </div>
       
@@ -141,40 +158,65 @@
           id="description" 
           [(ngModel)]="moduleData.description" 
           (ngModelChange)="onFormChange()"
-          placeholder="Enter Description Name"
+          (blur)="moduleData.description = (moduleData.description || '').trim()"
+          placeholder="Enter module description (minimum 5 characters)"
           rows="4"
           required
+          minlength="5"
+          class="form-control"
+          [class.is-invalid]="!(moduleData.description) || ((moduleData.description))"
+          #descriptionInput="ngModel"
         ></textarea>
+        <div *ngIf="descriptionInput.invalid && descriptionInput.touched" class="error-message">
+          <small *ngIf="descriptionInput.errors?.['required']">Description is required</small>
+          <small *ngIf="descriptionInput.errors?.['minlength']">Description must be at least 5 characters</small>
+        </div>
       </div>
       
       <div class="form-row">
         <div class="form-group">
           <label for="videoFile">
-            Video
+            Video (Optional)
           </label>
           
           <div class="file-upload">
             <input 
               type="file" 
               id="videoFile" 
-              accept=".mp4" 
+              accept=".mp4,.mov,.avi,.webm" 
               (change)="onVideoFileChange($event)" 
               class="file-input"
             >
             <div class="file-upload-button">Choose File</div>
             <div class="file-name">{{ videoFileName }}</div>
+            <button 
+              *ngIf="videoFile" 
+              type="button" 
+              class="clear-file-btn" 
+              (click)="clearVideoFile()"
+              title="Clear video file"
+            >
+              ✕
+            </button>
           </div>
           
-          <div class="file-info">Upload only mp4.</div>
+          <div class="file-info">Upload video file (MP4, MOV, AVI, or WEBM). Max size: 100MB</div>
           
           <div *ngIf="videoError" class="error-message">
             {{ videoError }}
+          </div>
+          
+          <!-- Video Preview -->
+          <div *ngIf="videoPreview" class="video-preview mt-2">
+            <video [src]="videoPreview" controls width="200" height="150">
+              Your browser does not support the video tag.
+            </video>
           </div>
         </div>
         
         <div class="form-group">
           <label for="pdfFile">
-            Pdf
+            PDF (Optional)
           </label>
           
           <div class="file-upload">
@@ -187,14 +229,33 @@
             >
             <div class="file-upload-button">Choose File</div>
             <div class="file-name">{{ pdfFileName }}</div>
+            <button 
+              *ngIf="pdfFile" 
+              type="button" 
+              class="clear-file-btn" 
+              (click)="clearPdfFile()"
+              title="Clear PDF file"
+            >
+              ✕
+            </button>
           </div>
           
-          <div class="file-info">Upload only pdf.</div>
+          <div class="file-info">Upload PDF file only. Max size: 20MB</div>
           
           <div *ngIf="pdfError" class="error-message">
             {{ pdfError }}
           </div>
         </div>
+      </div>
+
+      <!-- Form Debug Info (Remove in production) -->
+      <div class="debug-info mt-3" style="background: #f8f9fa; padding: 10px; border-radius: 4px; font-size: 12px;">
+        <strong>Debug Info:</strong><br>
+        Module Name: "{{ moduleData.modulename || '' }}" (Length: {{ (moduleData.modulename || '').length }})<br>
+        Duration: "{{ moduleData.duration || '' }}" (Length: {{ (moduleData.duration || '').length }})<br>
+        Description: "{{ moduleData.description || '' }}" (Length: {{ (moduleData.description || '').length }})<br>
+        Course ID: "{{ courseId || '' }}"<br>
+        Trimmed Name: "{{ (moduleData.modulename || '').trim() }}" (Length: {{ (moduleData.modulename || '').trim().length }})
       </div>
 
       <!-- Submit Button Section -->
@@ -203,11 +264,20 @@
           type="button" 
           class="btn btn-primary btn-lg px-5" 
           (click)="onSubmit()"
-          [disabled]="isSubmitting || !moduleData.name || !moduleData.duration || !moduleData.description"
+          [disabled]="isSubmitting || !isFormValid()"
         >
           <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
           {{ isSubmitting ? 'Adding Module...' : 'Add Module' }}
         </button>
+        
+        <button 
+          type="button" 
+          class="btn btn-secondary btn-lg px-3 ms-2" 
+          (click)="resetForm()"
+          [disabled]="isSubmitting"
+        >
+          Reset Form
+        </button>
       </div>
     </div>
-  </div>
+</div>
