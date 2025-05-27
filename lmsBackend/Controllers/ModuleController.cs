@@ -144,5 +144,24 @@ namespace lmsBackend.Controllers
                 msg = "Module updated successfully"
             });
         }
+
+        [HttpGet("video/{moduleId}")]
+        public async Task<IActionResult> GetVideoModuleById(string moduleId)
+        {
+            var videoModule = await _repository.GetVideoModuleByIdAsync(moduleId);
+            if (videoModule == null)
+            {
+                return NotFound(new
+                {
+                    msg = "Module not found"
+                });
+            }
+
+            return Ok(new
+            {
+                data = videoModule,
+                msg = "Video module fetched successfully"
+            });
+        }
     }
 }

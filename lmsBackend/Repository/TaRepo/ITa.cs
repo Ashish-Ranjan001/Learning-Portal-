@@ -9,5 +9,7 @@ namespace lmsBackend.Repository.TaRepo
         Task<TaResponseDtos?> GetTaByIdAsync(string id);
         Task<TaResponseDtos?> CreateTaAsync(CreateTaDtos createTaDto);
 
+        Task<TaResponseDtos?> updateTaStatus(string id, UpdateTaStatusRequest request);
+
     }
 }
