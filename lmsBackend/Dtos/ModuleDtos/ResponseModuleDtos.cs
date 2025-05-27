@@ -6,9 +6,9 @@ namespace lmsBackend.Dtos.ModuleDtos
     {
         public string modulename { get; set; } = string.Empty;
         public string module_id { get; set; }
-
         public string description { get; set; } = string.Empty;
-
         public int duration { get; set; }
+        public string course_id { get; set; }
     }
+
 }

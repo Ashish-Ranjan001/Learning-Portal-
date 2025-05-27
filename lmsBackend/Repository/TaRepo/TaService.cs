@@ -107,9 +107,9 @@ namespace lmsBackend.Repository.TaRepo
             ta.AdminId = admin.AdminId;
 
             ta.Password = "evs@123";
-             string timestamp = DateTime.UtcNow.ToString("yyyyMMdd-HHmmss");
-            string name = createTaDto.Name.Split(' ')[0].ToUpper();
-            string randomString = Guid.NewGuid().ToString().Substring(0, 6).ToUpper();
+            // string timestamp = DateTime.UtcNow.ToString("yyyyMMdd-HHmmss");
+            //string name = createTaDto.Name.Split(' ')[0].ToUpper();
+            //string randomString = Guid.NewGuid().ToString().Substring(0, 6).ToUpper();
             ta.TaId = $"TA-{name}-{timestamp}-{randomString}";
             _context.Tas.Add(ta);
 
