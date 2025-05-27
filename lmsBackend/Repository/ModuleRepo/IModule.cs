@@ -16,5 +16,7 @@ namespace lmsBackend.Repository.ModuleRepo
         Task AddAsync(CreateModuleDtos moduleDto);
         Task UpdateAsync(string id, CreateModuleDtos moduleDto);
 
+        Task<VideoModuleResponseDto?> GetVideoModuleByIdAsync(string moduleId);
+
     }
 }

@@ -112,7 +112,7 @@ namespace lmsBackend.Repository.CourseRepo
             // ✅ Update basic properties manually (avoid AutoMapper for the entire object)
             existingCourse.course_name = courseDto.course_name;
             existingCourse.description = courseDto.description;
-            existingCourse.sme_id = courseDto.sme_id;
+            existingCourse.sme_id = courseDto.sme_id; 
             existingCourse.lob_id = courseDto.lob_id;
             existingCourse.category_id = courseDto.category_id;
             existingCourse.author = courseDto.author;

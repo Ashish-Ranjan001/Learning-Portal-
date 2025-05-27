@@ -107,7 +107,7 @@ namespace lmsBackend.Repository.TaRepo
             ta.AdminId = admin.AdminId;
 
             ta.Password = "evs@123";
-            
+
             _context.Tas.Add(ta);
 
             admin.TaId = ta.TaId;
@@ -129,5 +129,16 @@ namespace lmsBackend.Repository.TaRepo
             return ta == null ? null : _mapper.Map<TaResponseDtos>(ta);
         }
 
+        public async Task<TaResponseDtos?> updateTaStatus(string id, UpdateTaStatusRequest request)
+        {
+            var ta = await _context.Tas.Include(t => t.Admin).FirstOrDefaultAsync(t => t.TaId == id);
+            if (ta == null) return null;
+            // Set the status to the value sent from frontend
+            ta.Status = request.status;
+            _context.Entry(ta).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            return _mapper.Map<TaResponseDtos>(ta);
+
+        }
     }
 }
