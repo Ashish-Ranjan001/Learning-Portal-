@@ -33,27 +33,75 @@ namespace lmsBackend.Repository.AdminRepo
             }
             return _mapper.Map<AdminResponseDto>(admin);
         }
+        //public async Task<AdminResponseDto?> CreateAdminAsync(CreateAdminDto createAdminDto)
+        //{
+        //    var user = await _context.Users.FindAsync(createAdminDto.UserId);
+        //    if (user == null) return null;
+
+        //    var existingAdmin = await _context.Admins.FirstOrDefaultAsync(a => a.UserId == createAdminDto.UserId);
+        //    if (existingAdmin != null) return null;
+
+        //    user.RoleId = 2;
+        //    _context.Entry(user).State = EntityState.Modified;
+
+        //    var admin = _mapper.Map<Admin>(createAdminDto);
+        //    string timestamp = DateTime.UtcNow.ToString("yyyyMMdd-HHmmss");
+        //    string name=user.Name.Split(' ')[0].ToUpper();
+        //    string randomString = Guid.NewGuid().ToString().Substring(0, 6).ToUpper();
+        //    admin.AdminId = $"ADMIN-{name}-{timestamp}-{randomString}";
+        //    _context.Admins.Add(admin);
+        //    await _context.SaveChangesAsync();
+        //    admin = await _context.Admins.Include(a => a.User).FirstOrDefaultAsync(a => a.AdminId == admin.AdminId);
+        //    return admin == null ? null : _mapper.Map<AdminResponseDto>(admin);
+
+        //}
+
+
         public async Task<AdminResponseDto?> CreateAdminAsync(CreateAdminDto createAdminDto)
         {
-            var user = await _context.Users.FindAsync(createAdminDto.UserId);
-            if (user == null) return null;
+            // Find user by email and phone number
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.Email == createAdminDto.Email && u.Phone == createAdminDto.Phone);
 
-            var existingAdmin = await _context.Admins.FirstOrDefaultAsync(a => a.UserId == createAdminDto.UserId);
-            if (existingAdmin != null) return null;
+            if (user == null)
+            {
+                // User not found with matching email and phone
+                return null;
+            }
 
+            // Check if user is already an admin
+            var existingAdmin = await _context.Admins.FirstOrDefaultAsync(a => a.UserId == user.Id);
+            if (existingAdmin != null)
+            {
+                // User is already an admin
+                return null;
+            }
+
+            // Update user role to admin (assuming RoleId 2 is admin)
             user.RoleId = 2;
             _context.Entry(user).State = EntityState.Modified;
 
-            var admin = _mapper.Map<Admin>(createAdminDto);
+            // Create admin record
+            var admin = new Admin
+            {
+                UserId = user.Id
+            };
+
+            // Generate unique AdminId
             string timestamp = DateTime.UtcNow.ToString("yyyyMMdd-HHmmss");
-            string name=user.Name.Split(' ')[0].ToUpper();
+            string name = user.Name.Split(' ')[0].ToUpper();
             string randomString = Guid.NewGuid().ToString().Substring(0, 6).ToUpper();
             admin.AdminId = $"ADMIN-{name}-{timestamp}-{randomString}";
+
             _context.Admins.Add(admin);
             await _context.SaveChangesAsync();
-            admin = await _context.Admins.Include(a => a.User).FirstOrDefaultAsync(a => a.AdminId == admin.AdminId);
-            return admin == null ? null : _mapper.Map<AdminResponseDto>(admin);
 
+            // Retrieve the created admin with user details
+            admin = await _context.Admins
+                .Include(a => a.User)
+                .FirstOrDefaultAsync(a => a.AdminId == admin.AdminId);
+
+            return admin == null ? null : _mapper.Map<AdminResponseDto>(admin);
         }
 
         public async Task<AdminResponseDto?> statusChange(string id)
