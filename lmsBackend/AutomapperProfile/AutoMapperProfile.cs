@@ -54,9 +54,29 @@ namespace lmsBackend.AutomapperProfile
             CreateMap<Categories, CategoriesResponseDtos>().ReverseMap();
 
             // Course mappings
+            //CreateMap<CreateCourseDto, Courses>()
+            //.ForMember(dest => dest.category_id, opt => opt.MapFrom(src => src.category_id));
+
             CreateMap<CreateCourseDto, Courses>()
-            .ForMember(dest => dest.category_id, opt => opt.MapFrom(src => src.category_id));
-            CreateMap<Courses, ResponseCourseDtos>();
+    .ForMember(dest => dest.category_id, opt => opt.MapFrom(src => src.category_id))
+    .ForMember(dest => dest.imagepath, opt => opt.Ignore()) // Ignore file properties in mapping
+    .ForMember(dest => dest.quizpath, opt => opt.Ignore());
+
+
+            //CreateMap<Courses, ResponseCourseDtos>();
+
+            CreateMap<Courses, ResponseCourseDtos>()
+    .ForMember(dest => dest.course_id, opt => opt.MapFrom(src => src.course_id))
+    .ForMember(dest => dest.course_name, opt => opt.MapFrom(src => src.course_name))
+    .ForMember(dest => dest.imagepath, opt => opt.MapFrom(src => src.imagepath))
+    .ForMember(dest => dest.status, opt => opt.MapFrom(src => src.status))
+    .ForMember(dest => dest.description, opt => opt.MapFrom(src => src.description))
+    .ForMember(dest => dest.quizpath, opt => opt.MapFrom(src => src.quizpath))
+    .ForMember(dest => dest.author, opt => opt.MapFrom(src => src.author))
+    .ForMember(dest => dest.category_id, opt => opt.MapFrom(src => src.category_id))
+    .ForMember(dest => dest.sme_id, opt => opt.MapFrom(src => src.sme_id))
+    .ForMember(dest => dest.lob_id, opt => opt.MapFrom(src => src.lob_id))
+    .ForMember(dest => dest.isquiz, opt => opt.MapFrom(src => src.isquiz));
 
             CreateMap<CreateModuleDtos, Module>()
     .ForMember(dest => dest.videopath, opt => opt.Ignore()) // Will be manually assigned
