@@ -81,27 +81,76 @@ namespace lmsBackend.Repository.CourseRepo
             return _mapper.Map<ResponseCourseDtos>(course);
         }
 
+        //public async Task UpdateAsync(CreateCourseDto courseDto, string id)
+        //{
+        //    var existingCourse = await _context.Courses.FindAsync(id);
+        //    if (existingCourse == null) return;
+
+        //    // ✅ Update Image Upload
+        //    if (courseDto.imagepath != null)
+        //    {
+        //        existingCourse.imagepath = SaveFile(courseDto.imagepath, "uploadImages");
+        //    }
+
+        //    // ✅ Update Quiz Upload
+        //    if (courseDto.quizPath != null)
+        //    {
+        //        existingCourse.quizpath = SaveFile(courseDto.quizPath, "uploadQuiz");
+        //    }
+
+        //    _mapper.Map(courseDto, existingCourse);
+        //    _context.Courses.Update(existingCourse);
+        //    await _context.SaveChangesAsync();
+        //}
+
+
         public async Task UpdateAsync(CreateCourseDto courseDto, string id)
         {
             var existingCourse = await _context.Courses.FindAsync(id);
             if (existingCourse == null) return;
 
-            // ✅ Update Image Upload
+            // ✅ Update basic properties manually (avoid AutoMapper for the entire object)
+            existingCourse.course_name = courseDto.course_name;
+            existingCourse.description = courseDto.description;
+            existingCourse.sme_id = courseDto.sme_id;
+            existingCourse.lob_id = courseDto.lob_id;
+            existingCourse.category_id = courseDto.category_id;
+            existingCourse.author = courseDto.author;
+            existingCourse.status = courseDto.status;
+
+            // ✅ Update Image Upload (only if new file is provided)
             if (courseDto.imagepath != null)
             {
+                // Delete old image file if it exists
+                if (!string.IsNullOrEmpty(existingCourse.imagepath))
+                {
+                    DeleteFile(existingCourse.imagepath);
+                }
                 existingCourse.imagepath = SaveFile(courseDto.imagepath, "uploadImages");
             }
 
-            // ✅ Update Quiz Upload
+            // ✅ Update Quiz Upload (only if new file is provided)
             if (courseDto.quizPath != null)
             {
+                // Delete old quiz file if it exists
+                if (!string.IsNullOrEmpty(existingCourse.quizpath))
+                {
+                    DeleteFile(existingCourse.quizpath);
+                }
                 existingCourse.quizpath = SaveFile(courseDto.quizPath, "uploadQuiz");
+                existingCourse.isquiz = 1;
+            }
+            else if (courseDto.quizPath == null && string.IsNullOrEmpty(existingCourse.quizpath))
+            {
+                existingCourse.isquiz = 0;
             }
 
-            _mapper.Map(courseDto, existingCourse);
+            // ✅ Don't use AutoMapper here - we've manually updated all properties
             _context.Courses.Update(existingCourse);
             await _context.SaveChangesAsync();
         }
+
+
 
         // 🔹 **Reusable File Saving Method**
         private string SaveFile(IFormFile file, string folderName)
@@ -125,6 +174,27 @@ namespace lmsBackend.Repository.CourseRepo
             }
 
             return $"/{folderName}/{fileName}"; // Relative path
+        }
+
+        private void DeleteFile(string relativePath)
+        {
+            if (string.IsNullOrEmpty(relativePath)) return;
+
+            try
+            {
+                // Convert relative path to absolute path
+                string fullPath = Path.Combine(_webHostEnvironment.WebRootPath, relativePath.TrimStart('/'));
+
+                if (File.Exists(fullPath))
+                {
+                    File.Delete(fullPath);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the exception (you might want to use a proper logging framework)
+                Console.WriteLine($"Error deleting file: {ex.Message}");
+            }
         }
     }
 }

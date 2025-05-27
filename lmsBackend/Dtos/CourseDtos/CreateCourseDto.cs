@@ -19,6 +19,7 @@ namespace lmsBackend.Dtos.CourseDtos
 
         public string author { get; set; } = string.Empty;
 
+        public bool status { get; set; } = true;
         public IFormFile quizPath { get; set; }
     }
 }

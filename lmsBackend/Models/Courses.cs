@@ -21,7 +21,7 @@ namespace lmsBackend.Models
         [Required]
         public string assignment { get; set; } = string.Empty;
 
-        [Required]
+        //[Required]
         public string? sme_id { get; set; } 
 
         [ForeignKey("sme_id")]
