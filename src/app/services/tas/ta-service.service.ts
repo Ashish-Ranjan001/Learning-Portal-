@@ -62,12 +62,12 @@ export class TaServiceService {
     return this.http.post(url, taData);
   }
 
-  getTaById(taId: number) {
+  getTaById(taId: string) {
     const url = `${this.apiBaseUrl}/api/Ta/${taId}`;
     return this.http.get<Ta>(url);
   }
 
-  updateTa(taId: number, taData: { status: boolean }) {
+  updateTa(taId: string, taData: { status: boolean }) {
     const url = `${this.apiBaseUrl}/api/Ta/${taId}`;
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.http.put(url, taData, { headers });

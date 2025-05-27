@@ -455,6 +455,7 @@ export class ViewModuleComponent implements OnInit {
   
   viewModule(module: CourseModule): void {
     console.log('View module:', module);
+    this.router.navigate([`/dashboard/module/video/${module.module_id}`])
     // Implement view functionality
   }
   
