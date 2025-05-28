@@ -19,6 +19,7 @@ import { ViewTaComponent } from './components/dashboard/view-ta/view-ta.componen
 import { ViewAdminComponent } from './components/dashboard/view-admin/view-admin.component';
 import { AddAdminComponent } from './components/dashboard/add-admin/add-admin.component';
 import { LoginComponent } from './components/main/login/login.component';
+import { EditCourseComponent } from './components/dashboard/edit-course/edit-course.component';
 
 
 export const routes: Routes = [
@@ -41,5 +42,6 @@ export const routes: Routes = [
         {path: 'ta/view', component: ViewTaComponent},
         {path: 'admin/view', component: ViewAdminComponent},
         {path: 'admin/add', component: AddAdminComponent},
+        {path: 'edit-course/:id', component: EditCourseComponent},
      ] }
 ];

@@ -17,14 +17,22 @@ export class CourseServicesService {
       const url = `${this.apiBaseUrl}/api/Course`;
       return this.client.get(url);
     }
-    getCategoryById(categoryId: string) {
-      const url = `${this.apiBaseUrl}/api/Categories/${categoryId}`;
+    getCourseById(course_Id: string) {
+      const url = `${this.apiBaseUrl}/api/Course/${course_Id}`;
       return this.client.get(url);
     }
-    updateCategory(categoryId: string, categoryData: any) {
-      const url = `${this.apiBaseUrl}/api/Categories/${categoryId}`;
-      return this.client.put(url, categoryData);
-    }
+
+    // updateCourse(courseId: string, courseData: FormData) {
+    //   const url = `${this.apiBaseUrl}/api/Course/${courseId}`;
+    //   return this.client.put(url, courseData);
+    // }
+
+    updateCourse(courseId: string, courseData: FormData) {
+  const url = `${this.apiBaseUrl}/api/Course/${courseId}`;
+  return this.client.put(url, courseData, {
+    headers: { 'enctype': 'multipart/form-data' }
+  });
+}
 
     addModule(data:FormData){
       const url = `${this.apiBaseUrl}/api/Module`;
