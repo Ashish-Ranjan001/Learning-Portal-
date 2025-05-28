@@ -25,12 +25,17 @@ import { ViewUserComponent } from './components/dashboard/view-user/view-user.co
 import { EditCourseComponent } from './components/dashboard/edit-course/edit-course.component';
 import { AddModuleComponent } from './components/dashboard/add-module/add-module.component';
 import { EditModuleComponent } from './components/dashboard/edit-module/edit-module.component';
+import { ViewModuleComponent } from './components/dashboard/view-module/view-module.component';
+import { LandingpageComponent} from './components/main/landingpage/landingpage.component';
+import { EditTaComponent } from './components/dashboard/edit-ta/edit-ta.component';
+import { ViewVideoComponent } from './components/dashboard/view-video/view-video.component';
 
 
 
 
 export const routes: Routes = [
-    {path: '', component:LoginComponent},
+    {path: '', component:LandingpageComponent},
+    {path:'login',component:LoginComponent},
 
   
 
@@ -54,7 +59,10 @@ export const routes: Routes = [
         {path: 'admin/add', component: AddAdminComponent},
         {path: 'course/edit/:id', component: EditCourseComponent},
         {path: 'module/add/:id', component:AddModuleComponent},
-        {path: 'module/edit/:id', component:EditModuleComponent}
-        
+       // {path: 'module/edit/:id', component:EditModuleComponent}
+        {path:'module/view/:id', component:ViewModuleComponent},
+        {path:'module/edit/:id', component:EditModuleComponent},
+       { path: 'ta/edit/:id', component: EditTaComponent },
+       {path: 'module/video/:id', component: ViewVideoComponent},
      ] }
 ];

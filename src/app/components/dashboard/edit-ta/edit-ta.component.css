@@ -1,11 +1,11 @@
-/* Enhanced Edit SME Component Styles */
-.edit-sme-container {
+/* Enhanced Edit TA Component Styles */
+.edit-ta-container {
     max-width: 100%;
     margin: 0 auto;
     transition: all 0.3s ease;
   }
   
-  .edit-sme-container:hover {
+  .edit-ta-container:hover {
     transform: translateY(-2px);
   }
   
@@ -181,7 +181,7 @@
   
   /* Responsive Adjustments */
   @media (max-width: 768px) {
-    .edit-sme-container {
+    .edit-ta-container {
       margin: 1rem;
     }
     
