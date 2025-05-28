@@ -1,371 +1,217 @@
-// import { Component, OnInit, OnDestroy } from '@angular/core';
-// import { ActivatedRoute, Router } from '@angular/router';
-
-// import { Subscription } from 'rxjs';
-// import { ModuleServicesService , VideoModuleResponse } from '../../../services/Module/module-services.service';
-// import { CommonModule } from '@angular/common';
-// import { FormsModule } from '@angular/forms';
-
-// @Component({
-//   selector: 'app-view-ta',
-//   standalone: true,
-//   imports: [CommonModule, FormsModule],
-//   templateUrl: './view-video.component.html',
-//   styleUrls: ['./view-video.component.css']
-// })
-// export class ViewVideoComponent implements OnInit, OnDestroy {
-//   module: VideoModuleResponse | null = null;
-//   loading = true;
-//   error = '';
-//   moduleId = '';
-//   videoError = false;
-//   videoLoaded = false;
-//   isPlaying = false;
-//   currentTime = 0;
-//   videoDuration = 0;
-//   volume = 1;
-//   isFullscreen = false;
-//   showControls = true;
-//   controlsTimeout: any;
-  
-//   // Add window property for template access
-//   window = window;
-
-//   private subscription = new Subscription();
-
-//   constructor(
-//     private route: ActivatedRoute,
-//     private router: Router,
-//     private moduleService: ModuleServicesService
-//   ) {}
-
-//   ngOnInit(): void {
-//     this.moduleId = this.route.snapshot.paramMap.get('id') || '';
-//     if (this.moduleId) {
-//       this.loadModule();
-//     } else {
-//       this.error = 'Module ID is required';
-//       this.loading = false;
-//     }
-//   }
-
-//   ngOnDestroy(): void {
-//     this.subscription.unsubscribe();
-//     if (this.controlsTimeout) {
-//       clearTimeout(this.controlsTimeout);
-//     }
-//   }
-
-//   loadModule(): void {
-//     this.loading = true;
-//     this.error = '';
-    
-//     const sub = this.moduleService.getVideoModuleById(this.moduleId).subscribe({
-//       next: (response) => {
-//         this.module = response.data;
-//         this.loading = false;
-//       },
-//       error: (err) => {
-//         this.error = 'Failed to load module. Please try again.';
-//         this.loading = false;
-//         console.error('Error loading module:', err);
-//       }
-//     });
-
-//     this.subscription.add(sub);
-//   }
-
-//   onVideoError(): void {
-//     this.videoError = true;
-//   }
-
-//   onVideoLoad(): void {
-//     this.videoLoaded = true;
-//     this.videoError = false;
-//   }
-
-//   onVideoTimeUpdate(event: any): void {
-//     this.currentTime = event.target.currentTime;
-//   }
-
-//   onVideoLoadedMetadata(event: any): void {
-//     this.videoDuration = event.target.duration;
-//   }
-
-//   togglePlayPause(): void {
-//     const video = document.getElementById('moduleVideo') as HTMLVideoElement;
-//     if (video) {
-//       if (video.paused) {
-//         video.play();
-//         this.isPlaying = true;
-//       } else {
-//         video.pause();
-//         this.isPlaying = false;
-//       }
-//     }
-//   }
-
-//   seekTo(event: any): void {
-//     const video = document.getElementById('moduleVideo') as HTMLVideoElement;
-//     if (video && video.duration) {
-//       const rect = event.target.getBoundingClientRect();
-//       const pos = (event.clientX - rect.left) / rect.width;
-//       video.currentTime = pos * video.duration;
-//     }
-//   }
-
-//   adjustVolume(event: any): void {
-//     const video = document.getElementById('moduleVideo') as HTMLVideoElement;
-//     if (video && event.target) {
-//       this.volume = parseFloat(event.target.value);
-//       video.volume = this.volume;
-//     }
-//   }
-
-//   toggleFullscreen(): void {
-//     const videoContainer = document.getElementById('videoContainer');
-//     if (videoContainer) {
-//       if (!document.fullscreenElement) {
-//         videoContainer.requestFullscreen().then(() => {
-//           this.isFullscreen = true;
-//         }).catch((err) => {
-//           console.error('Error attempting to enable fullscreen:', err);
-//         });
-//       } else {
-//         document.exitFullscreen().then(() => {
-//           this.isFullscreen = false;
-//         }).catch((err) => {
-//           console.error('Error attempting to exit fullscreen:', err);
-//         });
-//       }
-//     }
-//   }
-
-//   onMouseMove(): void {
-//     this.showControls = true;
-//     if (this.controlsTimeout) {
-//       clearTimeout(this.controlsTimeout);
-//     }
-//     this.controlsTimeout = setTimeout(() => {
-//       if (this.isPlaying) {
-//         this.showControls = false;
-//       }
-//     }, 3000);
-//   }
-
-//   formatTime(seconds: number): string {
-//     if (!seconds || isNaN(seconds)) return '00:00';
-//     const mins = Math.floor(seconds / 60);
-//     const secs = Math.floor(seconds % 60);
-//     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-//   }
-
-//   goBack(): void {
-//     this.router.navigate(['/modules']);
-//   }
-
-//   retry(): void {
-//     this.loadModule();
-//   }
-
-//   // Method to open video in new tab
-//   openVideoInNewTab(): void {
-//     if (this.module?.videopath) {
-//       window.open(this.module.videopath, '_blank');
-//     }
-//   }
-// }
-
-
-
-
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { ModuleServicesService, VideoModuleResponse } from '../../../services/Module/module-services.service';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-
+import { Component, type OnInit, type OnDestroy, type ElementRef, ViewChild } from "@angular/core"
+import  { ActivatedRoute, Router } from "@angular/router"
+import { Subscription } from "rxjs"
+import  { ModuleServicesService, VideoModuleResponse } from "../../../services/Module/module-services.service"
+import { CommonModule } from "@angular/common"
+import { FormsModule } from "@angular/forms"
 
 @Component({
-  selector: 'app-view-ta',
+  selector: "app-view-video",
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './view-video.component.html',
-  styleUrls: ['./view-video.component.css']
+  templateUrl: "./view-video.component.html",
+  styleUrls: ["./view-video.component.css"],
 })
 export class ViewVideoComponent implements OnInit, OnDestroy {
-  module: VideoModuleResponse | null = null;
-  loading = true;
-  error = '';
-  moduleId = '';
-  videoError = false;
-  videoLoaded = false;
-  isPlaying = false;
-  currentTime = 0;
-  videoDuration = 0;
-  volume = 1;
-  isFullscreen = false;
-  showControls = true;
-  controlsTimeout: any;
+  @ViewChild("moduleVideo") videoElement!: ElementRef<HTMLVideoElement>
 
+  module: VideoModuleResponse | null = null
+  loading = true
+  error = ""
+  moduleId = ""
+  videoError = false
+  videoLoaded = false
+  isPlaying = false
+  currentTime = 0
+  videoDuration = 0
+  volume = 1
+  isFullscreen = false
+  showControls = true
+  controlsTimeout: any
 
-
-  private subscription = new Subscription();
+  private subscription = new Subscription()
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private moduleService: ModuleServicesService
+    private moduleService: ModuleServicesService,
   ) {}
 
-
   ngOnInit(): void {
-    this.moduleId = this.route.snapshot.paramMap.get('id') || '';
-    if (this.moduleId) {
-      this.loadModule();
-    } else {
-      this.error = 'Module ID is required';
-      this.loading = false;
-    }
-  }
+    this.moduleId = this.route.snapshot.paramMap.get("id") || ""
+    this.showControls = true // Add this line to ensure controls are visible by default
 
+    if (this.moduleId) {
+      this.loadModule()
+    } else {
+      this.error = "Module ID is required"
+      this.loading = false
+    }
+
+    // Listen for fullscreen changes
+    document.addEventListener("fullscreenchange", this.onFullscreenChange.bind(this))
+    document.addEventListener("webkitfullscreenchange", this.onFullscreenChange.bind(this))
+    document.addEventListener("mozfullscreenchange", this.onFullscreenChange.bind(this))
+    document.addEventListener("MSFullscreenChange", this.onFullscreenChange.bind(this))
+  }
 
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    this.subscription.unsubscribe()
     if (this.controlsTimeout) {
-      clearTimeout(this.controlsTimeout);
+      clearTimeout(this.controlsTimeout)
     }
+
+    // Remove fullscreen event listeners
+    document.removeEventListener("fullscreenchange", this.onFullscreenChange.bind(this))
+    document.removeEventListener("webkitfullscreenchange", this.onFullscreenChange.bind(this))
+    document.removeEventListener("mozfullscreenchange", this.onFullscreenChange.bind(this))
+    document.removeEventListener("MSFullscreenChange", this.onFullscreenChange.bind(this))
   }
 
-
   loadModule(): void {
-    this.loading = true;
-    this.error = '';
-
+    this.loading = true
+    this.error = ""
+    this.videoError = false
+    this.videoLoaded = false
 
     const sub = this.moduleService.getVideoModuleById(this.moduleId).subscribe({
       next: (response) => {
-        this.module = response.data;
-        this.loading = false;
+        this.module = response.data
+        this.loading = false
       },
       error: (err) => {
-        this.error = 'Failed to load module. Please try again.';
-        this.loading = false;
-        console.error('Error loading module:', err);
-      }
-    });
+        this.error = "Failed to load module. Please try again."
+        this.loading = false
+        console.error("Error loading module:", err)
+      },
+    })
 
-
-    this.subscription.add(sub);
+    this.subscription.add(sub)
   }
-
 
   onVideoError(): void {
-    this.videoError = true;
+    this.videoError = true
+    this.videoLoaded = false
+    console.error("Video failed to load")
   }
-
 
   onVideoLoad(): void {
-    this.videoLoaded = true;
-    this.videoError = false;
+    this.videoLoaded = true
+    this.videoError = false
+    this.showControls = true // Add this line
+    console.log("Video loaded successfully")
   }
 
-
-  onVideoTimeUpdate(event: any): void {
-    this.currentTime = event.target.currentTime;
+  onVideoTimeUpdate(event: Event): void {
+    const target = event.target as HTMLVideoElement
+    this.currentTime = target.currentTime
   }
 
-
-  onVideoLoadedMetadata(event: any): void {
-    this.videoDuration = event.target.duration;
+  onVideoLoadedMetadata(event: Event): void {
+    const target = event.target as HTMLVideoElement
+    this.videoDuration = target.duration
   }
-
 
   togglePlayPause(): void {
-    const video = document.getElementById('moduleVideo') as HTMLVideoElement;
+    const video = document.getElementById("moduleVideo") as HTMLVideoElement
     if (video) {
       if (video.paused) {
-        video.play();
-        this.isPlaying = true;
+        video
+          .play()
+          .then(() => {
+            this.isPlaying = true
+          })
+          .catch((error) => {
+            console.error("Error playing video:", error)
+          })
       } else {
-        video.pause();
-        this.isPlaying = false;
+        video.pause()
+        this.isPlaying = false
       }
     }
   }
 
+  seekTo(event: MouseEvent): void {
+    const video = document.getElementById("moduleVideo") as HTMLVideoElement
+    const target = event.target as HTMLElement
 
-  seekTo(event: any): void {
-    const video = document.getElementById('moduleVideo') as HTMLVideoElement;
-    if (video && video.duration) {
-      const rect = event.target.getBoundingClientRect();
-      const pos = (event.clientX - rect.left) / rect.width;
-      video.currentTime = pos * video.duration;
+    if (video && video.duration && target) {
+      const rect = target.getBoundingClientRect()
+      const pos = (event.clientX - rect.left) / rect.width
+      video.currentTime = pos * video.duration
     }
   }
 
+  adjustVolume(event: Event): void {
+    const video = document.getElementById("moduleVideo") as HTMLVideoElement
+    const target = event.target as HTMLInputElement
 
-  adjustVolume(event: any): void {
-    const video = document.getElementById('moduleVideo') as HTMLVideoElement;
-    if (video && event.target) {
-      this.volume = parseFloat(event.target.value);
-      video.volume = this.volume;
+    if (video && target) {
+      this.volume = Number.parseFloat(target.value)
+      video.volume = this.volume
     }
   }
 
   toggleFullscreen(): void {
-    const videoContainer = document.getElementById('videoContainer');
+    const videoContainer = document.getElementById("videoContainer")
     if (videoContainer) {
       if (!document.fullscreenElement) {
-        videoContainer.requestFullscreen().then(() => {
-          this.isFullscreen = true;
-        }).catch((err) => {
-          console.error('Error attempting to enable fullscreen:', err);
-        });
+        videoContainer
+          .requestFullscreen()
+          .then(() => {
+            this.isFullscreen = true
+          })
+          .catch((err) => {
+            console.error("Error attempting to enable fullscreen:", err)
+          })
       } else {
-        document.exitFullscreen().then(() => {
-          this.isFullscreen = false;
-        }).catch((err) => {
-          console.error('Error attempting to exit fullscreen:', err);
-        });
+        document
+          .exitFullscreen()
+          .then(() => {
+            this.isFullscreen = false
+          })
+          .catch((err) => {
+            console.error("Error attempting to exit fullscreen:", err)
+          })
       }
     }
   }
 
+  onFullscreenChange(): void {
+    this.isFullscreen = !!document.fullscreenElement
+  }
 
   onMouseMove(): void {
-    this.showControls = true;
+    this.showControls = true
     if (this.controlsTimeout) {
-      clearTimeout(this.controlsTimeout);
+      clearTimeout(this.controlsTimeout)
     }
-    this.controlsTimeout = setTimeout(() => {
-      if (this.isPlaying) {
-        this.showControls = false;
-      }
-    }, 3000);
+    // Only hide controls in fullscreen mode and when playing
+    if (this.isFullscreen && this.isPlaying) {
+      this.controlsTimeout = setTimeout(() => {
+        this.showControls = false
+      }, 3000)
+    }
   }
-
 
   formatTime(seconds: number): string {
-    if (!seconds || isNaN(seconds)) return '00:00';
-    const mins = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    if (!seconds || isNaN(seconds)) return "00:00"
+    const mins = Math.floor(seconds / 60)
+    const secs = Math.floor(seconds % 60)
+    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`
   }
 
-
   goBack(): void {
-    this.router.navigate(['/modules']);
+    this.router.navigate(["dashboard/course/viewcourse"])
   }
 
   retry(): void {
-    this.loadModule();
+    this.loadModule()
   }
 
   openVideoInNewTab(): void {
-    if (this.module?.videopath) {
-      window.open(this.module.videopath, '_blank');
+    if (this.module && this.module.videopath) {
+      window.open(this.module.videopath, "_blank")
     }
-}
+  }
 }
