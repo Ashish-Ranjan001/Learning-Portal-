@@ -1,203 +1,220 @@
-<!-- Loading State
-<div *ngIf="loading" class="d-flex justify-content-center align-items-center min-vh-100">
-  <div class="text-center">
+<!-- Loading State -->
+<div *ngIf="loading" class="loading-container">
+  <div class="d-flex flex-column align-items-center justify-content-center min-vh-100">
     <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
       <span class="visually-hidden">Loading...</span>
     </div>
-    <h5 class="text-muted">Loading module...</h5>
+    <h5 class="text-muted mb-0">Loading module...</h5>
+    <p class="text-muted small">Please wait while we fetch your content</p>
   </div>
 </div>
 
-
-<div *ngIf="error && !loading" class="container-fluid py-5">
-  <div class="row justify-content-center">
-    <div class="col-md-6">
-      <div class="alert alert-danger text-center" role="alert">
-        <i class="fas fa-exclamation-triangle fa-2x mb-3"></i>
-        <h4>Oops! Something went wrong</h4>
-        <p>{{ error }}</p>
-        <button class="btn btn-primary me-2" (click)="retry()">
-          <i class="fas fa-redo"></i> Try Again
-        </button>
-        <button class="btn btn-secondary" (click)="goBack()">
-          <i class="fas fa-arrow-left"></i> Go Back
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-<div *ngIf="module && !loading && !error" class="container-fluid py-4">
-
-  <div class="row mb-4">
-    <div class="col-12">
-      <div class="d-flex align-items-center mb-3">
-        <button class="btn btn-outline-secondary me-3" (click)="goBack()">
-          <i class="fas fa-arrow-left"></i> Back
-        </button>
-        <div>
-          <h1 class="mb-1 text-primary">{{ module?.modulename || 'Module' }}</h1>
-          <p class="text-muted mb-0">
-            <i class="fas fa-clock"></i> Duration: {{ (module?.duration || 0) }} minutes
-          </p>
+<!-- Error State -->
+<div *ngIf="error && !loading" class="error-container">
+  <div class="container-fluid min-vh-100 d-flex align-items-center justify-content-center">
+    <div class="row justify-content-center w-100">
+      <div class="col-md-6 col-lg-4">
+        <div class="card border-0 shadow-lg">
+          <div class="card-body text-center p-5">
+            <div class="error-icon mb-4">
+              <i class="fas fa-exclamation-triangle text-danger" style="font-size: 4rem;"></i>
+            </div>
+            <h4 class="card-title text-danger mb-3">Oops! Something went wrong</h4>
+            <p class="card-text text-muted mb-4">{{ error }}</p>
+            <div class="d-grid gap-2">
+              <button class="btn btn-primary btn-lg" (click)="retry()">
+                <i class="fas fa-redo me-2"></i>Try Again
+              </button>
+              <button class="btn btn-outline-secondary" (click)="goBack()">
+                <i class="fas fa-arrow-left me-2"></i>Go Back
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
+</div>
 
- 
-  <div class="row g-4">
-  
-    <div class="col-lg-8">
-      <div class="card shadow-sm border-0">
-        <div class="card-body p-0">
-          <div id="videoContainer" 
-               class="video-container position-relative bg-dark rounded"
-               (mousemove)="onMouseMove()"
-               [class.fullscreen]="isFullscreen">
+<!-- Main Content -->
+<div *ngIf="module && !loading && !error" class="module-container">
+  <div class="container-fluid px-4 py-3">
+    <!-- Header Section -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+          <div class="d-flex align-items-center gap-3">
+            <button class="btn btn-outline-primary" (click)="goBack()">
+              <i class="fas fa-arrow-left me-2"></i>Back
+            </button>
+            <div>
+              <h1 class="h3 mb-1 text-primary">{{ module.modulename || 'Module' }}</h1>
+              <div class="d-flex align-items-center gap-3 text-muted small">
+                <span><i class="fas fa-clock me-1"></i>{{ (module.duration || 0) }} minutes</span>
+                <span><i class="fas fa-play-circle me-1"></i>Video Module</span>
+              </div>
+            </div>
+          </div>
+          <div class="module-stats d-none d-md-flex gap-3">
+            <div class="stat-item text-center">
+              <div class="h6 mb-0 text-primary">{{ module.module_id || 'N/A' }}</div>
+              <small class="text-muted">Module ID</small>
+            </div>
+            <div class="stat-item text-center">
+              <div class="h6 mb-0 text-success">{{ module.course_id || 'N/A' }}</div>
+              <small class="text-muted">Course ID</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Video Section -->
+    <div class="row">
+      <div class="col-lg-8 col-xl-9 mb-4">
+        <div class="video-wrapper">
+          <div 
+            id="videoContainer" 
+            class="video-container position-relative" 
+            (mousemove)="onMouseMove()" 
+            [class.fullscreen]="isFullscreen">
             
-            
+            <!-- Video Element -->
             <video 
-              id="moduleVideo"
-              class="w-100 h-100 video-element"
-              [src]="module?.videopath || ''"
-              (error)="onVideoError()"
-              (loadeddata)="onVideoLoad()"
-              (timeupdate)="onVideoTimeUpdate($event)"
-              (loadedmetadata)="onVideoLoadedMetadata($event)"
-              (play)="isPlaying = true"
-              (pause)="isPlaying = false"
-              preload="metadata"
+              id="moduleVideo" 
+              class="video-element w-100 h-100" 
+              [src]="module.videopath || ''" 
+              (error)="onVideoError()" 
+              (loadeddata)="onVideoLoad()" 
+              (timeupdate)="onVideoTimeUpdate($event)" 
+              (loadedmetadata)="onVideoLoadedMetadata($event)" 
+              (play)="isPlaying = true" 
+              (pause)="isPlaying = false" 
+              preload="metadata" 
               controlsList="nodownload">
               Your browser does not support the video tag.
             </video>
 
-         
-            <div *ngIf="videoError" class="video-error-overlay d-flex align-items-center justify-content-center">
-              <div class="text-center text-white">
-                <i class="fas fa-exclamation-triangle fa-3x mb-3"></i>
-                <h5>Unable to load video</h5>
-                <p class="mb-0">Please check your connection and try again</p>
+            <!-- Video Error Overlay -->
+            <div *ngIf="videoError" class="video-error-overlay">
+              <div class="text-center">
+                <i class="fas fa-video-slash mb-3" style="font-size: 3rem;"></i>
+                <h5 class="mb-2">Unable to load video</h5>
+                <p class="mb-3">Please check your connection and try again</p>
+                <button class="btn btn-light btn-sm" (click)="retry()">
+                  <i class="fas fa-redo me-2"></i>Retry
+                </button>
               </div>
             </div>
 
-           
-            <div *ngIf="videoLoaded && !videoError" 
-                 class="video-controls"
-                 [class.show-controls]="showControls">
-              
-              <div class="progress-container mb-2">
-                <div class="progress video-progress" (click)="seekTo($event)">
-                  <div class="progress-bar bg-primary" 
-                       [style.width.%]="videoDuration > 0 ? (currentTime / videoDuration) * 100 : 0">
+            <!-- Custom Video Controls -->
+            <div *ngIf="videoLoaded && !videoError" class="video-controls" [class.show-controls]="showControls">
+              <!-- Progress Bar -->
+              <div class="progress-container w-100 mb-2" (click)="seekTo($event)">
+                <div class="progress video-progress">
+                  <div 
+                    class="progress-bar bg-primary" 
+                    [style.width.%]="videoDuration > 0 ? (currentTime / videoDuration) * 100 : 0">
                   </div>
                 </div>
               </div>
 
-           
-              <div class="d-flex align-items-center justify-content-between text-white">
-                <div class="d-flex align-items-center">
-                  
-                  <button class="btn btn-link text-white p-1 me-3" (click)="togglePlayPause()">
-                    <i class="fas" [class.fa-play]="!isPlaying" [class.fa-pause]="isPlaying" style="font-size: 1.2rem;"></i>
+              <!-- Control Buttons -->
+              <div class="controls d-flex align-items-center justify-content-between w-100">
+                <div class="d-flex align-items-center gap-3">
+                  <button 
+                    class="btn-control" 
+                    (click)="togglePlayPause()" 
+                    [title]="isPlaying ? 'Pause' : 'Play'"
+                    aria-label="Play or pause video">
+                    <i class="fas" [class.fa-play]="!isPlaying" [class.fa-pause]="isPlaying"></i>
+                    <span class="visually-hidden">{{ isPlaying ? 'Pause' : 'Play' }}</span>
                   </button>
-
-                
-                  <span class="time-display me-3">
+                  <span class="time-display small text-white">
                     {{ formatTime(currentTime) }} / {{ formatTime(videoDuration) }}
                   </span>
-
-                
-                  <div class="d-flex align-items-center">
-                    <i class="fas fa-volume-up me-2"></i>
-                    <input type="range" 
-                           class="form-range volume-slider" 
-                           min="0" 
-                           max="1" 
-                           step="0.1"
-                           [value]="volume"
-                           (input)="adjustVolume($event)"
-                           style="width: 80px;">
-                  </div>
                 </div>
 
-                
-                <button class="btn btn-link text-white p-1" (click)="toggleFullscreen()">
-                  <i class="fas" [class.fa-expand]="!isFullscreen" [class.fa-compress]="isFullscreen"></i>
-                </button>
+                <div class="d-flex align-items-center gap-3">
+                  <div class="volume-control d-flex align-items-center gap-2">
+                    <i class="fas fa-volume-up text-white" style="font-size: 16px;"></i>
+                    <input 
+                      type="range" 
+                      class="form-range volume-slider" 
+                      min="0" 
+                      max="1" 
+                      step="0.1" 
+                      [value]="volume" 
+                      (input)="adjustVolume($event)" 
+                      title="Volume: {{ (volume * 100) | number:'1.0-0' }}%"
+                      aria-label="Adjust volume">
+                  </div>
+                  <button 
+                    class="btn-control" 
+                    (click)="toggleFullscreen()" 
+                    [title]="isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'"
+                    aria-label="Toggle fullscreen">
+                    <i class="fas" [class.fa-expand]="!isFullscreen" [class.fa-compress]="isFullscreen"></i>
+                    <span class="visually-hidden">{{ isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen' }}</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Loading Overlay for Video -->
+            <div *ngIf="!videoLoaded && !videoError" class="video-loading-overlay">
+              <div class="spinner-border text-light" role="status">
+                <span class="visually-hidden">Loading video...</span>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-   
-    <div class="col-lg-4">
-      <div class="card shadow-sm h-100 border-0">
-        <div class="card-header bg-primary text-white">
-          <h5 class="mb-0">
-            <i class="fas fa-info-circle"></i> Module Information
-          </h5>
-        </div>
-        <div class="card-body">
-          <div class="module-info">
-          
-            <div class="info-item mb-4">
-              <label class="form-label fw-bold text-muted">
-                <i class="fas fa-tag text-primary"></i> Module Name
-              </label>
-              <p class="form-control-plaintext border rounded p-2 bg-light">
-                {{ module?.modulename || 'N/A' }}
+      <!-- Module Information Sidebar -->
+      <div class="col-lg-4 col-xl-3">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-header bg-primary text-white">
+            <h6 class="card-title mb-0">
+              <i class="fas fa-info-circle me-2"></i>Module Information
+            </h6>
+          </div>
+          <div class="card-body">
+            <div class="info-item mb-3">
+              <label class="form-label small text-muted mb-1">Module Name</label>
+              <p class="fw-semibold mb-0">{{ module.modulename || 'N/A' }}</p>
+            </div>
+            
+            <div class="info-item mb-3">
+              <label class="form-label small text-muted mb-1">Module ID</label>
+              <p class="font-monospace small mb-0">{{ module.module_id || 'N/A' }}</p>
+            </div>
+            
+            <div class="info-item mb-3">
+              <label class="form-label small text-muted mb-1">Course ID</label>
+              <p class="font-monospace small mb-0">{{ module.course_id || 'N/A' }}</p>
+            </div>
+            
+            <div class="info-item mb-3">
+              <label class="form-label small text-muted mb-1">Duration</label>
+              <p class="mb-0">
+                <i class="fas fa-clock text-primary me-1"></i>
+                {{ (module.duration || 0) }} minutes
               </p>
             </div>
-
-           
-            <div class="info-item mb-4">
-              <label class="form-label fw-bold text-muted">
-                <i class="fas fa-hashtag text-primary"></i> Module ID
-              </label>
-              <p class="form-control-plaintext border rounded p-2 bg-light font-monospace">
-                {{ module?.module_id || 'N/A' }}
-              </p>
-            </div>
-
-            <div class="info-item mb-4">
-              <label class="form-label fw-bold text-muted">
-                <i class="fas fa-book text-primary"></i> Course ID
-              </label>
-              <p class="form-control-plaintext border rounded p-2 bg-light font-monospace">
-                {{ module?.course_id || 'N/A' }}
-              </p>
-            </div>
-
-           
-            <div class="info-item mb-4">
-              <label class="form-label fw-bold text-muted">
-                <i class="fas fa-clock text-primary"></i> Duration
-              </label>
-              <p class="form-control-plaintext border rounded p-2 bg-light">
-                <span class="badge bg-success fs-6">{{ (module?.duration || 0) }} minutes</span>
-              </p>
-            </div>
-
             
             <div class="info-item">
-              <label class="form-label fw-bold text-muted">
-                <i class="fas fa-video text-primary"></i> Video Source
-              </label>
-              <div class="input-group">
-                <input type="text" 
-                       class="form-control bg-light font-monospace" 
-                       [value]="module?.videopath || ''" 
-                       readonly>
-                <button class="btn btn-outline-secondary" 
-                        type="button"
-                        (click)="openVideoInNewTab()"
-                        [disabled]="!module?.videopath"
-                        title="Open video in new tab">
-                  <i class="fas fa-external-link-alt"></i>
+              <label class="form-label small text-muted mb-1">Video Source</label>
+              <div class="d-grid">
+                <button 
+                  class="btn btn-outline-primary btn-sm text-start" 
+                  [disabled]="!module.videopath"
+                  (click)="module.videopath ? openVideoInNewTab() : null"
+                  [title]="module.videopath || 'No video source available'">
+                  <i class="fas fa-external-link-alt me-2"></i>
+                  <span class="text-truncate">
+                    {{ module.videopath ? 'Open in new tab' : 'N/A' }}
+                  </span>
                 </button>
               </div>
             </div>
@@ -206,80 +223,4 @@
       </div>
     </div>
   </div>
-</div> -->
-
-
-<!-- ---------------------------------------------------------------------- -->
-
-<div *ngIf="loading" class="loading-state">
-  <div class="spinner-border text-primary" role="status"></div>
-  <h5 class="text-muted">Loading module...</h5>
 </div>
-
-<div *ngIf="error && !loading" class="error-state">
-  <div class="alert alert-danger text-center">
-    <h4>Oops! Something went wrong</h4>
-    <p>{{ error }}</p>
-    <button class="btn btn-primary" (click)="retry()">Try Again</button>
-    <button class="btn btn-secondary" (click)="goBack()">Go Back</button>
-  </div>
-</div>
-
-<div *ngIf="module && !loading && !error" class="module-container">
-  <div class="module-header">
-    <button class="btn btn-outline-secondary" (click)="goBack()">Back</button>
-    <h1>{{ module?.modulename || 'Module' }}</h1>
-    <p>Duration: {{ (module?.duration || 0) }} minutes</p>
-  </div>
-
-  <div class="video-section">
-    <div id="videoContainer" class="video-container" (mousemove)="onMouseMove()" [class.fullscreen]="isFullscreen">
-      <video id="moduleVideo" class="video-element" [src]="module?.videopath || ''" (error)="onVideoError()" (loadeddata)="onVideoLoad()" (timeupdate)="onVideoTimeUpdate($event)" (loadedmetadata)="onVideoLoadedMetadata($event)" (play)="isPlaying = true" (pause)="isPlaying = false" preload="metadata" controlsList="nodownload" controls>
-        Your browser does not support the video tag.
-      </video>
-
-      <div *ngIf="videoError" class="video-error-overlay">
-        <h5>Unable to load video</h5>
-        <p>Please check your connection and try again</p>
-      </div>
-
-      <div *ngIf="videoLoaded && !videoError" class="video-controls" [class.show-controls]="showControls">
-        <div class="progress-container" (click)="seekTo($event)">
-          <div class="progress video-progress">
-            <div class="progress-bar" [style.width.%]="videoDuration > 0 ? (currentTime / videoDuration) * 100 : 0"></div>
-          </div>
-        </div>
-
-        <div class="controls">
-          <button (click)="togglePlayPause()" aria-label="Play or pause video">
-            <i class="fas" [class.fa-play]="!isPlaying" [class.fa-pause]="isPlaying"></i>
-          </button>
-          <span>{{ formatTime(currentTime) }} / {{ formatTime(videoDuration) }}</span>
-          <input type="range" min="0" max="1" step="0.1" [value]="volume" (input)="adjustVolume($event)" aria-label="Adjust volume">
-          <button (click)="toggleFullscreen()" aria-label="Toggle fullscreen">
-            <i class="fas" [class.fa-expand]="!isFullscreen" [class.fa-compress]="isFullscreen"></i>
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="module-info">
-    <h5>Module Information</h5>
-    <p><strong>Module Name:</strong> {{ module?.modulename || 'N/A' }}</p>
-    <p><strong>Module ID:</strong> {{ module?.module_id || 'N/A' }}</p>
-    <p><strong>Course ID:</strong> {{ module?.course_id || 'N/A' }}</p>
-    <p><strong>Duration:</strong> {{ (module?.duration || 0) }} minutes</p>
-    <p><strong>Video Source:</strong> 
-      <a href="#" 
-   [class.disabled-link]="!module?.videopath" 
-   (click)="module?.videopath ? openVideoInNewTab() : $event.preventDefault()" 
-   [tabindex]="module?.videopath ? 0 : -1" 
-   [attr.aria-disabled]="!module?.videopath">
-   {{ module?.videopath || 'N/A' }}
-</a>
-
-    </p>
-  </div>
-</div>
-
