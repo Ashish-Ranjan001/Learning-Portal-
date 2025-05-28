@@ -1,0 +1,233 @@
+<!-- <div class="view-module-container">
+    <div class="header-section">
+      <h2>Course Modules</h2>
+      <div class="search-container">
+        <label for="search">Search:</label>
+        <input 
+          type="text" 
+          id="search" 
+          [(ngModel)]="searchTerm" 
+          (input)="search()" 
+          placeholder="Search modules...">
+      </div>
+    </div>
+  
+    <div class="modules-count">
+      <p>Showing {{ paginatedModules.length }} of {{ filteredModules.length }} modules</p>
+    </div>
+  
+    <table class="modules-table">
+      <thead>
+        <tr>
+          <th>Module Name</th>
+          <th>Description</th>
+          <th>Duration</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let module of paginatedModules; let i = index">
+          <td class="module-name">
+            <div class="module-info">
+              <div class="module-icon">
+                <i class="fas fa-play-circle"></i>
+              </div>
+              <div class="module-details">
+                <strong>{{ module.modulename }}</strong>
+                <small>Module ID: {{ module.id || module.module_id }}</small>
+              </div>
+            </div>
+          </td>
+          <td class="description">
+            <div class="description-text" [title]="module.description">
+              {{ module.description.length > 100 ? (module.description | slice:0:100) + '...' : module.description }}
+            </div>
+          </td>
+          <td class="duration">
+            <div class="duration-badge">
+              <i class="fas fa-clock"></i>
+              {{ formatDuration(module.duration) }}
+            </div>
+          </td>
+          <td class="actions-column">
+            <button class="action-btn edit-btn" (click)="editModule(module)">
+              <i class="fas fa-edit"></i>
+              Edit
+            </button>
+            <button class="action-btn view-btn" (click)="viewModule(module)">
+              <i class="fas fa-eye"></i>
+              View
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  
+    <div class="empty-state" *ngIf="filteredModules.length === 0">
+      <div class="empty-icon">
+        <i class="fas fa-folder-open"></i>
+      </div>
+      <h3>No modules found</h3>
+      <p *ngIf="searchTerm">No modules match your search criteria.</p>
+      <p *ngIf="!searchTerm">No modules available for this course.</p>
+    </div>
+  
+    <div class="pagination-container" *ngIf="totalPages > 1">
+      <button 
+        class="pagination-btn" 
+        [disabled]="currentPage === 1" 
+        (click)="goToFirstPage()"
+        [ngClass]="{'disabled': currentPage === 1}">
+        «
+      </button>
+      <button 
+        class="pagination-btn" 
+        [disabled]="currentPage === 1" 
+        (click)="goToPreviousPage()"
+        [ngClass]="{'disabled': currentPage === 1}">
+        ‹
+      </button>
+      
+      <div class="pagination-pages">
+        <button 
+          *ngFor="let page of pages" 
+          class="pagination-btn page-number" 
+          [ngClass]="{'active': page === currentPage}"
+          (click)="goToPage(page)">
+          {{ page }}
+        </button>
+      </div>
+      
+      <button 
+        class="pagination-btn" 
+        [disabled]="currentPage === totalPages" 
+        (click)="goToNextPage()"
+        [ngClass]="{'disabled': currentPage === totalPages}">
+        ›
+      </button>
+      <button 
+        class="pagination-btn" 
+        [disabled]="currentPage === totalPages" 
+        (click)="goToLastPage()"
+        [ngClass]="{'disabled': currentPage === totalPages}">
+        »
+      </button>
+    </div>
+  </div> -->
+
+  <div class="view-module-container">
+    <div class="header-section">
+      <h2>Course Modules</h2>
+      <div class="search-container">
+        <label for="search">Search:</label>
+        <input 
+          type="text" 
+          id="search" 
+          [(ngModel)]="searchTerm" 
+          (input)="search()" 
+          placeholder="Search modules...">
+      </div>
+    </div>
+  
+    <div class="modules-count">
+      <p>Showing {{ paginatedModules.length }} of {{ filteredModules.length }} modules</p>
+    </div>
+  
+    <table class="modules-table">
+      <thead>
+        <tr>
+          <th>Module Name</th>
+          <th>Description</th>
+          <th>Duration</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let module of paginatedModules; let i = index">
+          <td class="module-name">
+            <div class="module-info">
+              <div class="module-icon">
+                <i class="fas fa-play-circle"></i>
+              </div>
+              <div class="module-details">
+                <strong>{{ module.modulename }}</strong>
+                <small>Module ID: {{ getModuleId(module) }}</small>
+              </div>
+            </div>
+          </td>
+          <td class="description">
+            <div class="description-text" [title]="module.description">
+              {{ module.description.length > 100 ? (module.description.substring(0, 100) + '...') : module.description }}
+            </div>
+          </td>
+          <td class="duration">
+            <div class="duration-badge">
+              <i class="fas fa-clock"></i>
+              {{ formatDuration(module.duration) }}
+            </div>
+          </td>
+          <td class="actions-column">
+            <button class="action-btn edit-btn" (click)="editModule(module)">
+              <i class="fas fa-edit"></i>
+              Edit
+            </button>
+            <button class="action-btn view-btn" (click)="viewModule(module)">
+              <i class="fas fa-eye"></i>
+              View
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  
+    <div class="empty-state" *ngIf="filteredModules.length === 0">
+      <div class="empty-icon">
+        <i class="fas fa-folder-open"></i>
+      </div>
+      <h3>No modules found</h3>
+      <p *ngIf="searchTerm">No modules match your search criteria.</p>
+      <p *ngIf="!searchTerm">No modules available for this course.</p>
+    </div>
+  
+    <div class="pagination-container" *ngIf="totalPages > 1">
+      <button 
+        class="pagination-btn" 
+        [disabled]="currentPage === 1" 
+        (click)="goToFirstPage()"
+        [class.disabled]="currentPage === 1">
+        «
+      </button>
+      <button 
+        class="pagination-btn" 
+        [disabled]="currentPage === 1" 
+        (click)="goToPreviousPage()"
+        [class.disabled]="currentPage === 1">
+        ‹
+      </button>
+      
+      <div class="pagination-pages">
+        <button 
+          *ngFor="let page of pages" 
+          class="pagination-btn page-number" 
+          [class.active]="page === currentPage"
+          (click)="goToPage(page)">
+          {{ page }}
+        </button>
+      </div>
+      
+      <button 
+        class="pagination-btn" 
+        [disabled]="currentPage === totalPages" 
+        (click)="goToNextPage()"
+        [class.disabled]="currentPage === totalPages">
+        ›
+      </button>
+      <button 
+        class="pagination-btn" 
+        [disabled]="currentPage === totalPages" 
+        (click)="goToLastPage()"
+        [class.disabled]="currentPage === totalPages">
+        »
+      </button>
+    </div>
+  </div>

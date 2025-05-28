@@ -1,255 +1,3 @@
-<!-- <div class="course-form">
-  <h2>Create Course</h2>
-  
-  <div class="form-grid">
-    <div class="thumbnail-section">
-      <label>
-        Thumbnail Image <span class="required">*</span>
-      </label>
-      <div 
-        class="thumbnail-upload" 
-        [ngClass]="{'has-preview': thumbnailPreview}"
-        (dragover)="onDragOver($event)" 
-        (drop)="onDrop($event)"
-      >
-        <div *ngIf="!thumbnailPreview" class="upload-placeholder">
-          <div class="icon-container">
-            <span class="image-icon">🖼️</span>
-          </div>
-          <p>Drag or Browse</p>
-          <p class="file-type">PNG, JPG (max 5mb size)</p>
-          <input 
-            type="file" 
-            accept="image/png,image/jpeg" 
-            (change)="onThumbnailChange($event)" 
-            class="file-input"
-          >
-        </div>
-        <div *ngIf="thumbnailPreview" class="thumbnail-preview">
-          <img [src]="thumbnailPreview" alt="Thumbnail preview">
-          <button class="change-button" (click)="thumbnailPreview = null">Change</button>
-        </div>
-      </div>
-    </div>
-    
-    <div class="form-fields">
-      <div class="form-group">
-        <label for="courseName">
-          Course Name <span class="required">*</span>
-        </label>
-        <input 
-          type="text" 
-          id="courseName" 
-          [(ngModel)]="courseData.name" 
-          (ngModelChange)="onFormChange()"
-          placeholder="Name of the Lesson"
-          required
-        >
-        <span class="char-count">{{ courseData.name.length }} / 100</span>
-      </div>
-      
-      <div class="form-group">
-        <label for="category">
-          Category <span class="required">*</span>
-        </label>
-        <select 
-          id="category" 
-          [(ngModel)]="courseData.category" 
-          (ngModelChange)="onFormChange()"
-          required
-        >
-          <option value="" disabled selected>Select category</option>
-          <option *ngFor="let category of categories" [value]="category">{{ category }}</option>
-        </select>
-      </div>
-      
-      <div class="form-group">
-        <label for="description">
-          Description <span class="required">*</span>
-        </label>
-        <textarea 
-          id="description" 
-          [(ngModel)]="courseData.description" 
-          (ngModelChange)="onFormChange()"
-          placeholder="Enter course description"
-          rows="4"
-          required
-        ></textarea>
-      </div>
-      
-      <div class="form-group">
-        <label for="sme">
-          SME <span class="required">*</span>
-        </label>
-        <input 
-          type="text" 
-          id="sme" 
-          [(ngModel)]="courseData.sme" 
-          (ngModelChange)="onFormChange()"
-          placeholder="Choose SME"
-        >
-      </div>
-      
-      <div class="form-group">
-        <label for="lob">
-          LOB <span class="required">*</span>
-        </label>
-        <input 
-          type="text" 
-          id="lob" 
-          [(ngModel)]="courseData.lob" 
-          (ngModelChange)="onFormChange()"
-          placeholder="Choose LOB"
-        >
-      </div>
-      
-      <div class="form-group">
-        <label for="author">
-          Author <span class="required">*</span>
-        </label>
-        <input 
-          type="text" 
-          id="author" 
-          [(ngModel)]="courseData.author" 
-          (ngModelChange)="onFormChange()"
-          placeholder="Enter author name"
-        >
-      </div>
-    </div>
-  </div>
-</div> -->
-
-
-
-
-
-<!-- ------------------------------------------------------------------------------------------------ -->
-<!-- 
-<div class="course-form">
-  <h2>Create Course</h2>
- 
-  <div class="form-grid">
-    <div class="thumbnail-section">
-      <label>
-        Thumbnail Image <span class="required">*</span>
-      </label>
-      <div
-        class="thumbnail-upload"
-        [ngClass]="{'has-preview': thumbnailPreview}"
-        (dragover)="onDragOver($event)"
-        (drop)="onDrop($event)"
-      >
-        <div *ngIf="!thumbnailPreview" class="upload-placeholder">
-          <div class="icon-container">
-            <span class="image-icon">🖼️</span>
-          </div>
-          <p>Drag or Browse</p>
-          <p class="file-type">PNG, JPG (max 5mb size)</p>
-          <input
-            type="file"
-            accept="image/png,image/jpeg"
-            (change)="onThumbnailChange($event)"
-            class="file-input"
-          >
-        </div>
-        <div *ngIf="thumbnailPreview" class="thumbnail-preview">
-          <img [src]="thumbnailPreview" alt="Thumbnail preview">
-          <button class="change-button" (click)="thumbnailPreview = null">Change</button>
-        </div>
-      </div>
-    </div>
-   
-    <div class="form-fields">
-      <div class="form-group">
-        <label for="courseName">
-          Course Name <span class="required">*</span>
-        </label>
-        <input
-          type="text"
-          id="courseName"
-          [(ngModel)]="courseData.name"
-          (ngModelChange)="onFormChange()"
-          placeholder="Name of the Lesson"
-          required
-        >
-        <span class="char-count">{{ courseData.name.length }} / 100</span>
-      </div>
-     
-      <div class="form-group">
-        <label for="category">
-          Category <span class="required">*</span>
-        </label>
-        <select
-          id="category"
-          [(ngModel)]="courseData.category"
-          (ngModelChange)="onFormChange()"
-          required
-        >
-          <option value="" disabled selected>Select category</option>
-          <option *ngFor="let category of categories" [value]="category">{{ category }}</option>
-        </select>
-      </div>
-     
-      <div class="form-group">
-        <label for="description">
-          Description <span class="required">*</span>
-        </label>
-        <textarea
-          id="description"
-          [(ngModel)]="courseData.description"
-          (ngModelChange)="onFormChange()"
-          placeholder="Enter course description"
-          rows="4"
-          required
-        ></textarea>
-      </div>
-     
-      <div class="form-group">
-        <label for="sme">
-          SME <span class="required">*</span>
-        </label>
-        <select
-          id="sme"
-          [(ngModel)]="courseData.smeId"
-          (ngModelChange)="onFormChange()"
-          required
-        >
-          <option value="" disabled selected>Choose SME</option>
-          <option *ngFor="let sme of smeList" [value]="sme.id">{{ sme.name }}</option>
-        </select>
-      </div>
-     
-      <div class="form-group">
-        <label for="lob">
-          LOB <span class="required">*</span>
-        </label>
-        <select
-          id="lob"
-          [(ngModel)]="courseData.lobId"
-          (ngModelChange)="onFormChange()"
-          required
-        >
-          <option value="" disabled selected>Choose LOB</option>
-          <option *ngFor="let lob of lobList" [value]="lob.id">{{ lob.name }}</option>
-        </select>
-      </div>
-     
-      <div class="form-group">
-        <label for="author">
-          Author <span class="required">*</span>
-        </label>
-        <input
-          type="text"
-          id="author"
-          [(ngModel)]="courseData.author"
-          (ngModelChange)="onFormChange()"
-          placeholder="Enter author name"
-        >
-      </div>
-    </div>
-  </div>
-</div> -->
-
 
 
 
@@ -320,6 +68,8 @@
           <option value="" disabled selected>Select category</option>
           <option *ngFor="let category of categories" [value]="category.id">{{ category.name }}</option>
         </select>
+         <div *ngIf="categories.length === 0 && !loadingData" class="dropdown-info">No active categories available</div>
+        <div *ngIf="loadingData" class="dropdown-info">Loading categories...</div>
       </div>
      
       <div class="form-group">
@@ -350,7 +100,8 @@
           <option value="" disabled selected>Choose SME</option>
           <option *ngFor="let sme of smeList" [value]="sme.smeId">{{ sme.name || 'Unnamed SME' }}</option>
         </select>
-        <div *ngIf="smeList.length === 0" class="dropdown-info">Loading SMEs...</div>
+        <div *ngIf="smeList.length === 0 && !loadingData" class="dropdown-info">No active SMEs available</div>
+        <div *ngIf="loadingData" class="dropdown-info">Loading SMEs...</div>
       </div>
      
       <div class="form-group">
@@ -367,7 +118,8 @@
           <option value="" disabled selected>Choose LOB</option>
           <option *ngFor="let lob of lobList" [value]="lob.lobId">{{ lob.lobName || 'Unnamed LOB' }}</option>
         </select>
-        <div *ngIf="lobList.length === 0" class="dropdown-info">Loading LOBs...</div>
+       <div *ngIf="lobList.length === 0 && !loadingData" class="dropdown-info">No active LOBs available</div>
+        <div *ngIf="loadingData" class="dropdown-info">Loading LOBs...</div>
       </div>
      
       <div class="form-group">

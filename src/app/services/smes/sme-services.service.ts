@@ -36,11 +36,16 @@ export class SmeServicesService {
     return this.http.get<{ status: boolean }>(url);
   }
 
-  updateSme(smeId: string) {
-    const url = `${this.apiBaseUrl}/api/smes/${smeId}`;
+   updateSme(smeID: string, smeData: { status: boolean }) {
+    const url = `${this.apiBaseUrl}/api/smes/${smeID}`;
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this.http.put(url, { headers });
+    return this.http.put(url, smeData, { headers });
   }
+  // updateSme(smeId: string) {
+  //   const url = `${this.apiBaseUrl}/api/smes/${smeId}`;
+  //   const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+  //   return this.http.put(url, { headers });
+  // }
 
 
   addSme(smeData: any) {

@@ -211,6 +211,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { CourseServicesService } from '../../../services/courses/course-services.service';
+import { Router } from '@angular/router';
 
 interface Course {
   course_id: string;
@@ -239,7 +240,7 @@ export class ViewCourseComponent implements OnInit {
   totalPages: number = 1;
   pages: number[] = [];
 
-  constructor(private courseService: CourseServicesService) {}
+  constructor(private courseService: CourseServicesService,private router:Router) {}
 
   ngOnInit(): void {
     this.loadCourses();
@@ -320,10 +321,15 @@ export class ViewCourseComponent implements OnInit {
   }
 
   editCourse(course: Course): void {
-    console.log('Edit course:', course);
-    // Implement navigation to edit page or open edit modal
+    this.router.navigate(['dashboard/course/edit', course.course_id]);
   }
-
+  addModule(course: Course): void {
+    this.router.navigate(['dashboard/module/add', course.course_id]);
+  }
+  viewModule(course: Course): void {
+    this.router.navigate(['dashboard/module/view', course.course_id]);
+  }
+  
   getStatusText(status: boolean): string {
     return status ? 'Published' : 'Unpublished';
   }

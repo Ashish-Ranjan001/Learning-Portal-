@@ -303,7 +303,7 @@ import { CourseModule } from '../../../models/course-module';
 })
 export class ModuleFormComponent implements OnInit {
   @Input() moduleData: CourseModule = {
-    name: '',
+    modulename: '',
     duration: '',
     description: ''
   };

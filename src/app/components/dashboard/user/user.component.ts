@@ -500,7 +500,7 @@ export class UserComponent implements OnInit {
       const formData = {
         ...this.userForm.value,
         Phone: Number(this.userForm.value.Phone),
-        LobId: Number(this.userForm.value.LobId)
+        LobId: this.userForm.value.LobId
       };
       
       console.log('Formatted data for submission:', formData);

@@ -14,4 +14,8 @@ export class UserServiceService {
     return this.http.post(url, data);
   }
 
+  viewUsers() {
+    const url = `${this.apiBaseUrl}/api/users`;
+    return this.http.get(url);
+  }
 }
