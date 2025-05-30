@@ -36,7 +36,6 @@ import { ViewVideoComponent } from './components/dashboard/view-video/view-video
 export const routes: Routes = [
     {path: '', component:LandingpageComponent},
     {path:'login',component:LoginComponent},
-
   
 
     { path: 'dashboard',component:DashboardhomeComponent , children: [
@@ -48,7 +47,7 @@ export const routes: Routes = [
         {path: 'course/viewCategory',component:ViewCategoryComponent },
         {path: 'course/addcourse',component:CourseCreatorComponent },
         {path: 'course/viewcourse',component:ViewCourseComponent },
-        { path: 'lob/edit/:id', component: EditLobComponent },
+        {path: 'lob/edit/:id', component: EditLobComponent },
         {path : 'sme/edit/:id',component:EditSmeComponent},
         {path: 'category/edit/:id', component: EditCategoryComponent},
         {path: 'user/add', component: UserComponent},
