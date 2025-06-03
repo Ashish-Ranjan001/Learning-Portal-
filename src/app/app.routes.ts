@@ -28,7 +28,10 @@ import { EditModuleComponent } from './components/dashboard/edit-module/edit-mod
 import { ViewModuleComponent } from './components/dashboard/view-module/view-module.component';
 import { LandingpageComponent} from './components/main/landingpage/landingpage.component';
 import { EditTaComponent } from './components/dashboard/edit-ta/edit-ta.component';
-import { ViewVideoComponent } from './components/dashboard/view-video/view-video.component';
+import { ViewVideoComponent } from './components/main/view-video/view-video.component';
+import { CategoriesComponent } from './components/main/categories/categories.component';
+import { CoursesComponent } from './components/main/courses/courses.component';
+import {  CoursesDetailComponent } from './components/main/courses-details/courses-details.component';
 
 
 
@@ -36,6 +39,10 @@ import { ViewVideoComponent } from './components/dashboard/view-video/view-video
 export const routes: Routes = [
     {path: '', component:LandingpageComponent},
     {path:'login',component:LoginComponent},
+    { path: 'categories', component: CategoriesComponent },
+    { path: 'courses/:categoryId', component: CoursesComponent },
+    { path: 'course-detail/:courseId', component: CoursesDetailComponent },
+    {path: 'video/:id', component: ViewVideoComponent},
 
   
 
@@ -63,6 +70,6 @@ export const routes: Routes = [
         {path:'module/view/:id', component:ViewModuleComponent},
         {path:'module/edit/:id', component:EditModuleComponent},
        { path: 'ta/edit/:id', component: EditTaComponent },
-       {path: 'module/video/:id', component: ViewVideoComponent},
+       
      ] }
 ];

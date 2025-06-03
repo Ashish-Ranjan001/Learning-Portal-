@@ -1,0 +1,222 @@
+/* Courses Component Styles */
+
+.course-card {
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .course-card:hover {
+    transform: translateY(-3px);
+  }
+  
+  .course-card .card {
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    height: 100%;
+  }
+  
+  .course-card:hover .card {
+    box-shadow: 0 10px 25px rgba(0, 123, 255, 0.15) !important;
+  }
+  
+  .course-image {
+    height: 200px;
+    overflow: hidden;
+    background: #f8f9fa;
+  }
+  
+  .course-image img {
+    transition: transform 0.3s ease;
+  }
+  
+  .course-card:hover .course-image img {
+    transform: scale(1.05);
+  }
+  
+  .course-overlay {
+    background: rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .course-card:hover .course-overlay {
+    opacity: 1;
+  }
+  
+  .university-logo {
+    transition: transform 0.3s ease;
+  }
+  
+  .course-card:hover .university-logo {
+    transform: scale(1.1);
+  }
+  
+  .hover-lift {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .course-card:hover .hover-lift {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  }
+  
+  .card-title {
+    color: #2c3e50;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+  
+  .card-text {
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+  
+  .progress {
+    border-radius: 10px;
+    background-color: #e9ecef;
+  }
+  
+  .progress-bar {
+    border-radius: 10px;
+    transition: width 0.6s ease;
+  }
+  
+  .progress-bar-striped {
+    background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+    background-size: 1rem 1rem;
+  }
+  
+  .course-meta small {
+    font-size: 0.8rem;
+    color: #6c757d;
+  }
+  
+  .badge {
+    font-size: 0.75rem;
+    padding: 0.35rem 0.65rem;
+    font-weight: 500;
+  }
+  
+  .btn {
+    font-weight: 500;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+  
+  .btn:hover {
+    transform: translateY(-1px);
+  }
+  
+  .btn-sm {
+    padding: 0.4rem 1rem;
+    font-size: 0.85rem;
+  }
+  
+  .empty-state {
+    max-width: 500px;
+    margin: 0 auto;
+  }
+  
+  .empty-state i {
+    opacity: 0.5;
+  }
+  
+  /* Status badges positioning */
+  .position-absolute {
+    z-index: 3;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .course-card .card-body {
+      padding: 1rem;
+    }
+    
+    .course-image {
+      height: 150px;
+    }
+    
+    .card-title {
+      font-size: 1.1rem;
+    }
+    
+    .btn-sm {
+      padding: 0.35rem 0.8rem;
+      font-size: 0.8rem;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .col-lg-6.col-md-6 {
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
+    }
+    
+    .course-image {
+      height: 120px;
+    }
+  }
+  
+  /* Focus styles for accessibility */
+  .course-card:focus {
+    outline: 2px solid #007bff;
+    outline-offset: 2px;
+    border-radius: 12px;
+  }
+  
+  /* Progress bar color variations */
+  .bg-danger {
+    background-color: #dc3545 !important;
+  }
+  
+  .bg-warning {
+    background-color: #ffc107 !important;
+  }
+  
+  .bg-info {
+    background-color: #17a2b8 !important;
+  }
+  
+  .bg-success {
+    background-color: #28a745 !important;
+  }
+  
+  .bg-secondary {
+    background-color: #6c757d !important;
+  }
+  
+  /* Button variations */
+  .btn-outline-primary:hover {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
+  }
+  
+  .btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+  }
+  
+  .btn-success:hover {
+    background-color: #1e7e34;
+    border-color: #1e7e34;
+  }
+  
+  /* Animation for loading and error states */
+  .alert {
+    border-radius: 10px;
+    border: none;
+  }
+  
+  .spinner-border {
+    width: 3rem;
+    height: 3rem;
+  }
+  
+  /* Course metadata styling */
+  .course-meta {
+    border-top: 1px solid #e9ecef;
+    padding-top: 0.75rem;
+    margin-top: 0.75rem;
+  }
