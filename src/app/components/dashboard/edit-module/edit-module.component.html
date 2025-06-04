@@ -1,5 +1,5 @@
-<div class="module-form">
-  <!-- Loading State -->
+<!-- <div class="module-form">
+
   <div *ngIf="isLoading" class="text-center py-5">
     <div class="spinner-border text-primary" role="status">
       <span class="visually-hidden">Loading...</span>
@@ -7,7 +7,7 @@
     <p class="mt-2">Loading module data...</p>
   </div>
 
-  <!-- Main Form -->
+ 
   <div *ngIf="!isLoading" class="form-container">
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h2>Edit Module</h2>
@@ -72,7 +72,7 @@
           </label>
           
           <div class="file-upload">
-            <!-- Hidden file input -->
+          
             <input 
               type="file" 
               id="videoFile" 
@@ -81,7 +81,7 @@
               class="file-input"
               style="display: none;"
             >
-            <!-- Fixed: Added click handler to trigger file input -->
+           
             <div class="file-upload-button" (click)="triggerVideoFileInput()">
               Choose New File
             </div>
@@ -109,7 +109,7 @@
             {{ videoError }}
           </div>
 
-          <!-- Video Preview -->
+       
           <div *ngIf="videoPreview" class="mt-2">
             <video [src]="videoPreview" controls class="preview-video" style="max-width: 300px; height: auto;">
               Your browser does not support the video tag.
@@ -123,7 +123,7 @@
           </label>
           
           <div class="file-upload">
-            <!-- Hidden file input -->
+      
             <input 
               type="file" 
               id="pdfFile" 
@@ -132,7 +132,7 @@
               class="file-input"
               style="display: none;"
             >
-            <!-- Fixed: Added click handler to trigger file input -->
+           
             <div class="file-upload-button" (click)="triggerPdfFileInput()">
               Choose New File
             </div>
@@ -162,7 +162,7 @@
         </div>
       </div>
 
-      <!-- Action Buttons -->
+      
       <div class="form-actions mt-4 d-flex gap-2">
         <button 
           type="button" 
@@ -281,4 +281,304 @@
     width: 100%;
   }
 }
-</style>
+</style> -->
+
+<div class="edit-module-container">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-wrapper">
+    <div class="container-fluid min-vh-100 d-flex align-items-center justify-content-center">
+      <div class="text-center">
+        <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <h5 class="text-muted mb-0">Loading module data...</h5>
+        <p class="text-muted small">Please wait while we fetch the module information</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Form -->
+  <div *ngIf="!isLoading" class="container-fluid py-4">
+    <div class="row justify-content-center">
+      <div class="col-12 col-lg-10 col-xl-8">
+        <!-- Header Section -->
+        <div class="card border-0 shadow-sm mb-4">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+              <div>
+                <h2 class="h3 mb-1 text-primary">
+                  <i class="fas fa-edit me-2"></i>Edit Module
+                </h2>
+                <p class="text-muted mb-0">Update module information and files</p>
+              </div>
+              <button 
+                type="button" 
+                class="btn btn-outline-primary"
+                (click)="goBack()"
+                [disabled]="isSubmitting">
+                <i class="fas fa-arrow-left me-2"></i>Back to Course
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Form Card -->
+        <div class="card border-0 shadow-sm">
+          <div class="card-body p-4">
+            <form #moduleForm="ngForm" (ngSubmit)="onSubmit()">
+              <!-- Basic Information Section -->
+              <div class="section-header mb-4">
+                <h5 class="section-title">
+                  <i class="fas fa-info-circle me-2 text-primary"></i>
+                  Basic Information
+                </h5>
+                <hr class="section-divider">
+              </div>
+
+              <div class="row g-4 mb-4">
+                <div class="col-md-6">
+                  <div class="form-floating">
+                    <input 
+                      type="text" 
+                      id="moduleName" 
+                      class="form-control"
+                      [(ngModel)]="moduleData.modulename"
+                      name="modulename"
+                      placeholder="Enter Module Name"
+                      required
+                      #moduleNameInput="ngModel"
+                      [class.is-invalid]="moduleNameInput.invalid && moduleNameInput.touched">
+                    <label for="moduleName">
+                      Module Name <span class="text-danger">*</span>
+                    </label>
+                    <div *ngIf="moduleNameInput.invalid && moduleNameInput.touched" class="invalid-feedback">
+                      Module name is required
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="col-md-6">
+                  <div class="form-floating">
+                    <input 
+                      type="text" 
+                      id="duration" 
+                      class="form-control"
+                      [(ngModel)]="moduleData.duration"
+                      name="duration"
+                      placeholder="Enter Duration (e.g., 45 minutes)"
+                      required
+                      #durationInput="ngModel"
+                      [class.is-invalid]="durationInput.invalid && durationInput.touched">
+                    <label for="duration">
+                      Duration <span class="text-danger">*</span>
+                    </label>
+                    <div *ngIf="durationInput.invalid && durationInput.touched" class="invalid-feedback">
+                      Duration is required
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="mb-4">
+                <div class="form-floating">
+                  <textarea 
+                    id="description" 
+                    class="form-control"
+                    [(ngModel)]="moduleData.description"
+                    name="description"
+                    placeholder="Enter Description"
+                    style="height: 120px"
+                    required
+                    #descriptionInput="ngModel"
+                    [class.is-invalid]="descriptionInput.invalid && descriptionInput.touched"></textarea>
+                  <label for="description">
+                    Description <span class="text-danger">*</span>
+                  </label>
+                  <div *ngIf="descriptionInput.invalid && descriptionInput.touched" class="invalid-feedback">
+                    Description is required
+                  </div>
+                </div>
+              </div>
+
+              <!-- Files Section -->
+              <div class="section-header mb-4">
+                <h5 class="section-title">
+                  <i class="fas fa-file-upload me-2 text-primary"></i>
+                  Module Files
+                </h5>
+                <hr class="section-divider">
+              </div>
+
+              <div class="row g-4 mb-4">
+                <!-- Video Upload -->
+                <div class="col-lg-6">
+                  <div class="file-upload-section">
+                    <label class="form-label fw-semibold">
+                      <i class="fas fa-video me-2 text-info"></i>Video File
+                    </label>
+                    
+                    <div class="file-upload-area" 
+                         [class.has-file]="videoFile || existingVideoPath"
+                         [class.drag-over]="videoDragOver"
+                         (dragover)="onVideoDragOver($event)"
+                         (dragleave)="onVideoDragLeave($event)"
+                         (drop)="onVideoDrop($event)"
+                         (click)="triggerVideoFileInput()">
+                      
+                      <input 
+                        type="file" 
+                        id="videoFile" 
+                        accept=".mp4,.mov,.avi,.webm,video/*" 
+                        (change)="onVideoFileChange($event)" 
+                        class="file-input"
+                        #videoFileInput>
+                      
+                      <div class="file-upload-content">
+                        <div *ngIf="!videoFile && !existingVideoPath" class="upload-placeholder">
+                          <i class="fas fa-cloud-upload-alt fa-2x text-muted mb-2"></i>
+                          <p class="mb-1">Click to upload or drag and drop</p>
+                          <small class="text-muted">MP4, MOV, AVI, WEBM (Max: 100MB)</small>
+                        </div>
+                        
+                        <div *ngIf="videoFile || existingVideoPath" class="file-info">
+                          <div class="d-flex align-items-center justify-content-between">
+                            <div class="file-details">
+                              <i class="fas fa-file-video fa-lg text-info me-2"></i>
+                              <span class="file-name">{{ videoFileName }}</span>
+                              <div *ngIf="videoFile" class="file-size text-muted small">
+                                {{ formatFileSize(videoFile.size) }}
+                              </div>
+                            </div>
+                            <button 
+                              type="button" 
+                              class="btn btn-outline-danger btn-sm"
+                              (click)="clearVideoFile($event)"
+                              title="Remove video file">
+                              <i class="fas fa-times"></i>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div *ngIf="existingVideoPath && !videoFile && !removeExistingVideo" class="existing-file-info mt-2">
+                      <small class="text-info">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Current file: {{ extractFileName(existingVideoPath) }}
+                      </small>
+                    </div>
+                    
+                    <div *ngIf="videoError" class="alert alert-danger mt-2 py-2">
+                      <i class="fas fa-exclamation-triangle me-2"></i>{{ videoError }}
+                    </div>
+
+                    <!-- Video Preview -->
+                    <div *ngIf="videoPreview" class="video-preview mt-3">
+                      <video [src]="videoPreview" controls class="preview-video">
+                        Your browser does not support the video tag.
+                      </video>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- PDF Upload -->
+                <div class="col-lg-6">
+                  <div class="file-upload-section">
+                    <label class="form-label fw-semibold">
+                      <i class="fas fa-file-pdf me-2 text-danger"></i>PDF Document
+                    </label>
+                    
+                    <div class="file-upload-area" 
+                         [class.has-file]="pdfFile || existingPdfPath"
+                         [class.drag-over]="pdfDragOver"
+                         (dragover)="onPdfDragOver($event)"
+                         (dragleave)="onPdfDragLeave($event)"
+                         (drop)="onPdfDrop($event)"
+                         (click)="triggerPdfFileInput()">
+                      
+                      <input 
+                        type="file" 
+                        id="pdfFile" 
+                        accept=".pdf,application/pdf" 
+                        (change)="onPdfFileChange($event)" 
+                        class="file-input"
+                        #pdfFileInput>
+                      
+                      <div class="file-upload-content">
+                        <div *ngIf="!pdfFile && !existingPdfPath" class="upload-placeholder">
+                          <i class="fas fa-cloud-upload-alt fa-2x text-muted mb-2"></i>
+                          <p class="mb-1">Click to upload or drag and drop</p>
+                          <small class="text-muted">PDF files only (Max: 20MB)</small>
+                        </div>
+                        
+                        <div *ngIf="pdfFile || existingPdfPath" class="file-info">
+                          <div class="d-flex align-items-center justify-content-between">
+                            <div class="file-details">
+                              <i class="fas fa-file-pdf fa-lg text-danger me-2"></i>
+                              <span class="file-name">{{ pdfFileName }}</span>
+                              <div *ngIf="pdfFile" class="file-size text-muted small">
+                                {{ formatFileSize(pdfFile.size) }}
+                              </div>
+                            </div>
+                            <button 
+                              type="button" 
+                              class="btn btn-outline-danger btn-sm"
+                              (click)="clearPdfFile($event)"
+                              title="Remove PDF file">
+                              <i class="fas fa-times"></i>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div *ngIf="existingPdfPath && !pdfFile && !removeExistingPdf" class="existing-file-info mt-2">
+                      <small class="text-info">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Current file: {{ extractFileName(existingPdfPath) }}
+                      </small>
+                    </div>
+                    
+                    <div *ngIf="pdfError" class="alert alert-danger mt-2 py-2">
+                      <i class="fas fa-exclamation-triangle me-2"></i>{{ pdfError }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="form-actions">
+                <div class="d-flex gap-3 justify-content-end flex-wrap">
+                  <button 
+                    type="button" 
+                    class="btn btn-outline-secondary btn-lg px-4"
+                    (click)="resetForm()"
+                    [disabled]="isSubmitting">
+                    <i class="fas fa-undo me-2"></i>Reset Form
+                  </button>
+                  
+                  <button 
+                    type="button" 
+                    class="btn btn-secondary btn-lg px-4"
+                    (click)="onCancel()"
+                    [disabled]="isSubmitting">
+                    <i class="fas fa-times me-2"></i>Cancel
+                  </button>
+                  
+                  <button 
+                    type="submit" 
+                    class="btn btn-primary btn-lg px-4" 
+                    [disabled]="isSubmitting || moduleForm.invalid">
+                    <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-2" role="status"></span>
+                    <i *ngIf="!isSubmitting" class="fas fa-save me-2"></i>
+                    {{ isSubmitting ? 'Updating Module...' : 'Update Module' }}
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

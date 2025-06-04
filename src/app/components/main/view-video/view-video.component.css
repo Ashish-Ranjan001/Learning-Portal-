@@ -1,0 +1,385 @@
+/* Loading and Error States */
+.loading-container,
+.error-container {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+}
+
+.error-icon {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Module Container */
+.module-container {
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+/* Video Wrapper */
+.video-wrapper {
+  background: #000;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+.video-container {
+  width: 100%;
+  min-height: 400px;
+  background: #000;
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.video-element {
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+/* Video Overlays */
+.video-error-overlay,
+.video-loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+}
+
+/* Custom Video Controls */
+.video-controls {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+  padding: 20px;
+  opacity: 1; /* Changed from 0 to 1 */
+  transition: opacity 0.3s ease;
+  border-radius: 0 0 12px 12px;
+}
+
+.video-controls.show-controls {
+  opacity: 1;
+}
+
+.video-controls:hover {
+  opacity: 1;
+}
+
+/* Control Buttons */
+.controls button {
+  background: rgba(255, 255, 255, 0.2); /* Added semi-transparent background */
+  border: 1px solid rgba(255, 255, 255, 0.3); /* Added border for visibility */
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 6px; /* Changed from 50% to 6px for better visibility */
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px; /* Added font size */
+}
+
+.controls button:hover {
+  background: rgba(255, 255, 255, 0.4); /* Increased opacity on hover */
+  transform: scale(1.05); /* Reduced scale for subtlety */
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+.controls button:focus {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.controls button:active {
+  transform: scale(0.95);
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* Specific styling for control buttons */
+.btn-control {
+  background: rgba(255, 255, 255, 0.2) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  color: white !important;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 6px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  text-decoration: none;
+}
+
+.btn-control:hover {
+  background: rgba(255, 255, 255, 0.4) !important;
+  transform: scale(1.05);
+  border-color: rgba(255, 255, 255, 0.6) !important;
+  color: white !important;
+}
+
+.btn-control:focus {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+  background: rgba(255, 255, 255, 0.3) !important;
+  color: white !important;
+  box-shadow: none;
+}
+
+.btn-control:active {
+  transform: scale(0.95);
+  background: rgba(255, 255, 255, 0.5) !important;
+  color: white !important;
+}
+
+/* Ensure Font Awesome icons are visible */
+.btn-control i {
+  font-size: 16px;
+  color: white;
+  line-height: 1;
+}
+
+/* Fallback for missing Font Awesome */
+.btn-control .fa-play::before {
+  content: "▶" !important;
+  font-family: Arial, sans-serif;
+}
+
+.btn-control .fa-pause::before {
+  content: "⏸" !important;
+  font-family: Arial, sans-serif;
+}
+
+.btn-control .fa-expand::before {
+  content: "⛶" !important;
+  font-family: Arial, sans-serif;
+}
+
+.btn-control .fa-compress::before {
+  content: "⛶" !important;
+  font-family: Arial, sans-serif;
+}
+
+/* Volume icon fallback */
+.fa-volume-up::before {
+  content: "🔊" !important;
+  font-family: Arial, sans-serif;
+}
+
+/* Progress Bar */
+.progress-container {
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.video-progress {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.video-progress .progress-bar {
+  background: linear-gradient(90deg, #007bff, #0056b3);
+  transition: width 0.1s ease;
+  border-radius: 3px;
+}
+
+/* Volume Control */
+.volume-control {
+  display: flex;
+  align-items: center;
+}
+
+.volume-slider {
+  width: 80px;
+  height: 4px;
+}
+
+.volume-slider::-webkit-slider-thumb {
+  background: #007bff;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+}
+
+.volume-slider::-moz-range-thumb {
+  background: #007bff;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  border: none;
+}
+
+/* Time Display */
+.time-display {
+  color: white;
+  font-family: "Courier New", monospace;
+  font-weight: 500;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Module Stats */
+.module-stats {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 15px;
+  backdrop-filter: blur(10px);
+}
+
+.stat-item {
+  min-width: 80px;
+}
+
+/* Info Card */
+.info-item {
+  border-bottom: 1px solid #e9ecef;
+  padding-bottom: 12px;
+}
+
+.info-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.info-item label {
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Fullscreen Styles */
+.video-container.fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999;
+  border-radius: 0;
+}
+
+.video-container.fullscreen .video-element {
+  border-radius: 0;
+}
+
+.video-container.fullscreen .video-controls {
+  border-radius: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .module-container {
+    padding: 0;
+  }
+
+  .video-container {
+    min-height: 250px;
+    border-radius: 0;
+  }
+
+  .video-wrapper {
+    border-radius: 0;
+    margin: 0 -15px;
+  }
+
+  .video-controls {
+    padding: 15px;
+  }
+
+  .controls {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .volume-control {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+    margin-top: 10px;
+  }
+
+  .time-display {
+    font-size: 0.875rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .video-container {
+    min-height: 200px;
+  }
+
+  .controls button {
+    width: 35px;
+    height: 35px;
+  }
+
+  .controls i {
+    font-size: 0.875rem;
+  }
+}
+
+/* Accessibility Improvements */
+@media (prefers-reduced-motion: reduce) {
+  .video-controls,
+  .controls button,
+  .progress-bar {
+    transition: none;
+  }
+
+  .error-icon {
+    animation: none;
+  }
+}
+
+/* Focus Styles */
+.btn:focus,
+.form-range:focus {
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
