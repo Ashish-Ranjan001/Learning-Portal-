@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { UserLearningService, CourseBasicDto } from '../../../services/user-learning.service';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { jwtDecode } from 'jwt-decode';
 
 // Extended interface for internal use
 interface CourseWithImageStatus extends CourseBasicDto {
@@ -29,11 +30,11 @@ interface CourseWithImageStatus extends CourseBasicDto {
       </div>
 
       <!-- Debug Info (Remove in production) -->
-      <div class="alert alert-info mb-4" *ngIf="!loading && courses.length > 0">
+      <!-- <div class="alert alert-info mb-4" *ngIf="!loading && courses.length > 0">
         <strong>Debug Info:</strong>
         <br>Courses count: {{ courses.length }}
         <br>Sample course data: {{ courses[0] | json }}
-      </div>
+      </div> -->
 
       <!-- Loading State -->
       <div *ngIf="loading" class="d-flex justify-content-center py-5">
@@ -314,14 +315,39 @@ export class CoursesComponent implements OnInit {
   userId = '';
   
   // Add your backend base URL here
-  private readonly BASE_URL = 'http://localhost:5053'; // Change this to your actual backend URL
+  private readonly BASE_URL = 'https://localhost:7264'; // Change this to your actual backend URL
 
   constructor(
     private userLearningService: UserLearningService,
     private route: ActivatedRoute,
     private router: Router
   ) {
-    this.userId = localStorage.getItem('userId') || 'user-id-placeholder';
+    this.userId = this.getDecodedUserId() ;
+  }
+
+   getDecodedUserId() {
+      try {
+          // Retrieve token from localStorage
+          const token = localStorage.getItem("authToken");
+          if (!token) {
+              console.error("No auth token found in localStorage.");
+              return null;
+          }
+  
+          // Decode JWT
+          const decodedToken: any = jwtDecode(token);
+  
+          console.log("=== DECODED TOKEN ===", decodedToken);
+  
+          // Extract UserId from possible claims
+          const userId = decodedToken.UserId || decodedToken.nameid || decodedToken.sub;
+  
+          console.log("=== EXTRACTED USER ID ===", userId);
+          return userId;
+      } catch (error) {
+          console.error("Error decoding JWT:", error);
+          return null;
+      }
   }
 
   ngOnInit(): void {
@@ -458,6 +484,7 @@ export class CoursesComponent implements OnInit {
       userId: this.userId,
       courseId: course.courseId
     };
+    console.log('Enrollment data:', enrollData);
 
     this.userLearningService.enrollInCourse(enrollData).subscribe({
       next: (response) => {
