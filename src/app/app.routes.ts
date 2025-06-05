@@ -38,6 +38,8 @@ import {  CoursesDetailComponent } from './components/main/courses-details/cours
 
 export const routes: Routes = [
     {path: '', component:LandingpageComponent},
+    // {path:'user-login',component:LoginComponent},
+    // {path:'admin-login',component:LoginComponent},
     {path:'login',component:LoginComponent},
     { path: 'categories', component: CategoriesComponent },
     { path: 'courses/:categoryId', component: CoursesComponent },

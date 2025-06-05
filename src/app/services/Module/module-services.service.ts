@@ -11,6 +11,7 @@ export interface VideoModuleResponse {
   modulename: string;
   duration: number;
   videopath: string;
+  category_id:string;
 }
 
 export interface ApiResponse {
