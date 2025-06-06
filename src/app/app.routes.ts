@@ -41,6 +41,7 @@ export const routes: Routes = [
     // {path:'user-login',component:LoginComponent},
     // {path:'admin-login',component:LoginComponent},
     {path:'login',component:LoginComponent},
+    {path:'home',component:HomeComponent},
     { path: 'categories', component: CategoriesComponent },
     { path: 'courses/:categoryId', component: CoursesComponent },
     { path: 'course-detail/:courseId', component: CoursesDetailComponent },
