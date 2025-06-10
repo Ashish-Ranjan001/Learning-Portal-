@@ -8,5 +8,5 @@ import { Component  , Input} from '@angular/core';
 })
 export class MainfooterComponent {
 
-   @Input() isSidebarOpen = false;
+   
 }

@@ -16,11 +16,7 @@
     z-index: 1000;
   }
   
-  /* when sidebar is open, push right by sidebar width */
-  .footer.sidebar-open {
-    left: 250px;                        /* match your sidebar width */
-  }
-  
+
   /* optional inner styling */
   .footer-content span {
     font-size: 0.9rem;

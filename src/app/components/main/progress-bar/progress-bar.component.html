@@ -1,0 +1,88 @@
+<div class="radial-chart-container">
+    <div class="chart-header">
+      <h3 class="chart-title">Course Progress</h3>
+      <p class="chart-subtitle">Your Learning Journey</p>
+    </div>
+    
+    <div class="chart-wrapper">
+      <svg class="radial-chart" viewBox="0 0 200 200">
+        <!-- Background circles -->
+        <g transform="rotate(-90 100 100)">
+          @for (item of courseData; track $index) {
+            <circle
+              [attr.cx]="100"
+              [attr.cy]="100"
+              [attr.r]="70 - ($index * 15)"
+              fill="none"
+              stroke="#374151"
+              stroke-width="10"
+              opacity="0.3"
+              [attr.stroke-dasharray]="getBackgroundDasharray(70 - ($index * 15))"
+              [attr.stroke-dashoffset]="0">
+            </circle>
+          }
+        </g>
+        
+        <!-- Progress arcs -->
+        <g transform="rotate(-90 100 100)">
+          @for (item of courseData; track $index) {
+            <circle
+              [attr.cx]="100"
+              [attr.cy]="100"
+              [attr.r]="70 - ($index * 15)"
+              fill="none"
+              [attr.stroke]="item.color"
+              stroke-width="10"
+              stroke-linecap="round"
+              [attr.stroke-dasharray]="getProgressDasharray(item.percentage, 70 - ($index * 15))"
+              [attr.stroke-dashoffset]="0"
+              class="progress-arc"
+              [class.hovered]="hoveredSegment === item.label"
+              (mouseenter)="onSegmentHover(item.label)"
+              (mouseleave)="onSegmentLeave()">
+            </circle>
+          }
+        </g>
+        
+        <!-- Center content -->
+        <g class="center-content">
+          <circle cx="100" cy="100" r="25" fill="#111827" opacity="0.9"></circle>
+          @if (!hoveredSegment) {
+            <text x="100" y="95" text-anchor="middle" class="center-value">{{ courseData[0].value }}</text>
+            <text x="100" y="105" text-anchor="middle" class="center-label">Courses</text>
+          }
+          
+          <!-- Hovered data display -->
+          @if (hoveredSegment) {
+            <text x="100" y="95" text-anchor="middle" class="center-value">{{ getHoveredData()?.value }}</text>
+            <text x="100" y="105" text-anchor="middle" class="center-label">{{ getHoveredData()?.label }}</text>
+          }
+        </g>
+      </svg>
+      
+      <!-- Tooltip -->
+      @if (hoveredSegment && getHoveredData()) {
+        <div class="tooltip" [class.show]="hoveredSegment">
+          <div class="tooltip-content">
+            <div class="tooltip-label">{{ getHoveredData()?.label }}</div>
+            <div class="tooltip-value">{{ getHoveredData()?.value }}</div>
+            <div class="tooltip-percentage">{{ getHoveredData()?.percentage }}%</div>
+          </div>
+        </div>
+      }
+    </div>
+    
+    <!-- Legend -->
+    <div class="legend">
+      @for (item of courseData; track $index) {
+        <div class="legend-item" 
+             [class.active]="hoveredSegment === item.label"
+             (mouseenter)="onSegmentHover(item.label)"
+             (mouseleave)="onSegmentLeave()">
+          <div class="legend-color" [style.background-color]="item.color"></div>
+          <span class="legend-label">{{ item.label }}</span>
+          <span class="legend-value">{{ item.value }}</span>
+        </div>
+      }
+    </div>
+  </div>
