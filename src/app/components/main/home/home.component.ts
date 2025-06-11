@@ -532,10 +532,10 @@ export class HomeComponent implements OnInit, OnDestroy {
   //   console.log('Category selected:', category);
   // }
 // In your parent component
-onCategorySelected(category: any): void {
-  console.log('Category selected:', category);
-  // Handle the selected category here
-}
+// onCategorySelected(category: any): void {
+//   console.log('Category selected:', category);
+//   // Handle the selected category here
+// }
   onSavedCourseSelected(course: any): void {
     console.log('Saved course selected:', course);
   }
