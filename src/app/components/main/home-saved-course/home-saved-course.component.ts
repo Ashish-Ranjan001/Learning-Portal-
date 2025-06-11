@@ -1,13 +1,13 @@
 import {
   Component,
-  OnInit,
-  OnDestroy,
+   OnInit,
+   OnDestroy,
   ViewChildren,
-  QueryList,
-  ElementRef,
-  AfterViewInit,
+   QueryList,
+   ElementRef,
+   AfterViewInit,
   HostListener,
-  Renderer2,
+   Renderer2,
 } from "@angular/core"
 import { CommonModule } from "@angular/common"
 import { trigger, state, style, transition, animate, keyframes } from "@angular/animations"
@@ -60,7 +60,8 @@ export class HomeSavedCourseComponent implements OnInit, OnDestroy, AfterViewIni
       category: "Development",
       categoryColor: "#065f46",
       categoryBg: "#d1fae5",
-      image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Y29tcHV0ZXJ8ZW58MHx8MHx8fDA%3D/140x90",
+      image:
+        "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Y29tcHV0ZXJ8ZW58MHx8MHx8fDA%3D/140x90",
       progress: 65,
       lastAccessed: "2 days ago",
       instructor: "David Miller",
@@ -71,7 +72,8 @@ export class HomeSavedCourseComponent implements OnInit, OnDestroy, AfterViewIni
       category: "Design",
       categoryColor: "#9a3412",
       categoryBg: "#ffedd5",
-      image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Y29tcHV0ZXJ8ZW58MHx8MHx8fDA%3D/140x90",
+      image:
+        "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Y29tcHV0ZXJ8ZW58MHx8MHx8fDA%3D/140x90",
       progress: 42,
       lastAccessed: "Yesterday",
       instructor: "Sarah Chen",
@@ -82,7 +84,8 @@ export class HomeSavedCourseComponent implements OnInit, OnDestroy, AfterViewIni
       category: "Frontend",
       categoryColor: "#9f1239",
       categoryBg: "#ffe4e6",
-      image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Y29tcHV0ZXJ8ZW58MHx8MHx8fDA%3D/140x90",
+      image:
+        "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Y29tcHV0ZXJ8ZW58MHx8MHx8fDA%3D/140x90",
       progress: 78,
       lastAccessed: "3 days ago",
       instructor: "Michael Johnson",
@@ -93,7 +96,8 @@ export class HomeSavedCourseComponent implements OnInit, OnDestroy, AfterViewIni
       category: "Backend",
       categoryColor: "#1e40af",
       categoryBg: "#dbeafe",
-      image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Y29tcHV0ZXJ8ZW58MHx8MHx8fDA%3D/140x90",
+      image:
+        "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Y29tcHV0ZXJ8ZW58MHx8MHx8fDA%3D/140x90",
       progress: 23,
       lastAccessed: "1 week ago",
       instructor: "Emily Parker",
@@ -104,7 +108,8 @@ export class HomeSavedCourseComponent implements OnInit, OnDestroy, AfterViewIni
       category: "Data Science",
       categoryColor: "#7c2d12",
       categoryBg: "#fed7aa",
-      image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Y29tcHV0ZXJ8ZW58MHx8MHx8fDA%3D/140x90",
+      image:
+        "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Y29tcHV0ZXJ8ZW58MHx8MHx8fDA%3D/140x90",
       progress: 91,
       lastAccessed: "Today",
       instructor: "Alex Wong",
@@ -115,7 +120,8 @@ export class HomeSavedCourseComponent implements OnInit, OnDestroy, AfterViewIni
       category: "Development",
       categoryColor: "#166534",
       categoryBg: "#dcfce7",
-      image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Y29tcHV0ZXJ8ZW58MHx8MHx8fDA%3D/140x90",
+      image:
+        "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Y29tcHV0ZXJ8ZW58MHx8MHx8fDA%3D/140x90",
       progress: 54,
       lastAccessed: "4 days ago",
       instructor: "Jessica Lee",
@@ -143,64 +149,28 @@ export class HomeSavedCourseComponent implements OnInit, OnDestroy, AfterViewIni
   autoplay = true
   pauseOnHover = true
 
-  // Decay effect properties
-  cursor = { x: 0, y: 0 }
-  cachedCursor = { x: 0, y: 0 }
-  winsize = { width: 0, height: 0 }
+  // Animation frame for rotation
   animationFrameId: number | null = null
 
-  @ViewChildren("svgRef") svgRefs!: QueryList<ElementRef>
-  @ViewChildren("displacementMapRef") displacementMapRefs!: QueryList<ElementRef>
   @ViewChildren("galleryTrack") galleryTrackRef!: QueryList<ElementRef>
 
   constructor(private renderer: Renderer2) {}
 
   ngOnInit(): void {
     this.calculateDimensions()
-    this.winsize = {
-      width: window.innerWidth,
-      height: window.innerHeight,
-    }
-    this.cursor = {
-      x: window.innerWidth / 2,
-      y: window.innerHeight / 2,
-    }
-    this.cachedCursor = { ...this.cursor }
   }
 
   ngAfterViewInit(): void {
     this.startRotationAnimation()
-    this.initDecayEffect()
   }
 
   ngOnDestroy(): void {
     this.stopRotationAnimation()
-    if (this.animationFrameId) {
-      cancelAnimationFrame(this.animationFrameId)
-    }
   }
 
   @HostListener("window:resize", ["$event"])
   onResize(): void {
     this.calculateDimensions()
-    this.winsize = {
-      width: window.innerWidth,
-      height: window.innerHeight,
-    }
-  }
-
-  @HostListener("window:mousemove", ["$event"])
-  onMouseMove(event: MouseEvent): void {
-    // Update cursor position for decay effect
-    this.cursor = { x: event.clientX, y: event.clientY }
-    
-    // Handle dragging for 3D gallery rotation
-    if (this.isDragging) {
-      this.currentX = event.clientX
-      const deltaX = this.currentX - this.startX
-      this.currentRotation += deltaX * this.dragFactor
-      this.startX = this.currentX
-    }
   }
 
   calculateDimensions(): void {
@@ -252,6 +222,15 @@ export class HomeSavedCourseComponent implements OnInit, OnDestroy, AfterViewIni
     this.isDragging = true
     this.startX = event.clientX
     this.isAutoRotating = false
+  }
+
+  onMouseMove(event: MouseEvent): void {
+    if (this.isDragging) {
+      this.currentX = event.clientX
+      const deltaX = this.currentX - this.startX
+      this.currentRotation += deltaX * this.dragFactor
+      this.startX = this.currentX
+    }
   }
 
   onMouseUp(): void {
@@ -314,78 +293,5 @@ export class HomeSavedCourseComponent implements OnInit, OnDestroy, AfterViewIni
     if (progress < 30) return "#ef4444"
     if (progress < 70) return "#f59e0b"
     return "#10b981"
-  }
-
-  // Decay effect methods
-  initDecayEffect(): void {
-    this.svgRefs.forEach((svgRef, index) => {
-      const displacementMapRef = this.displacementMapRefs.toArray()[index]
-
-      const imgValues = {
-        imgTransforms: { x: 0, y: 0, rz: 0 },
-        displacementScale: 0,
-      }
-
-      const renderFrame = () => {
-        // Lerp function
-        const lerp = (a: number, b: number, n: number): number => (1 - n) * a + n * b
-
-        // Map function
-        const map = (x: number, a: number, b: number, c: number, d: number): number => ((x - a) * (d - c)) / (b - a) + c
-
-        // Distance function
-        const distance = (x1: number, x2: number, y1: number, y2: number): number => {
-          const a = x1 - x2
-          const b = y1 - y2
-          return Math.hypot(a, b)
-        }
-
-        // Calculate target transforms
-        let targetX = lerp(imgValues.imgTransforms.x, map(this.cursor.x, 0, this.winsize.width, -20, 20), 0.1)
-        let targetY = lerp(imgValues.imgTransforms.y, map(this.cursor.y, 0, this.winsize.height, -20, 20), 0.1)
-        const targetRz = lerp(imgValues.imgTransforms.rz, map(this.cursor.x, 0, this.winsize.width, -3, 3), 0.1)
-
-        // Apply elastic bounds
-        const bound = 20
-        if (targetX > bound) targetX = bound + (targetX - bound) * 0.2
-        if (targetX < -bound) targetX = -bound + (targetX + bound) * 0.2
-        if (targetY > bound) targetY = bound + (targetY - bound) * 0.2
-        if (targetY < -bound) targetY = -bound + (targetY + bound) * 0.2
-
-        imgValues.imgTransforms.x = targetX
-        imgValues.imgTransforms.y = targetY
-        imgValues.imgTransforms.rz = targetRz
-
-        // Apply transforms
-        if (svgRef && svgRef.nativeElement) {
-          this.renderer.setStyle(
-            svgRef.nativeElement,
-            "transform",
-            `translate(${imgValues.imgTransforms.x}px, ${imgValues.imgTransforms.y}px) rotateZ(${imgValues.imgTransforms.rz}deg)`,
-          )
-        }
-
-        // Calculate displacement scale based on cursor movement
-        const cursorTravelledDistance = distance(this.cachedCursor.x, this.cursor.x, this.cachedCursor.y, this.cursor.y)
-
-        imgValues.displacementScale = lerp(
-          imgValues.displacementScale,
-          map(cursorTravelledDistance, 0, 100, 0, 60),
-          0.06,
-        )
-
-        // Apply displacement scale
-        if (displacementMapRef && displacementMapRef.nativeElement) {
-          this.renderer.setAttribute(displacementMapRef.nativeElement, "scale", imgValues.displacementScale.toString())
-        }
-
-        this.cachedCursor = { ...this.cursor }
-
-        // Continue animation loop
-        requestAnimationFrame(renderFrame)
-      }
-
-      requestAnimationFrame(renderFrame)
-    })
   }
 }

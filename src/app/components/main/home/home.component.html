@@ -32,8 +32,11 @@
 
       <!-- Div 3: Card Carousel -->
       <div class="grid-item div3">
+        <button class="dashboard-btn" onclick="handleDashboardClick()">
+          My Dashboard
+        </button>
         <div class="grid-item-content">
-          <button>my dashboard</button>
+         
           <app-card-carousel 
             (itemSelected)="onCarouselItemSelected($event)">
           </app-card-carousel>

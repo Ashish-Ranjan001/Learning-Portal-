@@ -702,7 +702,17 @@
 //   }
 // }
 
-import { Component, type OnInit, type OnDestroy, HostListener } from "@angular/core"
+import {
+  Component,
+   OnInit,
+   OnDestroy,
+  ViewChildren,
+   QueryList,
+   ElementRef,
+   AfterViewInit,
+  HostListener,
+   Renderer2,
+} from "@angular/core"
 import { CommonModule } from "@angular/common"
 import { trigger, state, style, transition, animate, keyframes } from "@angular/animations"
 
@@ -720,6 +730,7 @@ interface Course {
   rating: number
   reviews: string
   popular?: boolean
+  isFavorite?: boolean
 }
 
 @Component({
@@ -730,8 +741,8 @@ interface Course {
   styleUrls: ["./favorite-courses.component.css"],
   animations: [
     trigger("cardHover", [
-      state("normal", style({ transform: "scale(1)", boxShadow: "0 4px 12px rgba(0, 0, 0, 0.05)" })),
-      state("hovered", style({ transform: "scale(1.05)", boxShadow: "0 12px 24px rgba(0, 0, 0, 0.1)" })),
+      state("normal", style({ transform: "scale(1)" })),
+      state("hovered", style({ transform: "scale(1.05)" })),
       transition("normal <=> hovered", animate("250ms cubic-bezier(0.4, 0, 0.2, 1)")),
     ]),
     trigger("cardClick", [
@@ -748,136 +759,156 @@ interface Course {
         animate("400ms cubic-bezier(0.4, 0, 0.2, 1)", style({ opacity: 1, transform: "translateY(0)" })),
       ]),
     ]),
-    trigger("galleryRotation", [transition("* => *", [animate("1500ms cubic-bezier(0.4, 0, 0.2, 1)")])]),
+    trigger("heartBeat", [
+      state("true", style({ transform: "scale(1)" })),
+      transition("false => true", [
+        animate(
+          "500ms",
+          keyframes([
+            style({ transform: "scale(1)", offset: 0 }),
+            style({ transform: "scale(1.2)", offset: 0.3 }),
+            style({ transform: "scale(1.1)", offset: 0.6 }),
+            style({ transform: "scale(1.15)", offset: 0.8 }),
+            style({ transform: "scale(1)", offset: 1 }),
+          ]),
+        ),
+      ]),
+    ]),
   ],
 })
-export class FavoriteCoursesComponent implements OnInit, OnDestroy {
+export class FavoriteCoursesComponent implements OnInit, OnDestroy, AfterViewInit {
   courses: Course[] = [
     {
       id: 1,
       title: "Full Stack Web Development",
       category: "Development",
-      categoryColor: "#065f46",
-      categoryBg: "#d1fae5",
-      image: "/evslogo.png?height=80&width=120",
+      categoryColor: "#ffffff",
+      categoryBg: "#10b981",
+      image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Y29tcHV0ZXJ8ZW58MHx8MHx8fDA%3D/140x90",
       creator: "Albert James",
-      creatorAvatar: "male.svg?height=24&width=24",
+      creatorAvatar: "female.png",
       lessons: 24,
       duration: 40,
       rating: 4.9,
       reviews: "12k",
       popular: true,
+      isFavorite: false,
     },
     {
       id: 2,
       title: "Design System",
       category: "Design",
-      categoryColor: "#9a3412",
-      categoryBg: "#ffedd5",
-      image: "/evslogo.png?height=80&width=120",
+      categoryColor: "#ffffff",
+      categoryBg: "#f59e0b",
+      image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Y29tcHV0ZXJ8ZW58MHx8MHx8fDA%3D/140x90",
       creator: "Albert James",
-      creatorAvatar: "/male.svg?height=24&width=24",
+      creatorAvatar: "male.svg",
       lessons: 24,
       duration: 40,
       rating: 4.9,
       reviews: "12k",
+      isFavorite: true,
     },
     {
       id: 3,
       title: "React Native Course",
       category: "Frontend",
-      categoryColor: "#9f1239",
-      categoryBg: "#ffe4e6",
-      image: "/evslogo.png?height=80&width=120",
+      categoryColor: "#ffffff",
+      categoryBg: "#ef4444",
+      image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Y29tcHV0ZXJ8ZW58MHx8MHx8fDA%3D/140x90",
       creator: "Albert James",
-      creatorAvatar: "/male.svg?height=24&width=24",
+      creatorAvatar: "male.svg",
       lessons: 24,
       duration: 40,
       rating: 4.9,
       reviews: "12k",
+      isFavorite: false,
     },
     {
       id: 4,
       title: "Node.js Backend",
       category: "Backend",
-      categoryColor: "#1e40af",
-      categoryBg: "#dbeafe",
-      image: "/evslogo.png?height=80&width=120",
+      categoryColor: "#ffffff",
+      categoryBg: "#3b82f6",
+      image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Y29tcHV0ZXJ8ZW58MHx8MHx8fDA%3D/140x90",
       creator: "Sarah Wilson",
-      creatorAvatar: "/male.svg?height=24&width=24",
+      creatorAvatar: "female.png",
       lessons: 18,
       duration: 35,
       rating: 4.8,
       reviews: "8k",
+      isFavorite: false,
     },
     {
       id: 5,
       title: "UI/UX Fundamentals",
       category: "Design",
-      categoryColor: "#7c2d12",
-      categoryBg: "#fed7aa",
-      image: "/evslogo.png?height=80&width=120",
+      categoryColor: "#ffffff",
+      categoryBg: "#8b5cf6",
+      image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Y29tcHV0ZXJ8ZW58MHx8MHx8fDA%3D/140x90",
       creator: "Mike Chen",
-      creatorAvatar: "/male.svg?height=24&width=24",
+      creatorAvatar: "male.svg",
       lessons: 16,
       duration: 28,
       rating: 4.7,
       reviews: "6k",
+      isFavorite: true,
     },
     {
       id: 6,
       title: "Python Data Science",
       category: "Data Science",
-      categoryColor: "#166534",
-      categoryBg: "#dcfce7",
-      image: "/evslogo.png?height=80&width=120",
+      categoryColor: "#ffffff",
+      categoryBg: "#06b6d4",
+      image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Y29tcHV0ZXJ8ZW58MHx8MHx8fDA%3D/140x90",
       creator: "Dr. Lisa Park",
-      creatorAvatar: "/male.svg?height=24&width=24",
+      creatorAvatar: "male.svg",
       lessons: 32,
       duration: 55,
       rating: 4.9,
       reviews: "15k",
+      isFavorite: false,
     },
   ]
 
   // 3D Gallery properties
   isScreenSizeSm = false
-  cylinderWidth = 1400
+  cylinderWidth = 1200
   faceCount = this.courses.length
   faceWidth = 0
   radius = 0
   currentRotation = 0
-  currentIndex = 0 // Track current card index
   autoplayInterval: any
   isDragging = false
   startX = 0
   currentX = 0
-  dragFactor = 0.2 // Reduced drag sensitivity
+  dragFactor = 0.3
+  rotationSpeed = 0.5
+  isAutoRotating = true
 
   // Animation states
   hoveredCard: number | null = null
   clickedCard: number | null = null
   autoplay = true
   pauseOnHover = true
-  isAnimating = false // Prevent multiple animations
 
-  // Card colors for subtle animations
-  cardColors = [
-    "rgba(236, 246, 255, 0.8)", // Light blue
-    "rgba(240, 253, 244, 0.8)", // Light green
-    "rgba(254, 242, 242, 0.8)", // Light red
-    "rgba(255, 251, 235, 0.8)", // Light yellow
-    "rgba(240, 240, 255, 0.8)", // Light purple
-    "rgba(245, 243, 255, 0.8)", // Light lavender
-  ]
+  // Animation frame for rotation
+  animationFrameId: number | null = null
+
+  @ViewChildren("galleryTrack") galleryTrackRef!: QueryList<ElementRef>
+
+  constructor(private renderer: Renderer2) {}
 
   ngOnInit(): void {
     this.calculateDimensions()
-    this.startAutoplay()
+  }
+
+  ngAfterViewInit(): void {
+    this.startRotationAnimation()
   }
 
   ngOnDestroy(): void {
-    this.stopAutoplay()
+    this.stopRotationAnimation()
   }
 
   @HostListener("window:resize", ["$event"])
@@ -887,128 +918,68 @@ export class FavoriteCoursesComponent implements OnInit, OnDestroy {
 
   calculateDimensions(): void {
     this.isScreenSizeSm = window.innerWidth <= 768
-    this.cylinderWidth = this.isScreenSizeSm ? 800 : 1400
+    this.cylinderWidth = this.isScreenSizeSm ? 700 : 1200
     this.faceWidth = (this.cylinderWidth / this.faceCount) * 1.2
     this.radius = this.cylinderWidth / (2 * Math.PI)
   }
 
-  startAutoplay(): void {
-    if (this.autoplay) {
-      this.autoplayInterval = setInterval(() => {
-        this.rotateToNext()
-      }, 4500) // Increased to 6 seconds for slower rotation
+  startRotationAnimation(): void {
+    if (this.autoplay && !this.animationFrameId) {
+      const animate = () => {
+        if (this.isAutoRotating && !this.isDragging) {
+          this.currentRotation -= this.rotationSpeed
+          if (this.galleryTrackRef && this.galleryTrackRef.first) {
+            this.renderer.setStyle(
+              this.galleryTrackRef.first.nativeElement,
+              "transform",
+              `rotateY(${this.currentRotation}deg)`,
+            )
+          }
+        }
+        this.animationFrameId = requestAnimationFrame(animate)
+      }
+      this.animationFrameId = requestAnimationFrame(animate)
     }
   }
 
-  stopAutoplay(): void {
-    if (this.autoplayInterval) {
-      clearInterval(this.autoplayInterval)
+  stopRotationAnimation(): void {
+    if (this.animationFrameId) {
+      cancelAnimationFrame(this.animationFrameId)
+      this.animationFrameId = null
     }
-  }
-
-  rotateToNext(): void {
-    if (this.isAnimating) return // Prevent overlapping animations
-    
-    this.isAnimating = true
-    this.currentIndex = (this.currentIndex + 1) % this.faceCount
-    const anglePerCard = 360 / this.faceCount
-    
-    // Smooth rotation to the next card
-    this.currentRotation -= anglePerCard
-    
-    // Reset animation flag after transition completes
-    setTimeout(() => {
-      this.isAnimating = false
-    }, 1000) // Match with CSS transition duration
-  }
-
-  rotateToPrevious(): void {
-    if (this.isAnimating) return
-    
-    this.isAnimating = true
-    this.currentIndex = this.currentIndex === 0 ? this.faceCount - 1 : this.currentIndex - 1
-    const anglePerCard = 360 / this.faceCount
-    
-    this.currentRotation += anglePerCard
-    
-    setTimeout(() => {
-      this.isAnimating = false
-    }, 1000)
-  }
-
-  rotateToCard(index: number): void {
-    if (this.isAnimating || index === this.currentIndex) return
-    
-    this.isAnimating = true
-    const anglePerCard = 360 / this.faceCount
-    const currentAngle = this.currentIndex * anglePerCard
-    const targetAngle = index * anglePerCard
-    let angleDiff = targetAngle - currentAngle
-    
-    // Find shortest rotation path
-    if (angleDiff > 180) {
-      angleDiff -= 360
-    } else if (angleDiff < -180) {
-      angleDiff += 360
-    }
-    
-    this.currentRotation -= angleDiff
-    this.currentIndex = index
-    
-    setTimeout(() => {
-      this.isAnimating = false
-    }, 1000)
   }
 
   onMouseEnter(): void {
     if (this.pauseOnHover) {
-      this.stopAutoplay()
+      this.isAutoRotating = false
     }
   }
 
   onMouseLeave(): void {
-    if (this.pauseOnHover && !this.isDragging) {
-      this.startAutoplay()
+    if (this.pauseOnHover) {
+      this.isAutoRotating = true
     }
   }
 
   onMouseDown(event: MouseEvent): void {
     this.isDragging = true
     this.startX = event.clientX
-    this.stopAutoplay()
+    this.isAutoRotating = false
   }
 
   onMouseMove(event: MouseEvent): void {
-    if (!this.isDragging) return
-
-    this.currentX = event.clientX
-    const deltaX = this.currentX - this.startX
-    
-    // Update rotation based on drag
-    this.currentRotation += deltaX * this.dragFactor
-    
-    // Update current index based on rotation
-    const anglePerCard = 360 / this.faceCount
-    const normalizedRotation = ((this.currentRotation % 360) + 360) % 360
-    this.currentIndex = Math.round(normalizedRotation / anglePerCard) % this.faceCount
-    
-    this.startX = this.currentX
+    if (this.isDragging) {
+      this.currentX = event.clientX
+      const deltaX = this.currentX - this.startX
+      this.currentRotation += deltaX * this.dragFactor
+      this.startX = this.currentX
+    }
   }
 
   onMouseUp(): void {
-    if (!this.isDragging) return
-    
     this.isDragging = false
-    
-    // Snap to nearest card
-    const anglePerCard = 360 / this.faceCount
-    const targetRotation = Math.round(this.currentRotation / anglePerCard) * anglePerCard
-    this.currentRotation = targetRotation
-    
     if (this.autoplay) {
-      setTimeout(() => {
-        this.startAutoplay()
-      }, 1000) // Wait before restarting autoplay
+      this.isAutoRotating = true
     }
   }
 
@@ -1021,31 +992,44 @@ export class FavoriteCoursesComponent implements OnInit, OnDestroy {
   }
 
   onCardClick(course: Course): void {
-    // Find the index of the clicked course
-    const clickedIndex = this.courses.findIndex(c => c.id === course.id)
-    
-    // If it's not the current card, rotate to it
-    if (clickedIndex !== this.currentIndex) {
-      this.rotateToCard(clickedIndex)
-    } else {
-      // If it's the current card, show the alert
-      this.clickedCard = course.id
-      setTimeout(() => {
-        this.clickedCard = null
-      }, 300)
+    this.clickedCard = course.id
+    setTimeout(() => {
+      this.clickedCard = null
+    }, 300)
 
-      alert(`You clicked on "${course.title}" course`)
-      console.log("Course clicked:", course)
+    // Show alert when card is clicked
+    alert(`You clicked on "${course.title}" course`)
+
+    // Log the click event
+    console.log("Course clicked:", course)
+  }
+
+  toggleFavorite(course: Course, event: Event): void {
+    event.stopPropagation() // Prevent card click event
+
+    course.isFavorite = !course.isFavorite
+
+    if (course.isFavorite) {
+      alert(`"${course.title}" has been added to your favorite courses!`)
+    } else {
+      alert(`"${course.title}" has been removed from your favorite courses!`)
     }
+
+    console.log(`Course ${course.title} favorite status:`, course.isFavorite)
   }
 
   onSeeAll(): void {
     console.log("See All clicked")
+    alert("Navigating to all courses...")
   }
 
   onViewDetails(courseId: number, event: Event): void {
     event.stopPropagation()
-    console.log("View Details clicked for course:", courseId)
+    const course = this.courses.find((c) => c.id === courseId)
+    if (course) {
+      alert(`Viewing details for "${course.title}"`)
+      console.log("View Details clicked for course:", course)
+    }
   }
 
   getCardTransform(index: number): string {
@@ -1057,20 +1041,11 @@ export class FavoriteCoursesComponent implements OnInit, OnDestroy {
     return `rotateY(${this.currentRotation}deg)`
   }
 
-  getCardBackground(index: number): string {
-    return this.cardColors[index % this.cardColors.length]
-  }
-
   getCardZIndex(index: number): number {
     // Calculate which card is most front-facing based on current rotation
-    const anglePerCard = 360 / this.faceCount
-    const cardAngle = (anglePerCard * index) % 360
-    const currentAngle = (this.currentRotation % 360 + 360) % 360
-    
-    let angleDiff = Math.abs(cardAngle - currentAngle)
-    if (angleDiff > 180) {
-      angleDiff = 360 - angleDiff
-    }
+    const cardAngle = (360 / this.faceCount) * index
+    const currentAngle = this.currentRotation % 360
+    const angleDiff = Math.abs((cardAngle - currentAngle) % 360)
 
     // Cards facing front get higher z-index
     return 1000 - Math.round(angleDiff)

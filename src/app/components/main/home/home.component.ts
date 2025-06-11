@@ -418,12 +418,12 @@ import { FolderComponent } from '../folder/folder.component';
     CardCarouselComponent,
     HeroBannerComponent,
     FavoriteCoursesComponent,
-    HomeCategoriesComponent
+    // HomeCategoriesComponent
     // Add new component imports here when available:
     // CategoriesComponent,
     // PieChartComponent,
     // SavedCoursesComponent
-    ,
+    
     HomeSavedCourseComponent, FolderComponent
 ],
   
@@ -522,6 +522,10 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   onProgressUpdate(progress: any): void {
     console.log('Progress updated:', progress);
+  }
+
+   handleDashboardClick(): void {
+    alert('Welcome to your Dashboard!');
   }
 
   onCalendarEventSelected(event: any): void {

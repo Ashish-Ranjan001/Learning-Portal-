@@ -603,6 +603,36 @@
   box-shadow: none;
 }
 
+.dashboard-btn {
+  background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.dashboard-btn:hover {
+  background: linear-gradient(135deg, #6d28d9 0%, #9333ea 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(124, 58, 237, 0.4);
+}
+
+.dashboard-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.3);
+}
+
+.dashboard-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.3);
+}
 /* Div 4: Calendar */
 .div4 {
   grid-row: span 2 / span 2;
@@ -637,7 +667,7 @@
   grid-row: span 3 / span 3;
   grid-column-start: 4;
   grid-row-start: 5;
-  max-height: 350px;
+  max-height: 400px;
 }
 
 .grid-item.div7 .grid-item-content {
