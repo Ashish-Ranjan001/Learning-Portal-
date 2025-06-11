@@ -32,6 +32,7 @@ import { ViewVideoComponent } from './components/main/view-video/view-video.comp
 import { CategoriesComponent } from './components/main/categories/categories.component';
 import { CoursesComponent } from './components/main/courses/courses.component';
 import {  CoursesDetailComponent } from './components/main/courses-details/courses-details.component';
+// import { DashboardComponent } from './components/main/dashboard/dashboard.component';
 
 
 
@@ -41,6 +42,7 @@ export const routes: Routes = [
     // {path:'user-login',component:LoginComponent},
     // {path:'admin-login',component:LoginComponent},
     {path:'login',component:LoginComponent},
+    // {path:'dash',component:DashboardComponent},
     {path:'home',component:HomeComponent},
     { path: 'categories', component: CategoriesComponent },
     { path: 'courses/:categoryId', component: CoursesComponent },
