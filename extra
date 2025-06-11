@@ -397,23 +397,23 @@ private animateAllCardsToNewPositions(callback?: () => void): void {
       isAnimating: true
     };
   }
-
   private animateToPosition(
     cardId: number, 
     targetPosition: CardPosition, 
-    duration: number = 300,
+    duration: number = 600, // Increased default from 300
     callback?: () => void
   ): void {
     const startPosition = this.cardPositions.get(cardId);
     if (!startPosition) return;
-
+  
     const startTime = performance.now();
-
+  
     const animate = (currentTime: number) => {
       const elapsed = currentTime - startTime;
       const progress = Math.min(elapsed / duration, 1);
       
-      const easeProgress = this.easeOutQuart(progress);
+      // Use the smoother easing function
+      const easeProgress = this.easeOutCubic(progress); // New easing function
       
       const currentPosition: CardPosition = {
         x: startPosition.x + (targetPosition.x - startPosition.x) * easeProgress,
@@ -422,14 +422,14 @@ private animateAllCardsToNewPositions(callback?: () => void): void {
         rotateY: startPosition.rotateY + (targetPosition.rotateY - startPosition.rotateY) * easeProgress,
         rotateZ: startPosition.rotateZ + (targetPosition.rotateZ - startPosition.rotateZ) * easeProgress,
         scale: startPosition.scale + (targetPosition.scale - startPosition.scale) * easeProgress,
-        zIndex: progress > 0.5 ? targetPosition.zIndex : startPosition.zIndex,
+        zIndex: progress > 0.7 ? targetPosition.zIndex : startPosition.zIndex, // Changed from 0.5
         opacity: startPosition.opacity + (targetPosition.opacity - startPosition.opacity) * easeProgress,
         isAnimating: true
       };
-
+  
       this.cardPositions.set(cardId, currentPosition);
       this.cdr.detectChanges();
-
+  
       if (progress < 1) {
         this.animationFrameId = requestAnimationFrame(animate);
       } else {
@@ -441,9 +441,62 @@ private animateAllCardsToNewPositions(callback?: () => void): void {
         if (callback) callback();
       }
     };
-
+  
     this.animationFrameId = requestAnimationFrame(animate);
   }
+  
+  private easeOutCubic(t: number): number {
+    return 1 - Math.pow(1 - t, 3);
+  }
+  
+
+
+  // private animateToPosition(
+  //   cardId: number, 
+  //   targetPosition: CardPosition, 
+  //   duration: number = 300,
+  //   callback?: () => void
+  // ): void {
+  //   const startPosition = this.cardPositions.get(cardId);
+  //   if (!startPosition) return;
+
+  //   const startTime = performance.now();
+
+  //   const animate = (currentTime: number) => {
+  //     const elapsed = currentTime - startTime;
+  //     const progress = Math.min(elapsed / duration, 1);
+      
+  //     const easeProgress = this.easeOutQuart(progress);
+      
+  //     const currentPosition: CardPosition = {
+  //       x: startPosition.x + (targetPosition.x - startPosition.x) * easeProgress,
+  //       y: startPosition.y + (targetPosition.y - startPosition.y) * easeProgress,
+  //       rotateX: startPosition.rotateX + (targetPosition.rotateX - startPosition.rotateX) * easeProgress,
+  //       rotateY: startPosition.rotateY + (targetPosition.rotateY - startPosition.rotateY) * easeProgress,
+  //       rotateZ: startPosition.rotateZ + (targetPosition.rotateZ - startPosition.rotateZ) * easeProgress,
+  //       scale: startPosition.scale + (targetPosition.scale - startPosition.scale) * easeProgress,
+  //       zIndex: progress > 0.5 ? targetPosition.zIndex : startPosition.zIndex,
+  //       opacity: startPosition.opacity + (targetPosition.opacity - startPosition.opacity) * easeProgress,
+  //       isAnimating: true
+  //     };
+
+  //     this.cardPositions.set(cardId, currentPosition);
+  //     this.cdr.detectChanges();
+
+  //     if (progress < 1) {
+  //       this.animationFrameId = requestAnimationFrame(animate);
+  //     } else {
+  //       this.cardPositions.set(cardId, {
+  //         ...targetPosition,
+  //         isAnimating: false
+  //       });
+  //       this.cdr.detectChanges();
+  //       if (callback) callback();
+  //     }
+  //   };
+
+  //   this.animationFrameId = requestAnimationFrame(animate);
+  // }
 
   // private easeOutQuart(t: number): number {
   //   return 1 - Math.pow(1 - t, 4);
@@ -452,6 +505,10 @@ private animateAllCardsToNewPositions(callback?: () => void): void {
   private easeOutQuart(t: number): number {
     return 1 - Math.pow(1 - t, 3); // Changed from power of 4 to 3 for smoother curve
   }
+
+  // private easeOutQuart(t: number): number {
+  //   return 1 - Math.pow(1 - t, 4);
+  // }
   
 
   onCardClick(card: CourseCard): void {
