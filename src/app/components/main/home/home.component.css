@@ -481,6 +481,11 @@
   }
 }*/
 
+
+
+
+/* =========================================================================================== */
+
 /* Main container using flexbox */
 .app-container {
   display: flex;
@@ -521,11 +526,11 @@
   min-height: 50px;
 }
 
-/* New Grid Parent - 10 row layout */
+/* New Grid Parent - Updated to 7 rows instead of 10 */
 .parent {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  grid-template-rows: repeat(10, minmax(50px, auto));
+  grid-template-rows: repeat(7, minmax(50px, auto));
   gap: 8px;
   width: 100%;
   height: fit-content;
@@ -594,8 +599,8 @@
   grid-row: span 2 / span 2;
   grid-column-start: 5;
   min-height: 150px;
-  background: transparent; /* Make it transparent */
-  box-shadow: none; 
+  background: transparent;
+  box-shadow: none;
 }
 
 /* Div 4: Calendar */
@@ -607,15 +612,6 @@
 }
 
 /* Div 5: Folder Component */
-/* .div5 {
-  grid-row: span 2 / span 2;
-  grid-column-start: 5;
-  grid-row-start: 3;
-  min-height: 150px;
-  overflow: visible; 
-  z-index: 20; 
-} */
-
 .div5 {
   grid-row: span 2 / span 2;
   grid-column-start: 5;
@@ -623,8 +619,8 @@
   min-height: 150px;
   overflow: visible;
   z-index: 20;
-  background: transparent; /* Make it transparent */
-  box-shadow: none; /* Remove any box-shadow if present */
+  background: transparent;
+  box-shadow: none;
 }
 
 /* Div 6: Favorite Courses */
@@ -636,67 +632,20 @@
 }
 
 /* Div 7: Categories */
-/* .div7 {
+.grid-item.div7 {
   grid-column: span 2 / span 2;
   grid-row: span 3 / span 3;
   grid-column-start: 4;
   grid-row-start: 5;
   max-height: 350px;
-} */
-
-.grid-item.div7 {
-    grid-column: span 2 / span 2;
-    grid-row: span 3 / span 3;
-    grid-column-start: 4;
-    grid-row-start: 5;
-    max-height: 350px;
 }
 
 .grid-item.div7 .grid-item-content {
-    height: 100%;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-
-/* Div 8: Saved Courses */
-/* .div8 {
-  grid-column: span 5 / span 5;
-  grid-row: span 3 / span 3;
-  grid-row-start: 8;
-  max-height: 350px;
-
-  
-} */
-
-/* Placeholder content styling */
-.placeholder-content {
+  height: 100%;
+  width: 100%;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100%;
-  text-align: center;
-  padding: 16px;
-  color: #666;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  overflow: auto;
-}
-
-.placeholder-content h3 {
-  margin: 0 0 8px 0;
-  font-size: 1.1em;
-  color: #333;
-  flex-shrink: 0;
-}
-
-.placeholder-content p {
-  margin: 0 0 12px 0;
-  font-size: 0.85em;
-  opacity: 0.8;
-  flex-shrink: 0;
 }
 
 /* Custom Scrollbar for main container */
@@ -762,7 +711,7 @@
 @media (max-width: 1024px) {
   .parent {
     grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(12, minmax(50px, auto));
+    grid-template-rows: repeat(9, minmax(50px, auto));
     gap: 8px;
   }
 
@@ -825,21 +774,13 @@
     grid-row-start: 10;
     min-height: 180px;
   }
-
-  .div8 {
-    grid-column: span 4 / span 4;
-    grid-row: span 2 / span 2;
-    grid-column-start: 1;
-    grid-row-start: 12;
-    min-height: 200px;
-  }
 }
 
 /* Mobile Styles */
 @media (max-width: 768px) {
   .parent {
     grid-template-columns: 1fr;
-    grid-template-rows: repeat(8, auto);
+    grid-template-rows: repeat(7, auto);
     gap: 6px;
   }
 
@@ -854,8 +795,7 @@
   .div4,
   .div5,
   .div6,
-  .div7,
-  .div8 {
+  .div7 {
     grid-column: span 1 / span 1;
     grid-row: span 1 / span 1;
     grid-column-start: auto;
@@ -873,10 +813,6 @@
 
   .div6, .div7 {
     min-height: 180px;
-  }
-
-  .div8 {
-    min-height: 200px;
   }
 
   .div5 {
@@ -916,7 +852,7 @@
     min-height: 120px;
   }
 
-  .div6, .div7, .div8 {
+  .div6, .div7 {
     min-height: 150px;
   }
 
