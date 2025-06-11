@@ -632,26 +632,44 @@
   grid-column: span 3 / span 3;
   grid-row: span 3 / span 3;
   grid-row-start: 5;
-  min-height: 270px;
+  min-height: 350px;
 }
 
 /* Div 7: Categories */
-.div7 {
+/* .div7 {
   grid-column: span 2 / span 2;
   grid-row: span 3 / span 3;
   grid-column-start: 4;
   grid-row-start: 5;
-  max-height: 270px;
+  max-height: 350px;
+} */
+
+.grid-item.div7 {
+    grid-column: span 2 / span 2;
+    grid-row: span 3 / span 3;
+    grid-column-start: 4;
+    grid-row-start: 5;
+    max-height: 350px;
 }
 
+.grid-item.div7 .grid-item-content {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
 /* Div 8: Saved Courses */
-.div8 {
+/* .div8 {
   grid-column: span 5 / span 5;
   grid-row: span 3 / span 3;
   grid-row-start: 8;
   max-height: 350px;
+
   
-}
+} */
 
 /* Placeholder content styling */
 .placeholder-content {

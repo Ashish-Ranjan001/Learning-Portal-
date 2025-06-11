@@ -222,4 +222,11 @@ export class ViewVideoComponent implements OnInit, OnDestroy {
       window.open(this.module.videopath, "_blank")
     }
   }
+  // onPdf(){
+  //   this.module?.pdfpath
+  // }
+  onPdf() {
+    console.log("PDF Path:", this.module?.pdfPath);
+  window.open(this.module?.pdfPath || '', '_blank');
+}
 }

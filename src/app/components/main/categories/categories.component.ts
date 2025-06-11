@@ -24,13 +24,13 @@ import { jwtDecode } from 'jwt-decode';
       </div>
 
       <!-- Debug Info (Remove in production) -->
-      <!-- <div class="alert alert-info mb-4" *ngIf="!loading">
+      <div class="alert alert-info mb-4" *ngIf="!loading">
         <strong>Debug Info:</strong>
         <br>Categories count: {{ categories.length }}
         <br>Loading: {{ loading }}
         <br>Error: {{ error || 'None' }}
         <br>Raw data: {{ categories | json }}
-      </div> -->
+      </div>
 
       <!-- Loading State -->
       <div *ngIf="loading" class="d-flex justify-content-center py-5">
