@@ -99,7 +99,7 @@ export class UserLearningService {
   constructor(private http: HttpClient) { }
 
   getAllCategories(userId: string): Observable<CategoryWithCoursesDto[]> {
-    return this.http.get<CategoryWithCoursesDto[]>(`${this.baseUrl}/categories/${userId}`);
+    return this.http.get<CategoryWithCoursesDto[]>(`${this.baseUrl}/allcategoriesinlob/${userId}`);
   }
 
   getCoursesByCategory(categoryId: string, userId: string): Observable<CourseBasicDto[]> {

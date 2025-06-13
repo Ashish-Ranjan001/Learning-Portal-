@@ -1,5 +1,7 @@
 import { Component, OnInit, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { DashboardServicesService } from '../../../services/homedashboard/dashboard-services.service';
+import { jwtDecode } from 'jwt-decode';
 
 interface CourseData {
   label: string;
@@ -7,6 +9,14 @@ interface CourseData {
   maxValue: number;
   color: string;
   percentage: number;
+}
+
+interface CategoryStats {
+  categoryName: string;
+  totalCourses: number;
+  enrolledCourses: number;
+  completedCourses: number;
+  inProgressCourses: number;
 }
 
 @Component({
@@ -22,47 +32,165 @@ export class ProgressBarComponent implements OnInit, OnDestroy {
   hoveredSegment: string | null = null;
   animationProgress = 0;
   private animationFrame: number | null = null;
+  
+  // Dynamic data properties
+  userId: string | null = null;
+  isLoading = true;
+  error: string | null = null;
 
-  // Static data for the radial chart
-  courseData: CourseData[] = [
-    {
-      label: 'Total Courses',
-      value: 200,
-      maxValue: 200,
-      color: '#8B5CF6',
-      percentage: 100
-    },
-    {
-      label: 'Enrolled Courses',
-      value: 150,
-      maxValue: 200,
-      color: '#A855F7',
-      percentage: 75
-    },
-    {
-      label: 'In Progress',
-      value: 80,
-      maxValue: 200,
-      color: '#C084FC',
-      percentage: 40
-    },
-    {
-      label: 'Completed',
-      value: 45,
-      maxValue: 200,
-      color: '#DDD6FE',
-      percentage: 22.5
-    }
-  ];
+  // Course data that will be populated from API
+  courseData: CourseData[] = [];
+
+  // Totals from all categories
+  totalCourses = 0;
+  enrolledCourses = 0;
+  inProgressCourses = 0;
+  completedCourses = 0;
+
+  constructor(private dashboardService: DashboardServicesService) {}
 
   ngOnInit(): void {
-    this.startAnimation();
+    this.userId = this.getDecodedUserId();
+    if (this.userId) {
+      this.loadCourseStats();
+    } else {
+      this.error = 'Unable to retrieve user ID from token';
+      this.isLoading = false;
+      this.setDefaultData();
+    }
   }
 
   ngOnDestroy(): void {
     if (this.animationFrame) {
       cancelAnimationFrame(this.animationFrame);
     }
+  }
+
+  getDecodedUserId(): string | null {
+    try {
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+        console.error("No auth token found in localStorage.");
+        return null;
+      }
+
+      const decodedToken: any = jwtDecode(token);
+      console.log("=== DECODED TOKEN ===", decodedToken);
+
+      const userId = decodedToken.UserId || decodedToken.nameid || decodedToken.sub;
+      console.log("=== EXTRACTED USER ID ===", userId);
+      return userId ? String(userId) : null;
+    } catch (error) {
+      console.error("Error decoding JWT:", error);
+      return null;
+    }
+  }
+
+  loadCourseStats(): void {
+    if (!this.userId) return;
+
+    this.isLoading = true;
+    // Convert string userId to number for the API call
+    // const userIdNumber = parseInt(this.userId, 10);
+    
+    this.dashboardService.getStatsForHomeBanner(this.userId).subscribe({
+      next: (data: any) => {
+        console.log('Course stats received:', data);
+        this.processCategoryStats(data);
+        this.isLoading = false;
+        this.error = null;
+        this.startAnimation();
+      },
+      error: (error: any) => {
+        console.error('Error loading course stats:', error);
+        this.error = 'Failed to load course statistics';
+        this.isLoading = false;
+        this.setDefaultData();
+        this.startAnimation();
+      }
+    });
+  }
+
+  processCategoryStats(categoryStats: CategoryStats[]): void {
+    // Reset totals
+    this.totalCourses = 0;
+    this.enrolledCourses = 0;
+    this.inProgressCourses = 0;
+    this.completedCourses = 0;
+
+    // Calculate totals from all categories
+    categoryStats.forEach((category: CategoryStats) => {
+      this.totalCourses += category.totalCourses || 0;
+      this.enrolledCourses += category.enrolledCourses || 0;
+      this.inProgressCourses += category.inProgressCourses || 0;
+      this.completedCourses += category.completedCourses || 0;
+    });
+
+    // Prepare course data for the radial chart
+    this.courseData = [
+      {
+        label: 'Total Courses',
+        value: this.totalCourses,
+        maxValue: this.totalCourses,
+        color: '#8B5CF6',
+        percentage: 100
+      },
+      {
+        label: 'Enrolled Courses',
+        value: this.enrolledCourses,
+        maxValue: this.totalCourses,
+        color: '#A855F7',
+        percentage: this.totalCourses > 0 ? (this.enrolledCourses / this.totalCourses) * 100 : 0
+      },
+      {
+        label: 'In Progress',
+        value: this.inProgressCourses,
+        maxValue: this.totalCourses,
+        color: '#C084FC',
+        percentage: this.totalCourses > 0 ? (this.inProgressCourses / this.totalCourses) * 100 : 0
+      },
+      {
+        label: 'Completed',
+        value: this.completedCourses,
+        maxValue: this.totalCourses,
+        color: '#DDD6FE',
+        percentage: this.totalCourses > 0 ? (this.completedCourses / this.totalCourses) * 100 : 0
+      }
+    ];
+  }
+
+  setDefaultData(): void {
+    // Set default data when API fails or no user ID
+    this.courseData = [
+      {
+        label: 'Total Courses',
+        value: 0,
+        maxValue: 1,
+        color: '#8B5CF6',
+        percentage: 0
+      },
+      {
+        label: 'Enrolled Courses',
+        value: 0,
+        maxValue: 1,
+        color: '#A855F7',
+        percentage: 0
+      },
+      {
+        label: 'In Progress',
+        value: 0,
+        maxValue: 1,
+        color: '#C084FC',
+        percentage: 0
+      },
+      {
+        label: 'Completed',
+        value: 0,
+        maxValue: 1,
+        color: '#DDD6FE',
+        percentage: 0
+      }
+    ];
   }
 
   private startAnimation(): void {
@@ -121,7 +249,19 @@ export class ProgressBarComponent implements OnInit, OnDestroy {
   private emitProgressUpdate(): void {
     this.progressUpdate.emit({
       courseData: this.courseData,
-      animationComplete: true
+      animationComplete: true,
+      totals: {
+        total: this.totalCourses,
+        enrolled: this.enrolledCourses,
+        inProgress: this.inProgressCourses,
+        completed: this.completedCourses
+      }
     });
+  }
+
+  refreshData(): void {
+    if (this.userId) {
+      this.loadCourseStats();
+    }
   }
 }

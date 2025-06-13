@@ -68,15 +68,15 @@
   
   .center-value {
     fill: #FFFFFF;
-    font-size: 18px;
+    font-size: 14px;
     font-weight: 700;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
   }
   
   .center-label {
     fill: #9CA3AF;
-    font-size: 10px;
-    font-weight: 500;
+    font-size: 8px;
+    font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;

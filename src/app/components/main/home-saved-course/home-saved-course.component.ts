@@ -1,19 +1,21 @@
 import {
   Component,
-   OnInit,
-   OnDestroy,
+  OnInit,
+  OnDestroy,
   ViewChildren,
-   QueryList,
-   ElementRef,
-   AfterViewInit,
+  QueryList,
+  ElementRef,
+  AfterViewInit,
   HostListener,
-   Renderer2,
+  Renderer2,
 } from "@angular/core"
 import { CommonModule } from "@angular/common"
 import { trigger, state, style, transition, animate, keyframes } from "@angular/animations"
+import { DashboardServicesService } from '../../../services/homedashboard/dashboard-services.service'
+import { jwtDecode } from 'jwt-decode'
 
 interface SavedCourse {
-  id: number
+  id: string
   title: string
   category: string
   categoryColor: string
@@ -22,6 +24,18 @@ interface SavedCourse {
   progress: number
   lastAccessed: string
   instructor: string
+  description?: string
+  durationInMinutes?: number
+  durationInHours?: number
+  isEnrolled?: boolean
+  smeName?: string
+  isFavorited?: boolean
+  isSaved?: boolean
+  favoriteCount?: number
+  watchedMinutes?: number
+  remainingMinutes?: number
+  totalDurationInMinutes?: number
+  moduleCount?: number
 }
 
 @Component({
@@ -53,85 +67,14 @@ interface SavedCourse {
   ],
 })
 export class HomeSavedCourseComponent implements OnInit, OnDestroy, AfterViewInit {
-  savedCourses: SavedCourse[] = [
-    {
-      id: 1,
-      title: "Advanced JavaScript",
-      category: "Development",
-      categoryColor: "#065f46",
-      categoryBg: "#d1fae5",
-      image:
-        "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Y29tcHV0ZXJ8ZW58MHx8MHx8fDA%3D/140x90",
-      progress: 65,
-      lastAccessed: "2 days ago",
-      instructor: "David Miller",
-    },
-    {
-      id: 2,
-      title: "UI/UX Masterclass",
-      category: "Design",
-      categoryColor: "#9a3412",
-      categoryBg: "#ffedd5",
-      image:
-        "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Y29tcHV0ZXJ8ZW58MHx8MHx8fDA%3D/140x90",
-      progress: 42,
-      lastAccessed: "Yesterday",
-      instructor: "Sarah Chen",
-    },
-    {
-      id: 3,
-      title: "React Hooks Deep Dive",
-      category: "Frontend",
-      categoryColor: "#9f1239",
-      categoryBg: "#ffe4e6",
-      image:
-        "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Y29tcHV0ZXJ8ZW58MHx8MHx8fDA%3D/140x90",
-      progress: 78,
-      lastAccessed: "3 days ago",
-      instructor: "Michael Johnson",
-    },
-    {
-      id: 4,
-      title: "Node.js Microservices",
-      category: "Backend",
-      categoryColor: "#1e40af",
-      categoryBg: "#dbeafe",
-      image:
-        "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Y29tcHV0ZXJ8ZW58MHx8MHx8fDA%3D/140x90",
-      progress: 23,
-      lastAccessed: "1 week ago",
-      instructor: "Emily Parker",
-    },
-    {
-      id: 5,
-      title: "Data Visualization",
-      category: "Data Science",
-      categoryColor: "#7c2d12",
-      categoryBg: "#fed7aa",
-      image:
-        "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Y29tcHV0ZXJ8ZW58MHx8MHx8fDA%3D/140x90",
-      progress: 91,
-      lastAccessed: "Today",
-      instructor: "Alex Wong",
-    },
-    {
-      id: 6,
-      title: "TypeScript Fundamentals",
-      category: "Development",
-      categoryColor: "#166534",
-      categoryBg: "#dcfce7",
-      image:
-        "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Y29tcHV0ZXJ8ZW58MHx8MHx8fDA%3D/140x90",
-      progress: 54,
-      lastAccessed: "4 days ago",
-      instructor: "Jessica Lee",
-    },
-  ]
+  savedCourses: SavedCourse[] = []
+  isLoading = true
+  error: string | null = null
 
   // 3D Gallery properties
   isScreenSizeSm = false
   cylinderWidth = 1200
-  faceCount = this.savedCourses.length
+  faceCount = 0
   faceWidth = 0
   radius = 0
   currentRotation = 0
@@ -144,8 +87,8 @@ export class HomeSavedCourseComponent implements OnInit, OnDestroy, AfterViewIni
   isAutoRotating = true
 
   // Animation states
-  hoveredCard: number | null = null
-  clickedCard: number | null = null
+  hoveredCard: string | null = null
+  clickedCard: string | null = null
   autoplay = true
   pauseOnHover = true
 
@@ -154,9 +97,13 @@ export class HomeSavedCourseComponent implements OnInit, OnDestroy, AfterViewIni
 
   @ViewChildren("galleryTrack") galleryTrackRef!: QueryList<ElementRef>
 
-  constructor(private renderer: Renderer2) {}
+  constructor(
+    private renderer: Renderer2,
+    private dashboardService: DashboardServicesService
+  ) {}
 
   ngOnInit(): void {
+    this.loadSavedCourses()
     this.calculateDimensions()
   }
 
@@ -168,6 +115,80 @@ export class HomeSavedCourseComponent implements OnInit, OnDestroy, AfterViewIni
     this.stopRotationAnimation()
   }
 
+  getDecodedUserId() {
+    try {
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+        console.error("No auth token found in localStorage.");
+        return null;
+      }
+
+      const decodedToken: any = jwtDecode(token);
+      console.log("=== DECODED TOKEN ===", decodedToken);
+
+      const gender = decodedToken.Gender;
+      // this.userAvatar = gender === 'Male' ? 'male.svg' : 'female.jpg';
+
+      const userId = decodedToken.UserId || decodedToken.nameid || decodedToken.sub;
+      console.log("=== EXTRACTED USER ID ===", userId);
+      return userId;
+    } catch (error) {
+      console.error("Error decoding JWT:", error);
+      return null;
+    }
+  }
+
+  loadSavedCourses(): void {
+    const userId = this.getDecodedUserId();
+    
+    if (!userId) {
+      this.error = "Unable to get user ID";
+      this.isLoading = false;
+      return;
+    }
+
+    this.dashboardService.getSavedCourses(userId).subscribe({
+      next: (response) => {
+        console.log("API Response:", response);
+        this.savedCourses = this.mapApiResponseToSavedCourses(response);
+        this.faceCount = this.savedCourses.length;
+        this.calculateDimensions();
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error("Error loading saved courses:", error);
+        this.error = "Failed to load saved courses";
+        this.isLoading = false;
+      }
+    });
+  }
+
+  mapApiResponseToSavedCourses(apiResponse: any[]): SavedCourse[] {
+    return apiResponse.map((course: any) => ({
+      id: course.courseId,
+      title: course.courseName,
+      category: course.categoryName || 'General',
+      categoryColor: "#065f46", // Green color as requested
+      categoryBg: "#d1fae5", // Light green background
+      image: course.imagePath ? `https://localhost:7264/${course.imagePath}` : 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Y29tcHV0ZXJ8ZW58MHx8MHx8fDA%3D/140x90',
+      progress: course.completionPercentage || 0,
+      lastAccessed: "Today", // Fixed as "Today" as requested
+      instructor: course.author || 'Unknown',
+      description: course.description,
+      durationInMinutes: course.durationInMinutes,
+      durationInHours: course.durationInHours,
+      isEnrolled: course.isEnrolled,
+      smeName: course.smeName,
+      isFavorited: course.isFavorited,
+      isSaved: course.isSaved,
+      favoriteCount: course.favoriteCount,
+      watchedMinutes: course.watchedMinutes,
+      remainingMinutes: course.remainingMinutes,
+      totalDurationInMinutes: course.totalDurationInMinutes,
+      moduleCount: course.moduleCount
+    }));
+  }
+
   @HostListener("window:resize", ["$event"])
   onResize(): void {
     this.calculateDimensions()
@@ -176,8 +197,10 @@ export class HomeSavedCourseComponent implements OnInit, OnDestroy, AfterViewIni
   calculateDimensions(): void {
     this.isScreenSizeSm = window.innerWidth <= 768
     this.cylinderWidth = this.isScreenSizeSm ? 700 : 1200
-    this.faceWidth = (this.cylinderWidth / this.faceCount) * 1.2
-    this.radius = this.cylinderWidth / (2 * Math.PI)
+    if (this.faceCount > 0) {
+      this.faceWidth = (this.cylinderWidth / this.faceCount) * 1.2
+      this.radius = this.cylinderWidth / (2 * Math.PI)
+    }
   }
 
   startRotationAnimation(): void {
@@ -240,7 +263,7 @@ export class HomeSavedCourseComponent implements OnInit, OnDestroy, AfterViewIni
     }
   }
 
-  onCardHover(courseId: number): void {
+  onCardHover(courseId: string): void {
     this.hoveredCard = courseId
   }
 
@@ -265,12 +288,13 @@ export class HomeSavedCourseComponent implements OnInit, OnDestroy, AfterViewIni
     console.log("See All clicked")
   }
 
-  onContinueCourse(courseId: number, event: Event): void {
+  onContinueCourse(courseId: string, event: Event): void {
     event.stopPropagation() // Prevent card click event
     console.log("Continue course clicked for course:", courseId)
   }
 
   getCardTransform(index: number): string {
+    if (this.faceCount === 0) return 'rotateY(0deg) translateZ(0px)'
     const rotateY = (360 / this.faceCount) * index
     return `rotateY(${rotateY}deg) translateZ(${this.radius}px)`
   }
@@ -280,6 +304,7 @@ export class HomeSavedCourseComponent implements OnInit, OnDestroy, AfterViewIni
   }
 
   getCardZIndex(index: number): number {
+    if (this.faceCount === 0) return 1000
     // Calculate which card is most front-facing based on current rotation
     const cardAngle = (360 / this.faceCount) * index
     const currentAngle = this.currentRotation % 360

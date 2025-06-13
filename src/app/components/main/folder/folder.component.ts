@@ -1,6 +1,8 @@
 import { Component, type OnInit } from "@angular/core"
 import { CommonModule } from "@angular/common"
 import { trigger, state, style, transition, animate } from "@angular/animations"
+import { DashboardServicesService } from '../../../services/homedashboard/dashboard-services.service';
+import { jwtDecode } from 'jwt-decode';
 
 interface FolderCard {
   id: number
@@ -12,6 +14,14 @@ interface FolderCard {
   textColor: string
   percentage?: string
   percentageColor?: string
+}
+
+interface CategoryStats {
+  categoryName: string;
+  totalCourses: number;
+  enrolledCourses: number;
+  completedCourses: number;
+  inProgressCourses: number;
 }
 
 @Component({
@@ -69,41 +79,20 @@ export class FolderComponent implements OnInit {
   folderColor = "#5227FF"
   folderBackColor = "#4A1FE7"
 
-  cards: FolderCard[] = [
-    {
-      id: 1,
-      title: "Total Categories",
-      value: "12",
-      subtitle: "Available Categories",
-      icon: "M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z",
-      gradient: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-      textColor: "#ffffff",
-      percentage: "+8%",
-      percentageColor: "#a7f3d0",
-    },
-    {
-      id: 2,
-      title: "Ongoing Courses",
-      value: "7",
-      subtitle: "In Progress",
-      icon: "M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z",
-      gradient: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
-      textColor: "#ffffff",
-      percentage: "+15%",
-      percentageColor: "#fde68a",
-    },
-    {
-      id: 3,
-      title: "Completed Courses",
-      value: "43+",
-      subtitle: "Finished",
-      icon: "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z",
-      gradient: "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)",
-      textColor: "#1f2937",
-      percentage: "+12%",
-      percentageColor: "#34d399",
-    },
-  ]
+  // Dynamic data properties
+  userId: string | null = null;
+  isLoading = true;
+  error: string | null = null;
+  
+  // Data from API
+  totalCategories = 0;
+  totalInProgress = 0;
+  totalCompleted = 0;
+  previousTotalCategories = 0;
+  previousInProgress = 0;
+  previousCompleted = 0;
+
+  cards: FolderCard[] = []
 
   paperOffsets: { x: number; y: number }[] = [
     { x: 0, y: 0 },
@@ -111,8 +100,187 @@ export class FolderComponent implements OnInit {
     { x: 0, y: 0 },
   ]
 
+  constructor(private dashboardService: DashboardServicesService) {}
+
   ngOnInit(): void {
-    // Component initialization
+    this.userId = this.getDecodedUserId();
+    if (this.userId) {
+      this.loadCategoryStats();
+    } else {
+      this.error = 'Unable to retrieve user ID from token';
+      this.isLoading = false;
+      this.setDefaultCards();
+    }
+  }
+
+  getDecodedUserId(): string | null {
+    try {
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+        console.error("No auth token found in localStorage.");
+        return null;
+      }
+
+      const decodedToken: any = jwtDecode(token);
+      console.log("=== DECODED TOKEN ===", decodedToken);
+
+      const userId = decodedToken.UserId || decodedToken.nameid || decodedToken.sub;
+      console.log("=== EXTRACTED USER ID ===", userId);
+      return userId ? String(userId) : null;
+    } catch (error) {
+      console.error("Error decoding JWT:", error);
+      return null;
+    }
+  }
+
+  loadCategoryStats(): void {
+    if (!this.userId) return;
+
+    this.isLoading = true;
+    
+    this.dashboardService.getStatsForHomeBanner(this.userId).subscribe({
+      next: (data: any) => {
+        console.log('Category stats received for folder:', data);
+        this.processCategoryStats(data);
+        this.isLoading = false;
+        this.error = null;
+      },
+      error: (error: any) => {
+        console.error('Error loading category stats:', error);
+        this.error = 'Failed to load category statistics';
+        this.isLoading = false;
+        this.setDefaultCards();
+      }
+    });
+  }
+
+  processCategoryStats(categoryStats: CategoryStats[]): void {
+    // Store previous values for percentage calculation
+    this.previousTotalCategories = this.totalCategories;
+    this.previousInProgress = this.totalInProgress;
+    this.previousCompleted = this.totalCompleted;
+
+    // Reset totals
+    this.totalCategories = 0;
+    this.totalInProgress = 0;
+    this.totalCompleted = 0;
+
+    // Count unique categories and aggregate courses
+    const uniqueCategories = new Set<string>();
+    
+    categoryStats.forEach((category: CategoryStats) => {
+      if (category.categoryName) {
+        uniqueCategories.add(category.categoryName);
+      }
+      this.totalInProgress += category.inProgressCourses || 0;
+      this.totalCompleted += category.completedCourses || 0;
+    });
+
+    this.totalCategories = uniqueCategories.size;
+
+    // Calculate percentage changes
+    const categoriesPercentage = this.calculatePercentageChange(this.previousTotalCategories, this.totalCategories);
+    const inProgressPercentage = this.calculatePercentageChange(this.previousInProgress, this.totalInProgress);
+    const completedPercentage = this.calculatePercentageChange(this.previousCompleted, this.totalCompleted);
+
+    // Create cards with dynamic data
+    this.cards = [
+      {
+        id: 1,
+        title: "Total Categories",
+        value: this.totalCategories.toString(),
+        subtitle: "Available Categories",
+        icon: "M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z",
+        gradient: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+        textColor: "#ffffff",
+        percentage: categoriesPercentage.display,
+        percentageColor: categoriesPercentage.isPositive ? "#a7f3d0" : "#fca5a5",
+      },
+      {
+        id: 2,
+        title: "Ongoing Courses",
+        value: this.totalInProgress.toString(),
+        subtitle: "In Progress",
+        icon: "M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z",
+        gradient: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+        textColor: "#ffffff",
+        percentage: inProgressPercentage.display,
+        percentageColor: inProgressPercentage.isPositive ? "#fde68a" : "#fca5a5",
+      },
+      {
+        id: 3,
+        title: "Completed Courses",
+        value: this.totalCompleted > 99 ? "99+" : this.totalCompleted.toString(),
+        subtitle: "Finished",
+        icon: "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z",
+        gradient: "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)",
+        textColor: "#1f2937",
+        percentage: completedPercentage.display,
+        percentageColor: completedPercentage.isPositive ? "#34d399" : "#ef4444",
+      },
+    ];
+  }
+
+  calculatePercentageChange(previousValue: number, currentValue: number): { display: string, isPositive: boolean } {
+    // If no previous data (first load), show no percentage
+    if (previousValue === 0 && this.previousTotalCategories === 0) {
+      return { display: '', isPositive: true };
+    }
+
+    // If previous value was 0 but current has value
+    if (previousValue === 0 && currentValue > 0) {
+      return { display: '+100%', isPositive: true };
+    }
+
+    // Calculate percentage change
+    const change = ((currentValue - previousValue) / previousValue) * 100;
+    const rounded = Math.round(Math.abs(change));
+    
+    if (change > 0) {
+      return { display: `+${rounded}%`, isPositive: true };
+    } else if (change < 0) {
+      return { display: `-${rounded}%`, isPositive: false };
+    } else {
+      return { display: '0%', isPositive: true };
+    }
+  }
+
+  setDefaultCards(): void {
+    this.cards = [
+      {
+        id: 1,
+        title: "Total Categories",
+        value: "0",
+        subtitle: "Available Categories",
+        icon: "M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z",
+        gradient: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+        textColor: "#ffffff",
+        percentage: "",
+        percentageColor: "#a7f3d0",
+      },
+      {
+        id: 2,
+        title: "Ongoing Courses",
+        value: "0",
+        subtitle: "In Progress",
+        icon: "M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z",
+        gradient: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+        textColor: "#ffffff",
+        percentage: "",
+        percentageColor: "#fde68a",
+      },
+      {
+        id: 3,
+        title: "Completed Courses",
+        value: "0",
+        subtitle: "Finished",
+        icon: "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z",
+        gradient: "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)",
+        textColor: "#1f2937",
+        percentage: "",
+        percentageColor: "#34d399",
+      },
+    ];
   }
 
   toggleFolder(): void {
@@ -181,8 +349,9 @@ export class FolderComponent implements OnInit {
     return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase()
   }
 
-
   handleCardClick(index: number): void {
+    if (this.isLoading) return;
+    
     switch (index) {
         case 0:
             this.alertCard1();
@@ -196,17 +365,23 @@ export class FolderComponent implements OnInit {
         default:
             break;
     }
-}
+  }
 
-alertCard1(): void {
-    alert("You clicked on card 1!");
-}
+  alertCard1(): void {
+    alert(`Total Categories: ${this.totalCategories}\nClick to view all categories!`);
+  }
 
-alertCard2(): void {
-    alert("You clicked on card 2!");
-}
+  alertCard2(): void {
+    alert(`Ongoing Courses: ${this.totalInProgress}\nClick to view your ongoing courses!`);
+  }
 
-alertCard3(): void {
-    alert("You clicked on card 3!");
-}
+  alertCard3(): void {
+    alert(`Completed Courses: ${this.totalCompleted}\nClick to view your completed courses!`);
+  }
+
+  refreshData(): void {
+    if (this.userId) {
+      this.loadCategoryStats();
+    }
+  }
 }

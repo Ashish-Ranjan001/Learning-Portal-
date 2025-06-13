@@ -704,20 +704,22 @@
 
 import {
   Component,
-   OnInit,
-   OnDestroy,
+  OnInit,
+  OnDestroy,
   ViewChildren,
-   QueryList,
-   ElementRef,
-   AfterViewInit,
+  QueryList,
+  ElementRef,
+  AfterViewInit,
   HostListener,
-   Renderer2,
+  Renderer2,
 } from "@angular/core"
 import { CommonModule } from "@angular/common"
 import { trigger, state, style, transition, animate, keyframes } from "@angular/animations"
+import { DashboardServicesService } from '../../../services/homedashboard/dashboard-services.service'
+import { jwtDecode } from 'jwt-decode'
 
 interface Course {
-  id: number
+  id: string
   title: string
   category: string
   categoryColor: string
@@ -731,6 +733,18 @@ interface Course {
   reviews: string
   popular?: boolean
   isFavorite?: boolean
+  description?: string
+  durationInMinutes?: number
+  durationInHours?: number
+  isEnrolled?: boolean
+  completionPercentage?: number
+  smeName?: string
+  isSaved?: boolean
+  favoriteCount?: number
+  watchedMinutes?: number
+  remainingMinutes?: number
+  totalDurationInMinutes?: number
+  moduleCount?: number
 }
 
 @Component({
@@ -777,104 +791,14 @@ interface Course {
   ],
 })
 export class FavoriteCoursesComponent implements OnInit, OnDestroy, AfterViewInit {
-  courses: Course[] = [
-    {
-      id: 1,
-      title: "Full Stack Web Development",
-      category: "Development",
-      categoryColor: "#ffffff",
-      categoryBg: "#10b981",
-      image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Y29tcHV0ZXJ8ZW58MHx8MHx8fDA%3D/140x90",
-      creator: "Albert James",
-      creatorAvatar: "female.png",
-      lessons: 24,
-      duration: 40,
-      rating: 4.9,
-      reviews: "12k",
-      popular: true,
-      isFavorite: false,
-    },
-    {
-      id: 2,
-      title: "Design System",
-      category: "Design",
-      categoryColor: "#ffffff",
-      categoryBg: "#f59e0b",
-      image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Y29tcHV0ZXJ8ZW58MHx8MHx8fDA%3D/140x90",
-      creator: "Albert James",
-      creatorAvatar: "male.svg",
-      lessons: 24,
-      duration: 40,
-      rating: 4.9,
-      reviews: "12k",
-      isFavorite: true,
-    },
-    {
-      id: 3,
-      title: "React Native Course",
-      category: "Frontend",
-      categoryColor: "#ffffff",
-      categoryBg: "#ef4444",
-      image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Y29tcHV0ZXJ8ZW58MHx8MHx8fDA%3D/140x90",
-      creator: "Albert James",
-      creatorAvatar: "male.svg",
-      lessons: 24,
-      duration: 40,
-      rating: 4.9,
-      reviews: "12k",
-      isFavorite: false,
-    },
-    {
-      id: 4,
-      title: "Node.js Backend",
-      category: "Backend",
-      categoryColor: "#ffffff",
-      categoryBg: "#3b82f6",
-      image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Y29tcHV0ZXJ8ZW58MHx8MHx8fDA%3D/140x90",
-      creator: "Sarah Wilson",
-      creatorAvatar: "female.png",
-      lessons: 18,
-      duration: 35,
-      rating: 4.8,
-      reviews: "8k",
-      isFavorite: false,
-    },
-    {
-      id: 5,
-      title: "UI/UX Fundamentals",
-      category: "Design",
-      categoryColor: "#ffffff",
-      categoryBg: "#8b5cf6",
-      image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Y29tcHV0ZXJ8ZW58MHx8MHx8fDA%3D/140x90",
-      creator: "Mike Chen",
-      creatorAvatar: "male.svg",
-      lessons: 16,
-      duration: 28,
-      rating: 4.7,
-      reviews: "6k",
-      isFavorite: true,
-    },
-    {
-      id: 6,
-      title: "Python Data Science",
-      category: "Data Science",
-      categoryColor: "#ffffff",
-      categoryBg: "#06b6d4",
-      image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Y29tcHV0ZXJ8ZW58MHx8MHx8fDA%3D/140x90",
-      creator: "Dr. Lisa Park",
-      creatorAvatar: "male.svg",
-      lessons: 32,
-      duration: 55,
-      rating: 4.9,
-      reviews: "15k",
-      isFavorite: false,
-    },
-  ]
+  courses: Course[] = []
+  isLoading = true
+  error: string | null = null
 
   // 3D Gallery properties
   isScreenSizeSm = false
   cylinderWidth = 1200
-  faceCount = this.courses.length
+  faceCount = 0
   faceWidth = 0
   radius = 0
   currentRotation = 0
@@ -887,8 +811,8 @@ export class FavoriteCoursesComponent implements OnInit, OnDestroy, AfterViewIni
   isAutoRotating = true
 
   // Animation states
-  hoveredCard: number | null = null
-  clickedCard: number | null = null
+  hoveredCard: string | null = null
+  clickedCard: string | null = null
   autoplay = true
   pauseOnHover = true
 
@@ -897,9 +821,13 @@ export class FavoriteCoursesComponent implements OnInit, OnDestroy, AfterViewIni
 
   @ViewChildren("galleryTrack") galleryTrackRef!: QueryList<ElementRef>
 
-  constructor(private renderer: Renderer2) {}
+  constructor(
+    private renderer: Renderer2,
+    private dashboardService: DashboardServicesService
+  ) {}
 
   ngOnInit(): void {
+    this.loadFavoriteCourses()
     this.calculateDimensions()
   }
 
@@ -911,6 +839,85 @@ export class FavoriteCoursesComponent implements OnInit, OnDestroy, AfterViewIni
     this.stopRotationAnimation()
   }
 
+  getDecodedUserId() {
+    try {
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+        console.error("No auth token found in localStorage.");
+        return null;
+      }
+
+      const decodedToken: any = jwtDecode(token);
+      console.log("=== DECODED TOKEN ===", decodedToken);
+
+      const gender = decodedToken.Gender;
+      // this.userAvatar = gender === 'Male' ? 'male.svg' : 'female.jpg';
+
+      const userId = decodedToken.UserId || decodedToken.nameid || decodedToken.sub;
+      console.log("=== EXTRACTED USER ID ===", userId);
+      return userId;
+    } catch (error) {
+      console.error("Error decoding JWT:", error);
+      return null;
+    }
+  }
+
+  loadFavoriteCourses(): void {
+    const userId = this.getDecodedUserId();
+    
+    if (!userId) {
+      this.error = "Unable to get user ID";
+      this.isLoading = false;
+      return;
+    }
+
+    this.dashboardService.getFavouoiteCourses(userId).subscribe({
+      next: (response: any) => {
+        console.log("API Response:", response);
+        this.courses = this.mapApiResponseToCourses(response);
+        this.faceCount = this.courses.length;
+        this.calculateDimensions();
+        this.isLoading = false;
+      },
+      error: (error: any) => {
+        console.error("Error loading favorite courses:", error);
+        this.error = "Failed to load favorite courses";
+        this.isLoading = false;
+      }
+    });
+  }
+
+  mapApiResponseToCourses(apiResponse: any[]): Course[] {
+    return apiResponse.map((course: any) => ({
+      id: course.courseId,
+      title: course.courseName,
+      category: course.categoryName || 'General',
+      categoryColor: "#ffffff",
+      categoryBg: "#10b981", // Green background for all courses
+      image: course.imagePath ? `https://localhost:7264/${course.imagePath}` : 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Y29tcHV0ZXJ8ZW58MHx8MHx8fDA%3D/140x90',
+      creator: course.author || 'Unknown',
+      creatorAvatar: "male.svg", // Default avatar
+      lessons: course.moduleCount || 0,
+      duration: Math.round(course.durationInHours || 0),
+      rating: 4.8, // Fixed rating for all courses
+      reviews: "12k", // Fixed reviews for all courses
+      popular: false,
+      isFavorite: course.isFavorited || false,
+      description: course.description,
+      durationInMinutes: course.durationInMinutes,
+      durationInHours: course.durationInHours,
+      isEnrolled: course.isEnrolled,
+      completionPercentage: course.completionPercentage,
+      smeName: course.smeName,
+      isSaved: course.isSaved,
+      favoriteCount: course.favoriteCount,
+      watchedMinutes: course.watchedMinutes,
+      remainingMinutes: course.remainingMinutes,
+      totalDurationInMinutes: course.totalDurationInMinutes,
+      moduleCount: course.moduleCount
+    }));
+  }
+
   @HostListener("window:resize", ["$event"])
   onResize(): void {
     this.calculateDimensions()
@@ -919,8 +926,10 @@ export class FavoriteCoursesComponent implements OnInit, OnDestroy, AfterViewIni
   calculateDimensions(): void {
     this.isScreenSizeSm = window.innerWidth <= 768
     this.cylinderWidth = this.isScreenSizeSm ? 700 : 1200
-    this.faceWidth = (this.cylinderWidth / this.faceCount) * 1.2
-    this.radius = this.cylinderWidth / (2 * Math.PI)
+    if (this.faceCount > 0) {
+      this.faceWidth = (this.cylinderWidth / this.faceCount) * 1.2
+      this.radius = this.cylinderWidth / (2 * Math.PI)
+    }
   }
 
   startRotationAnimation(): void {
@@ -983,7 +992,7 @@ export class FavoriteCoursesComponent implements OnInit, OnDestroy, AfterViewIni
     }
   }
 
-  onCardHover(courseId: number): void {
+  onCardHover(courseId: string): void {
     this.hoveredCard = courseId
   }
 
@@ -1023,7 +1032,7 @@ export class FavoriteCoursesComponent implements OnInit, OnDestroy, AfterViewIni
     alert("Navigating to all courses...")
   }
 
-  onViewDetails(courseId: number, event: Event): void {
+  onViewDetails(courseId: string, event: Event): void {
     event.stopPropagation()
     const course = this.courses.find((c) => c.id === courseId)
     if (course) {
@@ -1033,6 +1042,7 @@ export class FavoriteCoursesComponent implements OnInit, OnDestroy, AfterViewIni
   }
 
   getCardTransform(index: number): string {
+    if (this.faceCount === 0) return 'rotateY(0deg) translateZ(0px)'
     const rotateY = (360 / this.faceCount) * index
     return `rotateY(${rotateY}deg) translateZ(${this.radius}px)`
   }
@@ -1042,6 +1052,7 @@ export class FavoriteCoursesComponent implements OnInit, OnDestroy, AfterViewIni
   }
 
   getCardZIndex(index: number): number {
+    if (this.faceCount === 0) return 1000
     // Calculate which card is most front-facing based on current rotation
     const cardAngle = (360 / this.faceCount) * index
     const currentAngle = this.currentRotation % 360

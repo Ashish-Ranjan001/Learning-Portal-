@@ -351,6 +351,7 @@ import { trigger, state, style, transition, animate } from "@angular/animations"
 @Component({
   selector: "app-mainheader",
   imports: [CommonModule, FormsModule],
+  standalone: true,
   templateUrl: "./mainheader.component.html",
   styleUrl: "./mainheader.component.css",
   animations: [

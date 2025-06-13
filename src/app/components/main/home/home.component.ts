@@ -398,6 +398,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FavoriteCoursesComponent } from '../favorite-courses/favorite-courses.component';
 import { HeroBannerComponent } from '../hero-banner/hero-banner.component';
+
 import { CardCarouselComponent } from '../card-carousel/card-carousel.component';
 import { HomeCategoriesComponent } from '../home-categories/home-categories.component';
 import { HomeSavedCourseComponent } from "../home-saved-course/home-saved-course.component";
@@ -407,7 +408,7 @@ import { FolderComponent } from '../folder/folder.component';
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
-
+  standalone:true,
   imports: [
     MainfooterComponent,
     MainheaderComponent,
@@ -524,9 +525,9 @@ export class HomeComponent implements OnInit, OnDestroy {
     console.log('Progress updated:', progress);
   }
 
-   handleDashboardClick(): void {
-    alert('Welcome to your Dashboard!');
-  }
+  //  handleDashboardClick(): void {
+  //   alert('Welcome to your Dashboard!');
+  // }
 
   onCalendarEventSelected(event: any): void {
     console.log('Calendar event selected:', event);
