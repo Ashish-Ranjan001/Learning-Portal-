@@ -530,7 +530,11 @@ export class MainheaderComponent implements OnInit, OnDestroy {
   onMyLearningClick(): void {
     console.log("My Learning button clicked")
     this.myLearningClick.emit()
-    alert("My Learning is clicked")
+
+  this.router.navigate(["/mylearning"]);
+
+
+    
   }
 
   /**
@@ -558,6 +562,7 @@ export class MainheaderComponent implements OnInit, OnDestroy {
     this.closeDropdown()
     this.accountSettingsClick.emit()
     this.showMessage("Account Settings", `Opening account settings for ${this.userName}`)
+    this.router.navigate(["/updateuser"])
   }
 
   /**

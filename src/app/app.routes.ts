@@ -33,6 +33,8 @@ import { CategoriesComponent } from './components/main/categories/categories.com
 import { CoursesComponent } from './components/main/courses/courses.component';
 import {  CoursesDetailComponent } from './components/main/courses-details/courses-details.component';
 import { UpdateUserComponent } from './components/main/update-user/update-user.component';
+import { LearningpageComponent } from './components/main/learningpage/learningpage.component';
+import { CoursemodulevideocomponentComponent } from './components/main/coursemodulevideocomponent/coursemodulevideocomponent.component';
 // import { DashboardComponent } from './components/main/dashboard/dashboard.component';
 
 
@@ -50,6 +52,9 @@ export const routes: Routes = [
     { path: 'course-detail/:courseId', component: CoursesDetailComponent },
     {path: 'video/:id', component: ViewVideoComponent},
     {path: 'updateuser', component: UpdateUserComponent},
+    {path: 'mylearning', component: LearningpageComponent},
+    {path:'module/:courseId',component:CoursemodulevideocomponentComponent },
+
 
 
   
@@ -78,6 +83,7 @@ export const routes: Routes = [
         {path:'module/view/:id', component:ViewModuleComponent},
         {path:'module/edit/:id', component:EditModuleComponent},
        { path: 'ta/edit/:id', component: EditTaComponent },
+       
        
      ] }
 ];

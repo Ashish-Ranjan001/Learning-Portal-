@@ -31,4 +31,11 @@ export class DashboardServicesService {
     const url = `${this.baseUrl}/saved-courses/${userId}`;
     return this.http.get<any>(url);
   }
+
+  getAllCategories(userId:string):Observable<any>
+  {
+    const url = `${this.baseUrl}/allcategoriesinlob/${userId}`;
+    return this.http.get<any>(url);
+  }
+  
 }

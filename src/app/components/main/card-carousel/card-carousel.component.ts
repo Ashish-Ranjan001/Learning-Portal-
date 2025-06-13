@@ -627,6 +627,7 @@ import { Component, type OnInit, type OnDestroy, Output, EventEmitter, signal, c
 import { CommonModule } from "@angular/common"
 import { DashboardServicesService } from '../../../services/homedashboard/dashboard-services.service';
 import { jwtDecode } from 'jwt-decode';
+import { Router } from "@angular/router";
 
 interface CourseCard {
   id: number
@@ -679,7 +680,7 @@ export class CardCarouselComponent implements OnInit, OnDestroy {
   animatedCount = signal(0)
   isTransitioning = signal(false)
 
-  constructor(private dashboardService: DashboardServicesService) {
+  constructor(private dashboardService: DashboardServicesService , private router:Router) {
     // Progress bar effect
     effect(() => {
       if (!this.isTransitioning()) {
@@ -869,7 +870,7 @@ export class CardCarouselComponent implements OnInit, OnDestroy {
   }
 
   handleDashboardClick(): void {
-    alert("Welcome to your Dashboard!")
+    this.router.navigate(['/categories']);
   }
 
   startProgressBar() {

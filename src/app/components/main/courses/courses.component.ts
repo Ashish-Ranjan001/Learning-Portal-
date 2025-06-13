@@ -472,7 +472,7 @@ export class CoursesComponent implements OnInit {
 
   viewCourseDetail(courseId: string): void {
     console.log('Navigating to course detail:', courseId);
-    this.router.navigate(['/course-detail', courseId]);
+    this.router.navigate([`/module/${courseId}`]);
   }
 
   enrollInCourse(course: CourseWithImageStatus, event: Event): void {
