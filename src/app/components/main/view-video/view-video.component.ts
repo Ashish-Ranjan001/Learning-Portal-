@@ -77,6 +77,7 @@ export class ViewVideoComponent implements OnInit, OnDestroy {
     const sub = this.moduleService.getVideoModuleById(this.moduleId).subscribe({
       next: (response) => {
         this.module = response.data
+        console.log("Module loaded:", this.module)
         this.loading = false
       },
       error: (err) => {
@@ -201,8 +202,15 @@ export class ViewVideoComponent implements OnInit, OnDestroy {
     return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`
   }
 
-  goBack(): void {
-    this.router.navigate(["dashboard/course/viewcourse"])
+  goBack(category_id:string): void {
+    if( category_id=='') {
+     console.log(category_id)
+     console.log("category_id is empty, navigating to course-detail")
+      this.router.navigate(["/categories"])
+    }else{
+      console.log(category_id)
+      this.router.navigate(['/course-detail', category_id])
+    }
   }
 
   retry(): void {
@@ -214,4 +222,11 @@ export class ViewVideoComponent implements OnInit, OnDestroy {
       window.open(this.module.videopath, "_blank")
     }
   }
+  // onPdf(){
+  //   this.module?.pdfpath
+  // }
+  onPdf() {
+    console.log("PDF Path:", this.module?.pdfPath);
+  window.open(this.module?.pdfPath || '', '_blank');
+}
 }
