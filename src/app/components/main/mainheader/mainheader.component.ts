@@ -532,9 +532,6 @@ export class MainheaderComponent implements OnInit, OnDestroy {
     this.myLearningClick.emit()
 
   this.router.navigate(["/mylearning"]);
-
-
-    
   }
 
   /**

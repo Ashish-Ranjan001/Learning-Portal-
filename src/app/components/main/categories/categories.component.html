@@ -1,82 +1,86 @@
-<div class="container-fluid">
-  
-  <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-gradient-purple mb-4">
-    <div class="container">
-      <a class="navbar-brand fw-bold text-white" routerLink="/">My Learning Hub</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item">
-            <a class="nav-link text-white" routerLink="/">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text-white active" routerLink="/categories">Categories</a>
-          </li>
-        </ul>
+<!-- Header Component -->
+<app-mainheader
+[userName]="user.userName"
+[userEmail]="user.userEmail"
+[userAvatar]="user.userAvatar">
+</app-mainheader>
+
+<!-- Main Content -->
+<main class="categories-page">
+  <div class="container">
+    <!-- Page Header -->
+    <div class="page-header">
+      <h1 class="page-title">Explore Categories</h1>
+      <p class="page-subtitle">Discover courses across a wide range of subjects.</p>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="loading-state">
+      <div class="loading-spinner">
+        <div class="spinner"></div>
+      </div>
+      <p class="loading-text">Loading categories...</p>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="error && !loading" class="error-state">
+      <div class="error-content">
+        <i class="fas fa-exclamation-circle error-icon"></i>
+        <h3 class="error-title">Something went wrong</h3>
+        <p class="error-message">{{ error }}</p>
+        <button class="btn btn-retry" (click)="loadCategories()">
+          <i class="fas fa-redo me-2"></i>Try Again
+        </button>
       </div>
     </div>
-  </nav>
 
-  <!-- Breadcrumb -->
-  <nav class="breadcrumb-container">
-    <ol class="breadcrumb justify-content-center bg-purple text-white py-3 rounded-pill shadow-sm">
-      <li class="breadcrumb-item">
-        <a routerLink="/" class="text-white fw-bold">Home</a>
-      </li>
-      <li class="breadcrumb-item active text-white fw-bold" aria-current="page">Categories</li>
-    </ol>
-  </nav>
-
-  <!-- Loading State -->
-  <div *ngIf="loading" class="d-flex justify-content-center py-5">
-    <div class="spinner-border text-primary" role="status">
-      <span class="visually-hidden">Loading...</span>
-    </div>
-  </div>
-
-  <!-- Error State -->
-  <div *ngIf="error" class="alert alert-danger text-center" role="alert">
-    <i class="fas fa-exclamation-triangle me-2"></i>
-    {{ error }}
-    <button class="btn btn-outline-danger ms-2" (click)="loadCategories()">
-      <i class="fas fa-redo me-1"></i>Retry
-    </button>
-  </div>
-
-  <!-- Categories Grid -->
-  <div *ngIf="!loading && !error && categories?.length > 0" class="row">
-    <div class="col-12">
-      <h2 class="text-center mb-4 text-purple fw-bold">
-        <i class="fas fa-layer-group me-2"></i>Course Categories
-      </h2>
-    </div>
-    
-    <div class="col-lg-4 col-md-6 mb-4" *ngFor="let category of categories; trackBy: trackByCategory">
-      <div class="category-card h-100 shadow-lg hover-lift" (click)="viewCategoryCourses(category.id, category.name)">
-        <div class="card h-100 border-0">
-          <div class="card-img-container">
-            <div class="category-image" [style.background-image]="getCategoryImageStyle(category)">
-              <img *ngIf="category.imagePath" [src]="category.imagePath" class="category-img" alt="{{category.name}}">
-            </div>
+    <!-- Categories Grid -->
+    <div *ngIf="!loading && !error && categories && categories.length > 0" class="categories-grid">
+      <div class="category-card" 
+           *ngFor="let category of categories; trackBy: trackByCategory"
+           (click)="viewCategoryCourses(category.id, category.name)"
+           role="button"
+           tabindex="0"
+           (keydown.enter)="viewCategoryCourses(category.id, category.name)"
+           (keydown.space)="viewCategoryCourses(category.id, category.name)">
+        
+        <div class="card-image" [style.background-image]="getCategoryImageStyle(category)">
+          <!-- Fallback icon if image fails to load -->
+          <div class="category-icon" *ngIf="!category.imagePath">
+            <i class="fas fa-graduation-cap"></i>
           </div>
-          <div class="card-body text-center">
-            <h5 class="fw-bold text-purple">{{ category.name }}</h5>
-            <p class="text-muted">{{ category.description }}</p>
-            <button class="btn btn-outline-purple">View Courses</button>
+          <!-- Image error handling -->
+          <img 
+            *ngIf="category.imagePath" 
+            [src]="category.imagePath" 
+            [alt]="category.name"
+            class="category-img"
+            (error)="onImageError($event)"
+            (load)="onImageLoad($event)">
+        </div>
+        
+        <div class="card-content">
+          <h3 class="category-name">{{ category.name }}</h3>
+          <div class="course-count" *ngIf="category.courseCount">
+            {{ category.courseCount }} course{{ category.courseCount !== 1 ? 's' : '' }}
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- Empty State -->
-  <div *ngIf="!loading && !error && (!categories || categories.length === 0)" class="text-center py-5">
-    <div class="empty-state">
-      <i class="fas fa-folder-open fa-4x text-muted mb-4"></i>
-      <h4 class="text-muted">No Categories Available</h4>
+    <!-- Empty State -->
+    <div *ngIf="!loading && !error && (!categories || categories.length === 0)" class="empty-state">
+      <div class="empty-content">
+        <i class="fas fa-folder-open empty-icon"></i>
+        <h3 class="empty-title">No Categories Available</h3>
+        <p class="empty-message">We're working on adding new categories. Please check back later.</p>
+        <button class="btn btn-primary" (click)="loadCategories()">
+          <i class="fas fa-refresh me-2"></i>Refresh
+        </button>
+      </div>
     </div>
   </div>
-</div>
+</main>
+
+<!-- Footer Component -->
+<app-mainfooter></app-mainfooter>

@@ -9,18 +9,6 @@ export interface CategoryWithCoursesDto {
   courseCount: number;
 }
 
-// export interface CourseBasicDto {
-//   courseId: string;
-//   courseName: string;
-//   description: string;
-//   thumbnailUrl: string;
-//   progress: number;
-//   isCompleted: boolean;
-//   isEnrolled: boolean;
-//   duration: number;
-// }
-
-// Add this to your service file or types file
 export interface CourseBasicDto {
   courseId: string;
   courseName: string;
@@ -90,6 +78,29 @@ export interface CategoryWithCoursesDto {
   courseCount: number;
   courses?: any[]; // Adjust based on your course structure
 }
+
+export interface CoursesByCategoryDto {
+  courseId: string;
+  courseName: string;
+  description: string;
+  imagePath: string;
+  durationInMinutes: number;
+  durationInHours: number;
+  author: string;
+  isEnrolled: boolean;
+  completionPercentage: number;
+  smeName: string;
+  isFavorited: boolean;
+  isSaved: boolean;
+  favoriteCount: number;
+  remainingMinutes: number;
+  totalDurationInMinutes: number;
+  categoryName: string;
+  moduleCount: number;
+  isCompleted?: boolean; // Optional property
+  progress?: number; // Optional property
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -102,8 +113,8 @@ export class UserLearningService {
     return this.http.get<CategoryWithCoursesDto[]>(`${this.baseUrl}/allcategoriesinlob/${userId}`);
   }
 
-  getCoursesByCategory(categoryId: string, userId: string): Observable<CourseBasicDto[]> {
-    return this.http.get<CourseBasicDto[]>(`${this.baseUrl}/categories/${categoryId}/courses/${userId}`);
+  getCoursesByCategory(categoryId: string, userId: string): Observable<CoursesByCategoryDto[]> {
+    return this.http.get<CoursesByCategoryDto[]>(`${this.baseUrl}/categories/${categoryId}/courses/${userId}`);
   }
 
   getCourseDetail(courseId: string, userId: string): Observable<CourseDetailDto> {
@@ -115,7 +126,7 @@ export class UserLearningService {
   }
 
   updateModuleProgress(progressData: UpdateProgressDto): Observable<any> {
-    return this.http.put(`${this.baseUrl}/progress`, progressData);
+    return this.http.post(`${this.baseUrl}/module/mark-complete`, progressData);
   }
 
   getUserDashboard(userId: string): Observable<any> {

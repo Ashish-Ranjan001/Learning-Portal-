@@ -525,9 +525,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     console.log('Progress updated:', progress);
   }
 
-  //  handleDashboardClick(): void {
-  //   alert('Welcome to your Dashboard!');
-  // }
 
   onCalendarEventSelected(event: any): void {
     console.log('Calendar event selected:', event);

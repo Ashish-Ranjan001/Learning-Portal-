@@ -1,29 +1,3 @@
-// import { Component } from '@angular/core';
-
-// @Component({
-//   selector: 'app-coursemodulevideocomponent',
-//   imports: [],
-//   templateUrl: './coursemodulevideocomponent.component.html',
-//   styleUrl: './coursemodulevideocomponent.component.css'
-// })
-// export class CoursemodulevideocomponentComponent {
-
-// }
-
-
-// import { Component } from '@angular/core';
-
-// @Component({
-//   selector: 'app-coursemodulevideocomponent',
-//   imports: [],
-//   templateUrl: './coursemodulevideocomponent.component.html',
-//   styleUrl: './coursemodulevideocomponent.component.css'
-// })
-// export class CoursemodulevideocomponentComponent {
-
-// }
-
-
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -113,6 +87,7 @@ export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
       this.userLearningService.getCourseDetail(this.courseId, this.userId).subscribe({
         next: (courseDetail) => {
           this.courseDetail = courseDetail;
+          console.log(this.courseDetail)
           this.processCourseData();
           this.loading = false;
         },
@@ -265,6 +240,7 @@ export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
           next: () => {
             module.isCompleted = true;
             this.updateProgress();
+            this.loadCourseData();
           },
           error: (error) => {
             console.error('Error updating progress:', error);

@@ -220,3 +220,106 @@
     padding-top: 0.75rem;
     margin-top: 0.75rem;
   }
+
+  /* Courses Component Styles */
+  .course-card {
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .course-card:hover {
+    transform: translateY(-3px);
+  }
+
+  .course-card .card {
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    height: 100%;
+  }
+
+  .course-card:hover .card {
+    box-shadow: 0 10px 25px rgba(0, 123, 255, 0.15) !important;
+  }
+
+  .course-image {
+    height: 200px;
+    overflow: hidden;
+    background: #f8f9fa;
+  }
+
+  .course-img {
+    transition: transform 0.3s ease;
+  }
+
+  .course-card:hover .course-img {
+    transform: scale(1.05);
+  }
+
+  .fallback-content {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  }
+
+  .bg-gradient-primary {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  }
+
+  .course-overlay {
+    background: rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .course-card:hover .course-overlay {
+    opacity: 1;
+  }
+
+  .hover-lift {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .course-card:hover .hover-lift {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  }
+
+  .progress {
+    border-radius: 10px;
+    background-color: #e9ecef;
+  }
+
+  .progress-bar {
+    border-radius: 10px;
+    transition: width 0.6s ease;
+  }
+
+  .progress-bar-striped {
+    background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+    background-size: 1rem 1rem;
+  }
+
+  .btn {
+    font-weight: 500;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+
+  .btn:hover {
+    transform: translateY(-1px);
+  }
+
+  .empty-state {
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  .spinner-border {
+    width: 3rem;
+    height: 3rem;
+  }
+
+  @media (max-width: 768px) {
+    .course-image {
+      height: 150px;
+    }
+  }

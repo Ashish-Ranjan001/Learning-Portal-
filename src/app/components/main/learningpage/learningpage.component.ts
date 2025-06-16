@@ -17,6 +17,7 @@ import { jwtDecode } from 'jwt-decode';
 import { DashboardServicesService } from '../../../services/homedashboard/dashboard-services.service';
 import { MainheaderComponent } from '../mainheader/mainheader.component';
 import { MainfooterComponent } from '../mainfooter/mainfooter.component';
+import { TokenService } from '../../../services/Tokenservice/token.service';
  
 interface Course {
   id: string;
@@ -68,37 +69,44 @@ export class LearningpageComponent implements OnInit {
   isLoading = false;
   error: string | null = null;
  
-  userId: string; // User ID will be set after decoding JWT
+  user = {
+    userId: '',
+    userName: '',
+    userEmail: '',
+    userAvatar: ''
+  };
+  
+   // User ID will be set after decoding JWT
  
-  constructor(private dashSerive: DashboardServicesService , private userLearningService:UserLearningService ) {
+  constructor(private dashSerive: DashboardServicesService , private userLearningService:UserLearningService , private tokenService:TokenService ) {
       // TODO: Get userId from your authentication service
-      this.userId = this.getDecodedUserId() ;
+      this.user = tokenService.getDecodedToken() ;
    
   }
-     getDecodedUserId() {
-      try {
-          // Retrieve token from localStorage
-          const token = localStorage.getItem("authToken");
-          if (!token) {
-              console.error("No auth token found in localStorage.");
-              return null;
-          }
+  //    getDecodedUserId() {
+  //     try {
+  //         // Retrieve token from localStorage
+  //         const token = localStorage.getItem("authToken");
+  //         if (!token) {
+  //             console.error("No auth token found in localStorage.");
+  //             return null;
+  //         }
  
-          // Decode JWT
-          const decodedToken: any = jwtDecode(token);
+  //         // Decode JWT
+  //         const decodedToken: any = jwtDecode(token);
  
-          console.log("=== DECODED TOKEN ===", decodedToken);
+  //         console.log("=== DECODED TOKEN ===", decodedToken);
  
-          // Extract UserId from possible claims
-          const userId = decodedToken.UserId || decodedToken.nameid || decodedToken.sub;
+  //         // Extract UserId from possible claims
+  //         const userId = decodedToken.UserId || decodedToken.nameid || decodedToken.sub;
  
-          console.log("=== EXTRACTED USER ID ===", userId);
-          return userId;
-      } catch (error) {
-          console.error("Error decoding JWT:", error);
-          return null;
-      }
-  }
+  //         console.log("=== EXTRACTED USER ID ===", userId);
+  //         return userId;
+  //     } catch (error) {
+  //         console.error("Error decoding JWT:", error);
+  //         return null;
+  //     }
+  // }
  
  
   ngOnInit() {
@@ -120,7 +128,7 @@ export class LearningpageComponent implements OnInit {
  
  
   private loadSavedCourses(){
-    this.dashSerive.getSavedCourses(this.userId).subscribe({
+    this.dashSerive.getSavedCourses(this.user.userId).subscribe({
       next: (data:any) => {
         this.savedCourses = data;
         this.filterCourses();
@@ -133,7 +141,7 @@ export class LearningpageComponent implements OnInit {
     });
   }
   private loadCategories() {
-    this.dashSerive.getAllCategories(this.userId).subscribe({
+    this.dashSerive.getAllCategories(this.user.userId).subscribe({
       next: (categories) => {
         this.allCategories = this.mapCategoriesToUI(categories);
         this.filterCourses();
@@ -147,7 +155,7 @@ export class LearningpageComponent implements OnInit {
   }
  
   private loadCompletedCourses() {
-    this.userLearningService.getUserCompletedCourses(this.userId).subscribe({
+    this.userLearningService.getUserCompletedCourses(this.user.userId).subscribe({
       next: (courses:any) => {
         this.completedCourses = this.mapCoursesToUI(courses, 'completed');
         this.filterCourses();
@@ -160,7 +168,7 @@ export class LearningpageComponent implements OnInit {
   }
  
   private loadOngoingCourses() {
-    this.userLearningService.getUserInProgressCourses(this.userId).subscribe({
+    this.userLearningService.getUserInProgressCourses(this.user.userId).subscribe({
       next: (courses:any) => {
         this.ongoingCourses = this.mapCoursesToUI(courses, 'ongoing');
         this.filterCourses();
