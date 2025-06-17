@@ -11,7 +11,7 @@ import { TokenService } from '../../../services/Tokenservice/token.service';
 @Component({
   selector: 'app-categories',
   standalone: true,
-  imports: [CommonModule, RouterModule , MainheaderComponent , MainfooterComponent],
+  imports: [CommonModule, RouterModule, MainheaderComponent, MainfooterComponent],
   templateUrl: './categories.component.html',
   styleUrls: ['./categories.component.css']
 })
@@ -19,7 +19,8 @@ export class CategoriesComponent implements OnInit {
   categories: CategoryWithCoursesDto[] = [];
   loading = true;
   error = '';
- 
+  viewMode: 'grid' | 'list' = 'grid';
+  particles = Array(8).fill(0); // For floating particles
 
   user = {
     userId: '',
@@ -33,28 +34,8 @@ export class CategoriesComponent implements OnInit {
     private router: Router,
     private tokenService: TokenService
   ) {
-    this.user = tokenService.getDecodedToken() ;
+    this.user = tokenService.getDecodedToken();
   }
-
-  // getDecodedUserId() {
-  //   try {
-  //     const token = localStorage.getItem("authToken");
-  //     if (!token) {
-  //       console.error("No auth token found in localStorage.");
-  //       return null;
-  //     }
-
-  //     const decodedToken: any = jwtDecode(token);
-  //     console.log("=== DECODED TOKEN ===", decodedToken);
-
-  //     const userId = decodedToken.UserId || decodedToken.nameid || decodedToken.sub;
-  //     console.log("=== EXTRACTED USER ID ===", userId);
-  //     return userId;
-  //   } catch (error) {
-  //     console.error("Error decoding JWT:", error);
-  //     return null;
-  //   }
-  // }
 
   ngOnInit(): void {
     this.loadCategories();
@@ -79,7 +60,7 @@ export class CategoriesComponent implements OnInit {
         console.log('Processed categories:', this.categories);
       },
       error: (error) => {
-        this.error = 'Failed to load categories';
+        this.error = 'Failed to load categories. Please try again.';
         this.loading = false;
         console.error('Error loading categories:', error);
       }
@@ -95,16 +76,21 @@ export class CategoriesComponent implements OnInit {
 
   getDefaultGradient(categoryName: string): string {
     const gradients = [
-      'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-      'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
-      'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
-      'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
-      'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)',
-      'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)',
-      'linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)',
-      'linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)',
-      'linear-gradient(135deg, #fad0c4 0%, #ffd1ff 100%)'
+      'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
+      'linear-gradient(135deg, #ec4899 0%, #be185d 100%)',
+      'linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)',
+      'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+      'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+      'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+      'linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%)',
+      'linear-gradient(135deg, #06b6d4 0%, #8b5cf6 100%)',
+      'linear-gradient(135deg, #10b981 0%, #06b6d4 100%)',
+      'linear-gradient(135deg, #f59e0b 0%, #ef4444 100%)',
+      'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+      'linear-gradient(135deg, #14b8a6 0%, #06b6d4 100%)',
+      'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+      'linear-gradient(135deg, #84cc16 0%, #65a30d 100%)',
+      'linear-gradient(135deg, #a855f7 0%, #9333ea 100%)'
     ];
     
     const index = categoryName.length % gradients.length;
@@ -118,7 +104,7 @@ export class CategoriesComponent implements OnInit {
     if (container) {
       const icon = container.querySelector('.category-icon');
       if (icon) {
-        icon.style.display = 'flex';
+        (icon as HTMLElement).style.display = 'flex';
       }
     }
   }
@@ -140,5 +126,15 @@ export class CategoriesComponent implements OnInit {
 
   trackByCategory(index: number, category: CategoryWithCoursesDto): string {
     return category.id || index.toString();
+  }
+
+  setViewMode(mode: 'grid' | 'list'): void {
+    this.viewMode = mode;
+  }
+
+  getTotalCourses(): number {
+    return this.categories.reduce((total, category) => {
+      return total + (category.courseCount || 0);
+    }, 0);
   }
 }

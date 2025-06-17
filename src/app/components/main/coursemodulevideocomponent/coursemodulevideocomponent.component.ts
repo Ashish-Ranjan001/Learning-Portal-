@@ -12,7 +12,7 @@ import { jwtDecode } from 'jwt-decode';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './coursemodulevideocomponent.component.html',
- styleUrl: './coursemodulevideocomponent.component.css'
+  styleUrl: './coursemodulevideocomponent.component.css'
 })
 export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
   courseDetail: CourseDetailDto | null = null;
@@ -27,6 +27,7 @@ export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
   safeVideoUrl: SafeResourceUrl | null = null;
   currentVideoData: any = null;
   videoLoading = false;
+  videoWatched = false; // New property to track if video is watched
 
   private subscriptions = new Subscription();
   private userLearningService = inject(UserLearningService);
@@ -40,29 +41,24 @@ export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
   }
 
   getDecodedUserId() {
-      try {
-        const token = localStorage.getItem("authToken");
-        if (!token) {
-          console.error("No auth token found in localStorage.");
-          return '';
-        }
-  
-        const decodedToken: any = jwtDecode(token);
-        console.log("=== DECODED TOKEN ===", decodedToken);
-  
-  
-        const gender = decodedToken.Gender;
-  
-       
-  
-        const userId = decodedToken.UserId || decodedToken.nameid || decodedToken.sub;
-        console.log("=== EXTRACTED USER ID ===", userId);
-        return userId;
-      } catch (error) {
-        console.error("Error decoding JWT:", error);
+    try {
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+        console.error("No auth token found in localStorage.");
         return '';
       }
+
+      const decodedToken: any = jwtDecode(token);
+      console.log("=== DECODED TOKEN ===", decodedToken);
+
+      const userId = decodedToken.UserId || decodedToken.nameid || decodedToken.sub;
+      console.log("=== EXTRACTED USER ID ===", userId);
+      return userId;
+    } catch (error) {
+      console.error("Error decoding JWT:", error);
+      return '';
     }
+  }
 
   ngOnInit(): void {
     this.subscriptions.add(
@@ -87,7 +83,7 @@ export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
       this.userLearningService.getCourseDetail(this.courseId, this.userId).subscribe({
         next: (courseDetail) => {
           this.courseDetail = courseDetail;
-          console.log(this.courseDetail)
+          console.log(this.courseDetail);
           this.processCourseData();
           this.loading = false;
         },
@@ -128,6 +124,7 @@ export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
 
   selectModule(module: ModuleDto): void {
     this.selectedModule = module;
+    this.videoWatched = module.isCompleted; // Set videoWatched based on completion status
     this.loadModuleData(module);
   }
 
@@ -163,12 +160,58 @@ export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
     );
   }
 
+  // setVideoUrl(url: string): void {
+  //   if (!url) {
+  //     this.safeVideoUrl = null;
+  //     return;
+  //   }
+
+  //   // Handle different video URL formats
+  //   if (url.includes('youtube.com/watch')) {
+  //     // Convert YouTube watch URL to embed URL
+  //     const videoId = url.split('v=')[1]?.split('&')[0];
+  //     if (videoId) {
+  //       this.safeVideoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
+  //         `https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1&autoplay=0`
+  //       );
+  //     }
+  //   } else if (url.includes('youtu.be/')) {
+  //     // Handle short YouTube URLs
+  //     const videoId = url.split('youtu.be/')[1]?.split('?')[0];
+  //     if (videoId) {
+  //       this.safeVideoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
+  //         `https://www.youtube  {
+  //       this.safeVideoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
+  //         `https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1&autoplay=0`
+  //       );
+  //     }
+  //   } else if (url.includes('youtube.com/embed/')) {
+  //     // Already an embed URL
+  //     this.safeVideoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+  //   } else if (url.includes('vimeo.com/')) {
+  //     // Handle Vimeo URLs
+  //     const videoId = url.split('vimeo.com/')[1]?.split('?')[0];
+  //     if (videoId) {
+  //       this.safeVideoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
+  //         `https://player.vimeo.com/video/${videoId}`
+  //       );
+  //     }
+  //   } else if (url.startsWith('http') || url.startsWith('//')) {
+  //     // Direct video URL or protocol-relative URL
+  //     this.safeVideoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+  //   } else {
+  //     // Relative path - construct full URL if needed
+  //     const fullUrl = url.startsWith('/') ? `https://localhost:7264${url}` : url;
+  //     this.safeVideoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(fullUrl);
+  //   }
+  // }
+
   setVideoUrl(url: string): void {
     if (!url) {
       this.safeVideoUrl = null;
       return;
     }
-
+  
     // Handle different video URL formats
     if (url.includes('youtube.com/watch')) {
       // Convert YouTube watch URL to embed URL
@@ -206,16 +249,62 @@ export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
       this.safeVideoUrl = this.sanitizer.bypassSecurityTrustResourceUrl(fullUrl);
     }
   }
+  
+
+  // New method to handle video start watching
+  startWatchingVideo(): void {
+    this.videoWatched = true;
+    // You can add additional logic here like tracking video progress
+    console.log('User started watching video for module:', this.selectedModule?.moduleName);
+  }
+
+  // Enhanced method to handle video load event
+  onVideoLoad(): void {
+    console.log('Video loaded successfully');
+    // Simulate video completion after a certain time or user interaction
+    // In a real implementation, you might want to track actual video progress
+    setTimeout(() => {
+      if (!this.selectedModule?.isCompleted) {
+        this.videoWatched = true;
+      }
+    }, 5000); // Simulate 5 seconds of watching
+  }
 
   playVideo(module: ModuleDto): void {
     this.selectModule(module);
   }
 
-  downloadPdf(module: ModuleDto): void {
-    if (module.documentUrl) {
+  // Enhanced PDF download method using documentpath
+  downloadModulePdf(module: ModuleDto): void {
+    if (module.documentPath) {
+      const pdfUrl = `https://localhost:7264/${module.documentPath}`;
+      
       // Create a temporary link element to trigger download
       const link = document.createElement('a');
-      link.href = module.documentUrl;
+      link.href = pdfUrl;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      
+      // Extract filename from path for download attribute
+      const filename = module.documentPath.split('/').pop() || 'module-document.pdf';
+      link.download = filename;
+      
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      console.log('Downloading PDF from:', pdfUrl);
+    } else {
+      console.error('No document path available for this module');
+    }
+  }
+
+  // Legacy PDF download method (keeping for backward compatibility)
+  downloadPdf(module: ModuleDto): void {
+    if (module.documentPath) {
+      // Create a temporary link element to trigger download
+      const link = document.createElement('a');
+      link.href = module.documentPath;
       link.target = '_blank';
       link.rel = 'noopener noreferrer';
       document.body.appendChild(link);
@@ -251,7 +340,7 @@ export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
   }
 
   markCurrentModuleAsCompleted(): void {
-    if (this.selectedModule && !this.selectedModule.isCompleted) {
+    if (this.selectedModule && !this.selectedModule.isCompleted && this.videoWatched) {
       this.markModuleAsCompleted(this.selectedModule);
     }
   }
@@ -296,7 +385,7 @@ export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
 
   getModuleIcon(module: ModuleDto): string {
     const hasVideo = module.videoUrl || this.hasVideoForModule(module.moduleId);
-    const hasDocument = module.documentUrl;
+    const hasDocument = module.documentPath || module.documentPath;
     
     if (hasVideo && hasDocument) {
       return 'fas fa-file-video';

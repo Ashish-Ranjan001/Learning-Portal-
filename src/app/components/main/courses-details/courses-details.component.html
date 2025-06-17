@@ -158,12 +158,12 @@
                         (click)="playVideo(selectedModule)">
                   <i class="fas fa-play me-2"></i>Watch Video
                 </button>
-                <button *ngIf="selectedModule.documentUrl && isValidDocumentUrl(selectedModule.documentUrl)" 
+                <button *ngIf="selectedModule.documentPath && isValidDocumentUrl(selectedModule.documentPath)" 
                         class="btn btn-outline-primary" 
                         (click)="viewDocument(selectedModule)">
                   <i class="fas fa-file-pdf me-2"></i>View Document
                 </button>
-                <div *ngIf="!selectedModule.videoUrl && !selectedModule.documentUrl" class="alert alert-info">
+                <div *ngIf="!selectedModule.videoUrl && !selectedModule.documentPath" class="alert alert-info">
                   <i class="fas fa-info-circle me-2"></i>No content available for this module.
                 </div>
               </div>
@@ -218,7 +218,7 @@
             <div class="card-header bg-light d-flex justify-content-between align-items-center">
               <h5 class="mb-0">{{ selectedModule.moduleName }}</h5>
               <div>
-                <a [href]="selectedModule.documentUrl" target="_blank" class="btn btn-sm btn-outline-primary me-2">
+                <a [href]="selectedModule.documentPath" target="_blank" class="btn btn-sm btn-outline-primary me-2">
                   <i class="fas fa-external-link-alt me-1"></i>Open in New Tab
                 </a>
                 <button class="btn btn-sm btn-outline-secondary" (click)="closeDocumentViewer()">
@@ -238,7 +238,7 @@
                 <!-- Fallback if iframe fails -->
                 <div class="p-3 text-center" style="display: none;">
                   <p class="mb-3">Unable to display document viewer.</p>
-                  <a [href]="selectedModule.documentUrl" target="_blank" class="btn btn-primary">
+                  <a [href]="selectedModule.documentPath" target="_blank" class="btn btn-primary">
                     <i class="fas fa-external-link-alt me-2"></i>Open Document in New Tab
                   </a>
                 </div>

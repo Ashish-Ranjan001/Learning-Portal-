@@ -1047,7 +1047,7 @@ export class CoursesDetailComponent implements OnInit, OnDestroy {
   }
 
   viewDocument(module: ModuleDto): void {
-    if (!module.documentUrl) {
+    if (!module.documentPath) {
       console.error('No document URL available');
       return;
     }
@@ -1057,7 +1057,7 @@ export class CoursesDetailComponent implements OnInit, OnDestroy {
     this.showVideoPlayer = false;
     
     // Sanitize the document URL
-    this.sanitizedDocumentUrl = this.sanitizer.bypassSecurityTrustResourceUrl(module.documentUrl);
+    this.sanitizedDocumentUrl = this.sanitizer.bypassSecurityTrustResourceUrl(module.documentPath);
     this.sanitizedVideoUrl = null;
     
     this.markModuleAsCompleted(module);
@@ -1110,11 +1110,11 @@ export class CoursesDetailComponent implements OnInit, OnDestroy {
   }
 
   getModuleIcon(module: ModuleDto): string {
-    if (module.videoUrl && module.documentUrl) {
+    if (module.videoUrl && module.documentPath) {
       return 'fas fa-play-circle';
     } else if (module.videoUrl) {
       return 'fas fa-play-circle';
-    } else if (module.documentUrl) {
+    } else if (module.documentPath) {
       return 'fas fa-file-pdf';
     }
     return 'fas fa-book';

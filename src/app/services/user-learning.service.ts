@@ -54,7 +54,7 @@ export interface ModuleDto {
   description: string;
   duration: number;
   videoUrl?: string;
-  documentUrl?: string;
+  documentPath?: string;
   isCompleted: boolean;
   order: number;
 }
