@@ -35,6 +35,10 @@ import {  CoursesDetailComponent } from './components/main/courses-details/cours
 import { UpdateUserComponent } from './components/main/update-user/update-user.component';
 import { LearningpageComponent } from './components/main/learningpage/learningpage.component';
 import { CoursemodulevideocomponentComponent } from './components/main/coursemodulevideocomponent/coursemodulevideocomponent.component';
+import { ViewAssignmentComponent } from './components/dashboard/view-assignment/view-assignment.component';
+import { AddAssignmentComponent } from './components/dashboard/add-assignment/add-assignment.component';
+import { DownlaodReportComponent } from './components/dashboard/downlaod-report/downlaod-report.component';
+
 // import { DashboardComponent } from './components/main/dashboard/dashboard.component';
 
 
@@ -54,6 +58,8 @@ export const routes: Routes = [
     {path: 'updateuser', component: UpdateUserComponent},
     {path: 'mylearning', component: LearningpageComponent},
     {path:'module/:courseId',component:CoursemodulevideocomponentComponent },
+    
+
 
 
 
@@ -83,6 +89,9 @@ export const routes: Routes = [
         {path:'module/view/:id', component:ViewModuleComponent},
         {path:'module/edit/:id', component:EditModuleComponent},
        { path: 'ta/edit/:id', component: EditTaComponent },
+       {path: 'assignment/view', component:ViewAssignmentComponent},
+       {path: 'assignment/add', component:AddAssignmentComponent},
+       {path: 'reports/generate', component:DownlaodReportComponent},
        
        
      ] }
