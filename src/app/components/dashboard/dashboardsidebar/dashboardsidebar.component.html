@@ -6,10 +6,25 @@
 
   <ul class="nav flex-column mt-3">
     <li class="nav-item">
-      <a routerLink="/reports" routerLinkActive="active" class="nav-link">
+      <a 
+        class="nav-link" 
+        [class.selected]="reportsOpen"
+        (click)="toggleReports()">
         <i class="bi bi-grid"></i>
         <span>Reports</span>
+        <i
+          class="bi ms-auto"
+          [ngClass]="{
+            'bi-chevron-down': reportsOpen,
+            'bi-chevron-right': !reportsOpen
+          }"
+        ></i>
       </a>
+      <ul class="nav flex-column child-nav" [class.show]="reportsOpen">
+        <li class="nav-item">
+          <a routerLink="reports/generate" class="nav-link ps-4">Generate Report</a>
+        </li>
+      </ul>
     </li>
 
     <li class="nav-item">
@@ -184,11 +199,30 @@
       </li>
 
       <li class="nav-item">
-        <a routerLink="/assignment" class="nav-link">
+        <a 
+          class="nav-link" 
+          [class.selected]="assignmentOpen"
+          (click)="toggleAssignment()">
           <i class="bi bi-pencil-square"></i>
           <span>Assignment</span>
+          <i
+            class="bi ms-auto"
+            [ngClass]="{
+              'bi-chevron-down': assignmentOpen,
+              'bi-chevron-right': !assignmentOpen
+            }"
+          ></i>
         </a>
+        <ul class="nav flex-column child-nav" [class.show]="assignmentOpen">
+          <li class="nav-item">
+            <a routerLink="assignment/add" class="nav-link ps-4">Add Assignment</a>
+          </li>
+          <li class="nav-item">
+            <a routerLink="assignment/view" class="nav-link ps-4">View Assignment</a>
+          </li>
+        </ul>
       </li>
+      
     </ul>
  
 </nav>
