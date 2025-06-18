@@ -25,7 +25,7 @@
               <button class="btn btn-primary btn-lg" (click)="retry()">
                 <i class="fas fa-redo me-2"></i>Try Again
               </button>
-              <button class="btn btn-outline-secondary" (click)="goBack()">
+              <button class="btn btn-outline-secondary" (click)="goBack('')">
                 <i class="fas fa-arrow-left me-2"></i>Go Back
               </button>
             </div>
@@ -44,7 +44,7 @@
       <div class="col-12">
         <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
           <div class="d-flex align-items-center gap-3">
-            <button class="btn btn-outline-primary" (click)="goBack()">
+            <button class="btn btn-outline-primary" (click)="goBack(module.course_id)" aria-label="Back to course">
               <i class="fas fa-arrow-left me-2"></i>Back
             </button>
             <div>
@@ -218,6 +218,7 @@
                 </button>
               </div>
             </div>
+            
           </div>
         </div>
       </div>

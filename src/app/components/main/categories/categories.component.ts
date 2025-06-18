@@ -287,11 +287,19 @@
 //   }
 // }
 
+
+
+
+
+
+
+
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserLearningService, CategoryWithCoursesDto } from "../../../services/user-learning.service";
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { jwtDecode } from 'jwt-decode';
 
 @Component({
   selector: 'app-categories',
@@ -312,13 +320,13 @@ import { RouterModule } from '@angular/router';
       </div>
 
       <!-- Debug Info (Remove in production) -->
-      <div class="alert alert-info mb-4" *ngIf="!loading">
+      <!-- <div class="alert alert-info mb-4" *ngIf="!loading">
         <strong>Debug Info:</strong>
         <br>Categories count: {{ categories.length }}
         <br>Loading: {{ loading }}
         <br>Error: {{ error || 'None' }}
         <br>Raw data: {{ categories | json }}
-      </div>
+      </div> -->
 
       <!-- Loading State -->
       <div *ngIf="loading" class="d-flex justify-content-center py-5">
@@ -553,8 +561,33 @@ export class CategoriesComponent implements OnInit {
     private router: Router
   ) {
     // TODO: Get userId from your authentication service
-    this.userId = localStorage.getItem('userId') || 'user-id-placeholder';
+    this.userId = this.getDecodedUserId() ;
   }
+
+   getDecodedUserId() {
+    try {
+        // Retrieve token from localStorage
+        const token = localStorage.getItem("authToken");
+        if (!token) {
+            console.error("No auth token found in localStorage.");
+            return null;
+        }
+
+        // Decode JWT
+        const decodedToken: any = jwtDecode(token);
+
+        console.log("=== DECODED TOKEN ===", decodedToken);
+
+        // Extract UserId from possible claims
+        const userId = decodedToken.UserId || decodedToken.nameid || decodedToken.sub;
+
+        console.log("=== EXTRACTED USER ID ===", userId);
+        return userId;
+    } catch (error) {
+        console.error("Error decoding JWT:", error);
+        return null;
+    }
+}
 
   ngOnInit(): void {
     this.loadCategories();

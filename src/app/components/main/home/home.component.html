@@ -1,1 +1,30 @@
-<p>home works!</p>
+<!-- Updated home.component.html -->
+<div class="app-container">
+    <!-- Pass the sidebar state to header -->
+    <app-mainheader
+      (menuToggle)="onMenuToggle()"
+      [userName]="'John Doe'"
+      [notificationCount]="5"
+      [userAvatar]="'/assets/avatar.png'"
+      [isSidebarOpen]="!isSidebarCollapsed"
+    ></app-mainheader>
+  
+    <div class="main-content">
+     <app-mainsidebar 
+      [collapsed]="isSidebarCollapsed"
+      (categorySelected)="onCategorySelected($event)"
+      (sidebarToggled)="onSidebarToggled($event)">
+    </app-mainsidebar>
+  
+      <main class="content"
+            [class.expanded]="isSidebarCollapsed"
+            [class.sidebar-open]="!isSidebarCollapsed"  
+      >
+        <router-outlet></router-outlet>
+      </main>
+    </div>
+  
+    <app-mainfooter
+      [isSidebarOpen]="!isSidebarCollapsed"
+   ></app-mainfooter>
+  </div>

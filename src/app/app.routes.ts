@@ -31,18 +31,25 @@ import { EditTaComponent } from './components/dashboard/edit-ta/edit-ta.componen
 import { ViewVideoComponent } from './components/main/view-video/view-video.component';
 import { CategoriesComponent } from './components/main/categories/categories.component';
 import { CoursesComponent } from './components/main/courses/courses.component';
-import {  CoursesDetailComponent } from './components/main/courses-details/courses-details.component';
+import {  CourseModuleViewComponent } from './components/main/courses-details/courses-details.component';
+import { ModuleviewerComponent } from './components/main/moduleviewer/moduleviewer.component';
+import { LearningpageComponent } from './components/main/learningpage/learningpage.component';
 
 
 
 
 export const routes: Routes = [
     {path: '', component:LandingpageComponent},
+    // {path:'user-login',component:LoginComponent},
+    // {path:'admin-login',component:LoginComponent},
     {path:'login',component:LoginComponent},
+    {path:'home',component:HomeComponent},
     { path: 'categories', component: CategoriesComponent },
     { path: 'courses/:categoryId', component: CoursesComponent },
-    { path: 'course-detail/:courseId', component: CoursesDetailComponent },
+    { path: 'course-detail/:courseId', component: CourseModuleViewComponent },
     {path: 'video/:id', component: ViewVideoComponent},
+    {path: 'ashish/:id' , component: ModuleviewerComponent},
+    {path:'learningpage', component:LearningpageComponent},
 
   
 

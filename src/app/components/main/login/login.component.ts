@@ -138,7 +138,7 @@ export class LoginComponent {
   isSubmitting = false;
   showPassword = false;
   errorMessage = '';
-
+ 
   constructor(
     private fb: FormBuilder, 
     private http: HttpClient, 
@@ -149,7 +149,7 @@ export class LoginComponent {
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
   }
-
+ 
   togglePasswordVisibility() {
     this.showPassword = !this.showPassword;
   }
@@ -159,7 +159,7 @@ export class LoginComponent {
       console.log('=== LOGIN FORM INVALID ===');
       return;
     }
-
+ 
     this.isSubmitting = true;
     const credentials = this.loginForm.value;
 
@@ -238,3 +238,4 @@ export class LoginComponent {
     }
   }
 }
+ 
