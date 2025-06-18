@@ -46,6 +46,7 @@ export interface CourseDetailDto {
   assignmentDownloaded: boolean;
   assignmentSubmitted: boolean;
   quizSubmitted: boolean;
+  quizPath:string
 }
 
 export interface ModuleDto {
