@@ -1,17 +1,17 @@
-/* Enhanced Edit SME Component Styles */
-.edit-sme-container {
+/* Enhanced Edit Admin Component Styles */
+.edit-admin-container {
     max-width: 100%;
     margin: 0 auto;
     transition: all 0.3s ease;
   }
   
-  .edit-sme-container:hover {
+  .edit-admin-container:hover {
     transform: translateY(-2px);
   }
   
-  /* Card Header Gradient */
+  /* Card Header Gradient - Admin Theme */
   .bg-gradient {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
     position: relative;
     overflow: hidden;
   }
@@ -122,14 +122,14 @@
   }
   
   .btn-primary {
-    background: linear-gradient(135deg, #007bff, #0056b3);
+    background: linear-gradient(135deg, #4e73df, #224abe);
     border: none;
-    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+    box-shadow: 0 4px 15px rgba(78, 115, 223, 0.3);
   }
   
   .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
+    box-shadow: 0 6px 20px rgba(78, 115, 223, 0.4);
   }
   
   .btn-outline-secondary {
@@ -179,9 +179,14 @@
     box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175) !important;
   }
   
+  /* Admin specific styling */
+  .fa-user-shield {
+    color: #ffd700;
+  }
+  
   /* Responsive Adjustments */
   @media (max-width: 768px) {
-    .edit-sme-container {
+    .edit-admin-container {
       margin: 1rem;
     }
     
@@ -223,7 +228,7 @@
   /* Focus States for Accessibility */
   .btn:focus,
   .custom-toggle:focus {
-    outline: 2px solid #007bff;
+    outline: 2px solid #4e73df;
     outline-offset: 2px;
   }
   
