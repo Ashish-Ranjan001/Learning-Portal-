@@ -13,6 +13,7 @@ import { CommonModule } from "@angular/common"
 import { trigger, state, style, transition, animate, keyframes } from "@angular/animations"
 import { DashboardServicesService } from '../../../services/homedashboard/dashboard-services.service'
 import { jwtDecode } from 'jwt-decode'
+import { Route, Router } from "@angular/router"
 
 interface SavedCourse {
   id: string
@@ -99,7 +100,8 @@ export class HomeSavedCourseComponent implements OnInit, OnDestroy, AfterViewIni
 
   constructor(
     private renderer: Renderer2,
-    private dashboardService: DashboardServicesService
+    private dashboardService: DashboardServicesService,
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -280,6 +282,7 @@ export class HomeSavedCourseComponent implements OnInit, OnDestroy, AfterViewIni
     // Show alert when card is clicked
     alert(`You clicked on "${course.title}" course`)
 
+    this.router.navigate(['module/', course.id])
     // Log the click event
     console.log("Course clicked:", course)
   }
