@@ -717,6 +717,8 @@ import { CommonModule } from "@angular/common"
 import { trigger, state, style, transition, animate, keyframes } from "@angular/animations"
 import { DashboardServicesService } from '../../../services/homedashboard/dashboard-services.service'
 import { jwtDecode } from 'jwt-decode'
+import { UserLearningService } from "../../../services/user-learning.service"
+import { Router } from "@angular/router"
 
 interface Course {
   id: string
@@ -823,7 +825,8 @@ export class FavoriteCoursesComponent implements OnInit, OnDestroy, AfterViewIni
 
   constructor(
     private renderer: Renderer2,
-    private dashboardService: DashboardServicesService
+    private dashboardService: DashboardServicesService,
+    private router:Router,
   ) {}
 
   ngOnInit(): void {
@@ -1008,9 +1011,27 @@ export class FavoriteCoursesComponent implements OnInit, OnDestroy, AfterViewIni
 
     // Show alert when card is clicked
     alert(`You clicked on "${course.title}" course`)
+  
+    this.router.navigate(['module/', course.id])
+
+    // this.userLearningService.getCourseDetail(course.id, userid).subscribe({
+    //   next: (courseDetail) => {
+    //     this.courseDetail = courseDetail;
+    //     this.loading = false;
+    //     // Sort modules by order
+    //     if (this.courseDetail?.modules) {
+    //       this.courseDetail.modules.sort((a, b) => a.order - b.order);
+    //     }
+    //   },
+    //   error: (error) => {
+    //     this.error = 'Failed to load course details';
+    //     this.loading = false;
+    //     console.error('Error loading course detail:', error);
+    //   }
+    // });
 
     // Log the click event
-    console.log("Course clicked:", course)
+    // console.log("Course clicked:", course)
   }
 
   toggleFavorite(course: Course, event: Event): void {
@@ -1037,6 +1058,7 @@ export class FavoriteCoursesComponent implements OnInit, OnDestroy, AfterViewIni
     const course = this.courses.find((c) => c.id === courseId)
     if (course) {
       alert(`Viewing details for "${course.title}"`)
+      this.router.navigate(['module/', course.id])
       console.log("View Details clicked for course:", course)
     }
   }

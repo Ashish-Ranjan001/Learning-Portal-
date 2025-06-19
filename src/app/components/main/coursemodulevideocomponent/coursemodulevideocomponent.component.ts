@@ -914,7 +914,6 @@ export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
 
       const filename = module.documentPath.split("/").pop() || "module-document.pdf"
       link.download = filename
-
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)

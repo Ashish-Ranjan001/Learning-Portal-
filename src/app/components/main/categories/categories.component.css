@@ -339,7 +339,8 @@ background: linear-gradient(to right, #0b8793, #360033); /* W3C, IE 10+/ Edge, F
   left: 0;
   right: 0;
   bottom: 0;
-  background: var(--purple-gradient);
+  /* background: var(--purple-gradient); */
+  background-color: white;
   opacity: 0;
   transition: opacity 0.3s ease;
 }
@@ -349,7 +350,8 @@ background: linear-gradient(to right, #0b8793, #360033); /* W3C, IE 10+/ Edge, F
 }
 
 .toggle-btn.active {
-  color: white;
+  color: rgb(65, 247, 19);
+
   box-shadow: var(--shadow-purple);
 }
 

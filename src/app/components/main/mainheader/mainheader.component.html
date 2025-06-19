@@ -1,8 +1,8 @@
 <header class="header">
   <!-- University Title with Typewriter Effect -->
-  <div class="university-title">
-    <h1 class="typewriter-text">{{ displayText }}<span class="cursor">|</span></h1>
-  </div>
+  <div class="university-title" onclick="window.location.href='/home'">
+  <h1 class="typewriter-text">{{ displayText }}<span class="cursor">|</span></h1>
+</div>
 
   <!-- Search Form -->
   <form class="search-form" (submit)="handleSearchSubmit($event)">
