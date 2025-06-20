@@ -1,1147 +1,251 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Course Module View</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <style>
-        :root {
-            --primary-color: #1a365d;
-            --secondary-color: #2563eb;
-            --success-color: #059669;
-            --warning-color: #d97706;
-            --danger-color: #dc2626;
-            --dark-color: #1f2937;
-            --light-color: #f8fafc;
-            --border-radius: 16px;
-            --border-radius-sm: 8px;
-            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
-            --shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
-            --shadow-md: 0 10px 25px rgba(0, 0, 0, 0.15);
-            --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.1);
-            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --gradient-card: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            background: var(--gradient-primary);
-            min-height: 100vh;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            line-height: 1.6;
-            color: var(--dark-color);
-        }
-
-        .main-container {
-            background: white;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow-lg);
-            margin: 2rem;
-            overflow: hidden;
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .header-section {
-            background: linear-gradient(135deg, var(--primary-color) 0%, #2c5282 100%);
-            color: white;
-            padding: 3rem 2rem;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .header-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" fill="white" fill-opacity="0.03"><path d="M0,20 Q250,80 500,20 T1000,20 V100 H0 Z"/></svg>');
-            background-size: cover;
-        }
-
-        .header-section * {
-            position: relative;
-            z-index: 2;
-        }
-
-        .header-section h1 {
-            margin-bottom: 0.75rem;
-            font-weight: 700;
-            font-size: 2.5rem;
-            letter-spacing: -0.02em;
-        }
-
-        .header-section p {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            font-weight: 300;
-        }
-
-        .progress-info {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 1.5rem;
-            margin-top: 2rem;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .progress-item {
-            background: rgba(255, 255, 255, 0.15);
-            padding: 1.5rem 1rem;
-            border-radius: 12px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            transition: var(--transition);
-        }
-
-        .progress-item:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px);
-        }
-
-        .progress-item .number {
-            font-size: 2.25rem;
-            font-weight: 800;
-            color: #fbbf24;
-            line-height: 1;
-            margin-bottom: 0.5rem;
-        }
-
-        .progress-item .label {
-            font-size: 0.875rem;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            opacity: 0.9;
-        }
-
-        .content-section {
-            display: flex;
-            min-height: 75vh;
-        }
-
-        .video-section {
-            flex: 2;
-            background: linear-gradient(145deg, #0f172a 0%, #1e293b 100%);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            padding: 2rem;
-        }
-
-        .video-container {
-            width: 100%;
-            max-width: 900px;
-            position: relative;
-            padding-bottom: 56.25%;
-            height: 0;
-            overflow: hidden;
-            border-radius: 16px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
-            border: 2px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .video-container iframe,
-        .video-container video {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: none;
-            border-radius: 14px;
-        }
-
-        .video-placeholder {
-            color: #e2e8f0;
-            text-align: center;
-            padding: 4rem 2rem;
-            max-width: 500px;
-        }
-
-        .video-placeholder i {
-            font-size: 5rem;
-            margin-bottom: 1.5rem;
-            opacity: 0.7;
-            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .video-placeholder h3 {
-            font-size: 1.875rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            color: white;
-        }
-
-        .video-placeholder p {
-            font-size: 1.1rem;
-            opacity: 0.8;
-            line-height: 1.6;
-        }
-
-        .video-actions {
-            margin-top: 2rem;
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .btn-action {
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            min-width: 200px;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-            text-decoration: none;
-            box-shadow: var(--shadow);
-        }
-
-        .btn-action::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s;
-        }
-
-        .btn-action:hover::before {
-            left: 100%;
-        }
-
-        .btn-complete {
-            background: linear-gradient(135deg, var(--success-color) 0%, #10b981 100%);
-            color: white;
-        }
-
-        .btn-complete:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(5, 150, 105, 0.4);
-        }
-
-        .btn-download-pdf {
-            background: linear-gradient(135deg, var(--warning-color) 0%, #f59e0b 100%);
-            color: white;
-        }
-
-        .btn-download-pdf:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(217, 119, 6, 0.4);
-        }
-
-        .btn-complete:disabled {
-            background: linear-gradient(135deg, #64748b 0%, #94a3b8 100%);
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: var(--shadow-sm);
-        }
-
-        .modules-section {
-            flex: 1;
-            background: var(--light-color);
-            padding: 2rem;
-            border-left: 1px solid #e5e7eb;
-            overflow-y: auto;
-            max-height: 75vh;
-        }
-
-        .modules-title {
-            color: var(--primary-color);
-            margin-bottom: 2rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            font-size: 1.5rem;
-            letter-spacing: -0.01em;
-        }
-
-        .modules-title i {
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .module-item {
-            background: var(--gradient-card);
-            border: 2px solid #f1f5f9;
-            border-radius: var(--border-radius);
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            cursor: pointer;
-            transition: var(--transition);
-            position: relative;
-            box-shadow: var(--shadow-sm);
-        }
-
-        .module-item::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
-            background: transparent;
-            border-radius: 2px;
-            transition: var(--transition);
-        }
-
-        .module-item:hover {
-            border-color: var(--secondary-color);
-            box-shadow: var(--shadow-md);
-            transform: translateY(-2px);
-        }
-
-        .module-item:hover::before {
-            background: var(--secondary-color);
-        }
-
-        .module-item.active {
-            border-color: var(--secondary-color);
-            background: linear-gradient(145deg, #eff6ff 0%, #dbeafe 100%);
-            box-shadow: var(--shadow-md);
-            transform: translateY(-2px);
-        }
-
-        .module-item.active::before {
-            background: var(--secondary-color);
-        }
-
-        .module-item.completed {
-            border-color: var(--success-color);
-            background: linear-gradient(145deg, #f0fdf4 0%, #dcfce7 100%);
-        }
-
-        .module-item.completed::before {
-            background: var(--success-color);
-        }
-
-        .module-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 1rem;
-        }
-
-        .module-title {
-            font-weight: 700;
-            color: var(--primary-color);
-            font-size: 1.1rem;
-        }
-
-        .module-status {
-            font-size: 1.5rem;
-            transition: var(--transition);
-        }
-
-        .module-meta {
-            display: flex;
-            gap: 1.5rem;
-            color: #6b7280;
-            font-size: 0.875rem;
-            margin-bottom: 1rem;
-            font-weight: 500;
-        }
-
-        .module-meta span {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .module-name {
-            font-weight: 600;
-            color: var(--dark-color);
-            margin-bottom: 1rem;
-            font-size: 1.1rem;
-            line-height: 1.4;
-        }
-
-        .module-actions {
-            display: flex;
-            gap: 0.75rem;
-            margin-top: 1rem;
-        }
-
-        .btn-module {
-            flex: 1;
-            padding: 0.75rem 1rem;
-            border: none;
-            border-radius: var(--border-radius-sm);
-            font-size: 0.9rem;
-            font-weight: 600;
-            transition: var(--transition);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            box-shadow: var(--shadow-sm);
-        }
-
-        .btn-video {
-            background: linear-gradient(135deg, var(--danger-color) 0%, #ef4444 100%);
-            color: white;
-        }
-
-        .btn-video:hover {
-            background: linear-gradient(135deg, #b91c1c 0%, var(--danger-color) 100%);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow);
-        }
-
-        .btn-pdf {
-            background: linear-gradient(135deg, var(--warning-color) 0%, #f59e0b 100%);
-            color: white;
-        }
-
-        .btn-pdf:hover {
-            background: linear-gradient(135deg, #b45309 0%, var(--warning-color) 100%);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow);
-        }
-
-        .btn-video:disabled,
-        .btn-pdf:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: var(--shadow-sm);
-        }
-
-        .bottom-section {
-            background: linear-gradient(145deg, #f8fafc 0%, #e2e8f0 100%);
-            padding: 2rem;
-            border-top: 1px solid #e5e7eb;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1.5rem;
-        }
-
-        .completion-status {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-            flex-wrap: wrap;
-        }
-
-        .completion-badge {
-            padding: 1rem 1.5rem;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            box-shadow: var(--shadow-sm);
-            border: 2px solid transparent;
-        }
-
-        .completion-badge.completed {
-            background: linear-gradient(135deg, var(--success-color) 0%, #10b981 100%);
-            color: white;
-            border-color: rgba(255, 255, 255, 0.2);
-        }
-
-        .completion-badge.in-progress {
-            background: linear-gradient(135deg, var(--warning-color) 0%, #f59e0b 100%);
-            color: white;
-            border-color: rgba(255, 255, 255, 0.2);
-        }
-
-        .completion-text {
-            color: #6b7280;
-            font-weight: 500;
-        }
-
-        .btn-assignment {
-            background: linear-gradient(135deg, var(--secondary-color) 0%, #1d4ed8 100%);
-            color: white;
-            border: none;
-            padding: 1rem 2rem;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 1rem;
-            transition: var(--transition);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            box-shadow: var(--shadow);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn-assignment::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s;
-        }
-
-        .btn-assignment:hover::before {
-            left: 100%;
-        }
-
-        .btn-assignment:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.4);
-        }
-
-        .btn-assignment:disabled {
-            background: linear-gradient(135deg, #64748b 0%, #94a3b8 100%);
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: var(--shadow-sm);
-        }
-
-        .loading-container,
-        .error-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 70vh;
-            flex-direction: column;
-            gap: 2rem;
-            padding: 2rem;
-        }
-
-        .spinner {
-            width: 4rem;
-            height: 4rem;
-            border: 4px solid #e5e7eb;
-            border-top: 4px solid var(--secondary-color);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .error-icon {
-            font-size: 4rem;
-            color: var(--danger-color);
-            margin-bottom: 1rem;
-        }
-
-        .btn-retry,
-        .btn-back {
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: var(--border-radius);
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            box-shadow: var(--shadow);
-        }
-
-        .btn-retry {
-            background: linear-gradient(135deg, var(--secondary-color) 0%, #1d4ed8 100%);
-            color: white;
-        }
-
-        .btn-back {
-            background: linear-gradient(135deg, #6b7280 0%, #9ca3af 100%);
-            color: white;
-        }
-
-        .btn-retry:hover,
-        .btn-back:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-        }
-
-        /* Responsive Design */
-        @media (max-width: 1024px) {
-            .main-container {
-                margin: 1rem;
-            }
-            
-            .content-section {
-                flex-direction: column;
-            }
-            
-            .modules-section {
-                border-left: none;
-                border-top: 1px solid #e5e7eb;
-                max-height: none;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .header-section {
-                padding: 2rem 1rem;
-            }
-            
-            .header-section h1 {
-                font-size: 2rem;
-            }
-            
-            .progress-info {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 1rem;
-            }
-            
-            .video-section,
-            .modules-section {
-                padding: 1.5rem;
-            }
-            
-            .bottom-section {
-                flex-direction: column;
-                text-align: center;
-                gap: 1rem;
-            }
-
-            .video-actions {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .btn-action {
-                min-width: 250px;
-            }
-            
-            .completion-status {
-                flex-direction: column;
-                gap: 1rem;
-                text-align: center;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .progress-info {
-                grid-template-columns: 1fr;
-            }
-            
-            .module-actions {
-                flex-direction: column;
-            }
-            
-            .btn-module {
-                justify-content: center;
-            }
-        }
-    </style>
-</head>
-<body>
+<div class="container-fluid">
     <!-- Loading State -->
-    <div *ngIf="loading" class="loading-container">
-        <div class="spinner"></div>
-        <h4>Loading Course Data...</h4>
-        <p class="text-muted">Please wait while we fetch your modules</p>
+    <div *ngIf="loading" class="d-flex justify-content-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
     </div>
-
+ 
     <!-- Error State -->
-    <div *ngIf="error && !loading" class="error-container">
-        <i class="fas fa-exclamation-triangle error-icon"></i>
-        <h4>Something went wrong</h4>
-        <p class="text-muted">{{ error }}</p>
-        <div class="d-flex gap-3">
-            <button class="btn-retry" (click)="retryLoad()">
-                <i class="fas fa-redo me-2"></i>Try Again
-            </button>
-            <button class="btn-back" (click)="goBack()">
-                <i class="fas fa-arrow-left me-2"></i>Go Back
-            </button>
-        </div>
+    <div *ngIf="error" class="alert alert-danger" role="alert">
+      {{ error }}
+      <button class="btn btn-outline-danger ms-2" (click)="retryLoadCourse()">Retry</button>
     </div>
-
-    <!-- Main Content -->
-    <div *ngIf="courseDetail && !loading && !error" class="main-container">
-        <!-- Header Section -->
-        <div class="header-section">
-            <h1>{{ courseDetail.courseName || 'Advanced Web Development' }}</h1>
-            <p>{{ courseDetail.description || 'Master modern web development with hands-on projects and expert guidance' }}</p>
-            
-            <div class="progress-info">
-                <div class="progress-item">
-                    <div class="number">{{ completedModules || 3 }}</div>
-                    <div class="label">Completed</div>
-                </div>
-                <div class="progress-item">
-                    <div class="number">{{ (totalModules || 8) - (completedModules || 3) }}</div>
-                    <div class="label">Remaining</div>
-                </div>
-                <div class="progress-item">
-                    <div class="number">{{ totalModules || 8 }}</div>
-                    <div class="label">Total Modules</div>
-                </div>
-                <div class="progress-item">
-                    <div class="number">{{ courseDetail.progress || 38 }}%</div>
-                    <div class="label">Progress</div>
-                </div>
+ 
+    <!-- Course Detail Content -->
+    <div *ngIf="!loading && !error && courseDetail" class="row">
+      <!-- Header -->
+      <div class="col-12 mb-4">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a (click)="goBack()" class="text-primary" style="cursor: pointer;">Home</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">Course Details</li>
+          </ol>
+        </nav>
+      </div>
+ 
+      <!-- Left Sidebar - Course Info & Modules -->
+      <div class="col-lg-4 col-md-5">
+        <!-- Course Info Card -->
+        <div class="card shadow-sm mb-4">
+          <div class="course-header position-relative">
+            <!-- <img
+              [src]="getSafeImageUrl(courseDetail.thumbnailUrl)"
+              class="card-img-top"
+              [alt]="courseDetail.courseName"
+              (error)="onImageError($event)"
+              style="height: 200px; object-fit: cover;"> -->
+            <div class="course-overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
+                 style="background: rgba(0,0,0,0.3);">
+              <div class="university-logo">
+                <i class="fas fa-university text-white fa-2x"></i>
+              </div>
             </div>
+          </div>
+          <div class="card-body">
+            <h4 class="card-title">{{ courseDetail.courseName }}</h4>
+            <p class="card-text text-muted">{{ courseDetail.description }}</p>
+ 
+            <!-- Progress -->
+            <div class="mb-3">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="fw-semibold">Progress</span>
+                <span class="text-muted">{{ courseDetail.progress || 0 }}%</span>
+              </div>
+              <div class="progress" style="height: 8px;">
+                <div class="progress-bar"
+                     [class]="getProgressClass(courseDetail.progress || 0)"
+                     role="progressbar"
+                     [style.width.%]="courseDetail.progress || 0">
+                </div>
+              </div>
+            </div>
+ 
+            <!-- Assignment Section -->
+            <div class="assignment-section" *ngIf="!courseDetail.assignmentDownloaded">
+              <button class="btn btn-outline-primary w-100 mb-2" (click)="downloadAssignment()">
+                <i class="fas fa-download me-2"></i>Download Assignment
+              </button>
+            </div>
+ 
+            <div *ngIf="courseDetail.assignmentDownloaded" class="text-success mb-2">
+              <i class="fas fa-check-circle me-2"></i>Assignment Downloaded
+            </div>
+          </div>
         </div>
-
-        <!-- Content Section -->
-        <div class="content-section">
-            <!-- Video Section -->
-            <div class="video-section">
-                <!-- When no module is selected -->
-                <div class="video-placeholder" *ngIf="!selectedModule">
-                    <i class="fas fa-play-circle"></i>
-                    <h3>Select a Module</h3>
-                    <p>Choose a module from the list to start your learning journey</p>
+ 
+        <!-- Modules List -->
+        <div class="card shadow-sm">
+          <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">
+              <i class="fas fa-list me-2"></i>Course Modules
+            </h5>
+          </div>
+          <div class="card-body p-0">
+            <div class="modules-list">
+              <div *ngFor="let module of courseDetail.modules; let i = index"
+                   class="module-item p-3 border-bottom"
+                   [class.active]="selectedModule?.moduleId === module.moduleId"
+                   [class.completed]="module.isCompleted"
+                   [class.bg-light]="selectedModule?.moduleId === module.moduleId"
+                   (click)="selectModule(module)"
+                   style="cursor: pointer;">
+                <div class="d-flex align-items-center">
+                  <div class="module-icon me-3">
+                    <i [class]="getModuleIcon(module)"
+                       [class.text-success]="module.isCompleted"
+                       [class.text-primary]="!module.isCompleted"></i>
+                  </div>
+                  <div class="flex-grow-1">
+                    <h6 class="module-title mb-1">{{ module.moduleName }}</h6>
+                    <small class="text-muted">{{ formatDuration(module.duration) }}</small>
+                  </div>
+                  <div class="module-status">
+                    <i *ngIf="module.isCompleted" class="fas fa-check-circle text-success"></i>
+                    <i *ngIf="!module.isCompleted" class="far fa-circle text-muted"></i>
+                  </div>
                 </div>
-                
-                <!-- When module is selected but no video -->
-                <div class="video-placeholder" *ngIf="selectedModule && !selectedModule.videoUrl && !currentVideoData && !videoLoading">
-                    <i class="fas fa-book-open"></i>
-                    <h3>{{ selectedModule.moduleName || 'Module Content' }}</h3>
-                    <p>{{ selectedModule.description || 'This module contains comprehensive PDF content and resources' }}</p>
-                    
-                    <div class="video-actions">
-                        <button 
-                            *ngIf="selectedModule.documentUrl" 
-                            class="btn-action btn-download-pdf"
-                            (click)="downloadPdf(selectedModule)">
-                            <i class="fas fa-file-pdf"></i>
-                            Download PDF
-                        </button>
-                        <button 
-                            class="btn-action btn-complete"
-                            [disabled]="selectedModule.isCompleted"
-                            (click)="markCurrentModuleAsCompleted()">
-                            <i class="fas fa-check-circle"></i>
-                            {{ selectedModule.isCompleted ? 'Completed' : 'Mark as Complete' }}
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Video Loading State -->
-                <div class="video-placeholder" *ngIf="videoLoading">
-                    <div class="spinner"></div>
-                    <h3>Loading Video...</h3>
-                    <p>Please wait while we prepare your content</p>
-                </div>
-                
-                <!-- When module has video -->
-                <div *ngIf="selectedModule && (selectedModule.videoUrl || currentVideoData) && !videoLoading" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
-                    <h3 style="color: white; margin-bottom: 1rem; text-align: center; font-weight: 600;">
-                        {{ selectedModule.moduleName || currentVideoData?.modulename || 'Module Video' }}
-                    </h3>
-                    
-                    <!-- Duration and Module Info -->
-                    <div style="color: #cbd5e1; margin-bottom: 1.5rem; text-align: center; font-weight: 500;" *ngIf="currentVideoData">
-                        <i class="fas fa-clock me-2"></i>
-                        Duration: {{ currentVideoData.duration || '25' }} minutes
-                    </div>
-                    
-                    <!-- Video Player -->
-                    <div class="video-container" *ngIf="safeVideoUrl">
-                        <iframe [src]="safeVideoUrl" 
-                                frameborder="0" 
-                                allowfullscreen
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share">
-                        </iframe>
-                    </div>
-
-                    <!-- Fallback for direct video files -->
-                    <div class="video-container" *ngIf="!safeVideoUrl && (selectedModule.videoUrl || currentVideoData?.videopath)">
-                        <video controls style="width: 100%; height: 100%; border-radius: 14px;">
-                            <source [src]="selectedModule.videoUrl || currentVideoData?.videopath" type="video/mp4">
-                            <source [src]="selectedModule.videoUrl || currentVideoData?.videopath" type="video/webm">
-                            <source [src]="selectedModule.videoUrl || currentVideoData?.videopath" type="video/ogg">
-                            Your browser does not support the video tag.
-                        </video>
-                    </div>
-                    
-                    <!-- Video Actions -->
-                    <div class="video-actions">
-                        <button 
-                            *ngIf="selectedModule.documentUrl" 
-                            class="btn-action btn-download-pdf"
-                            (click)="downloadPdf(selectedModule)">
-                            <i class="fas fa-file-pdf"></i>
-                            Download Resources
-                        </button>
-                        <button 
-                            class="btn-action btn-complete"
-                            [disabled]="selectedModule.isCompleted"
-                            (click)="markCurrentModuleAsCompleted()">
-                            <i class="fas fa-check-circle"></i>
-                            {{ selectedModule.isCompleted ? 'Completed' : 'Mark as Complete' }}
-                        </button>
-                    </div>
-                </div>
+              </div>
             </div>
-
-            <!-- Modules Section -->
-            <div class="modules-section">
-                <h3 class="modules-title">
-                    <i class="fas fa-graduation-cap"></i>
-                    Course Modules
-                </h3>
-                
-                <!-- Sample modules for demonstration -->
-                <div class="module-item completed">
-                    <div class="module-header">
-                        <span class="module-title">Module 1</span>
-                        <i class="fas fa-check-circle module-status" style="color: var(--success-color);"></i>
-                    </div>
-                    
-                    <div class="module-meta">
-                        <span><i class="fas fa-clock"></i>45 min</span>
-                        <span><i class="fas fa-video"></i>Video + PDF</span>
-                    </div>
-                    
-                    <div class="module-name">
-                        Introduction to Modern Web Development
-                    </div>
-                    
-                    <div class="module-actions">
-                        <button class="btn-module btn-video">
-                            <i class="fas fa-play"></i>Video
-                        </button>
-                        <button class="btn-module btn-pdf">
-                            <i class="fas fa-file-pdf"></i>PDF
-                        </button>
-                    </div>
-                </div>
-
-                <div class="module-item completed">
-                    <div class="module-header">
-                        <span class="module-title">Module 2</span>
-                        <i class="fas fa-check-circle module-status" style="color: var(--success-color);"></i>
-                    </div>
-                    
-                    <div class="module-meta">
-                        <span><i class="fas fa-clock"></i>38 min</span>
-                        <span><i class="fas fa-video"></i>Video + PDF</span>
-                    </div>
-                    
-                    <div class="module-name">
-                        HTML5 Fundamentals & Semantic Markup
-                    </div>
-                    
-                    <div class="module-actions">
-                        <button class="btn-module btn-video">
-                            <i class="fas fa-play"></i>Video
-                        </button>
-                        <button class="btn-module btn-pdf">
-                            <i class="fas fa-file-pdf"></i>PDF
-                        </button>
-                    </div>
-                </div>
-
-                <div class="module-item active">
-                    <div class="module-header">
-                        <span class="module-title">Module 3</span>
-                        <i class="fas fa-play-circle module-status" style="color: var(--secondary-color);"></i>
-                    </div>
-                    
-                    <div class="module-meta">
-                        <span><i class="fas fa-clock"></i>52 min</span>
-                        <span><i class="fas fa-video"></i>Video + PDF</span>
-                    </div>
-                    
-                    <div class="module-name">
-                        Advanced CSS3 & Responsive Design
-                    </div>
-                    
-                    <div class="module-actions">
-                        <button class="btn-module btn-video">
-                            <i class="fas fa-play"></i>Video
-                        </button>
-                        <button class="btn-module btn-pdf">
-                            <i class="fas fa-file-pdf"></i>PDF
-                        </button>
-                    </div>
-                </div>
-
-                <div class="module-item">
-                    <div class="module-header">
-                        <span class="module-title">Module 4</span>
-                        <i class="fas fa-circle module-status" style="color: #cbd5e1;"></i>
-                    </div>
-                    
-                    <div class="module-meta">
-                        <span><i class="fas fa-clock"></i>41 min</span>
-                        <span><i class="fas fa-video"></i>Video + PDF</span>
-                    </div>
-                    
-                    <div class="module-name">
-                        JavaScript ES6+ Fundamentals
-                    </div>
-                    
-                    <div class="module-actions">
-                        <button class="btn-module btn-video">
-                            <i class="fas fa-play"></i>Video
-                        </button>
-                        <button class="btn-module btn-pdf">
-                            <i class="fas fa-file-pdf"></i>PDF
-                        </button>
-                    </div>
-                </div>
-
-                <div class="module-item">
-                    <div class="module-header">
-                        <span class="module-title">Module 5</span>
-                        <i class="fas fa-circle module-status" style="color: #cbd5e1;"></i>
-                    </div>
-                    
-                    <div class="module-meta">
-                        <span><i class="fas fa-clock"></i>48 min</span>
-                        <span><i class="fas fa-video"></i>Video + PDF</span>
-                    </div>
-                    
-                    <div class="module-name">
-                        DOM Manipulation & Event Handling
-                    </div>
-                    
-                    <div class="module-actions">
-                        <button class="btn-module btn-video">
-                            <i class="fas fa-play"></i>Video
-                        </button>
-                        <button class="btn-module btn-pdf">
-                            <i class="fas fa-file-pdf"></i>PDF
-                        </button>
-                    </div>
-                </div>
-
-                <div class="module-item">
-                    <div class="module-header">
-                        <span class="module-title">Module 6</span>
-                        <i class="fas fa-circle module-status" style="color: #cbd5e1;"></i>
-                    </div>
-                    
-                    <div class="module-meta">
-                        <span><i class="fas fa-clock"></i>55 min</span>
-                        <span><i class="fas fa-video"></i>Video + PDF</span>
-                    </div>
-                    
-                    <div class="module-name">
-                        Asynchronous JavaScript & APIs
-                    </div>
-                    
-                    <div class="module-actions">
-                        <button class="btn-module btn-video">
-                            <i class="fas fa-play"></i>Video
-                        </button>
-                        <button class="btn-module btn-pdf">
-                            <i class="fas fa-file-pdf"></i>PDF
-                        </button>
-                    </div>
-                </div>
-
-                <div class="module-item">
-                    <div class="module-header">
-                        <span class="module-title">Module 7</span>
-                        <i class="fas fa-circle module-status" style="color: #cbd5e1;"></i>
-                    </div>
-                    
-                    <div class="module-meta">
-                        <span><i class="fas fa-clock"></i>43 min</span>
-                        <span><i class="fas fa-video"></i>Video + PDF</span>
-                    </div>
-                    
-                    <div class="module-name">
-                        Frontend Frameworks & Libraries
-                    </div>
-                    
-                    <div class="module-actions">
-                        <button class="btn-module btn-video">
-                            <i class="fas fa-play"></i>Video
-                        </button>
-                        <button class="btn-module btn-pdf">
-                            <i class="fas fa-file-pdf"></i>PDF
-                        </button>
-                    </div>
-                </div>
-
-                <div class="module-item">
-                    <div class="module-header">
-                        <span class="module-title">Module 8</span>
-                        <i class="fas fa-circle module-status" style="color: #cbd5e1;"></i>
-                    </div>
-                    
-                    <div class="module-meta">
-                        <span><i class="fas fa-clock"></i>60 min</span>
-                        <span><i class="fas fa-video"></i>Video + PDF</span>
-                    </div>
-                    
-                    <div class="module-name">
-                        Final Project & Deployment
-                    </div>
-                    
-                    <div class="module-actions">
-                        <button class="btn-module btn-video">
-                            <i class="fas fa-play"></i>Video
-                        </button>
-                        <button class="btn-module btn-pdf">
-                            <i class="fas fa-file-pdf"></i>PDF
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- Dynamic modules from Angular would replace the above sample modules -->
-                <div 
-                    *ngFor="let module of courseDetail.modules; let i = index"
-                    class="module-item"
-                    [class.active]="selectedModule?.moduleId === module.moduleId"
-                    [class.completed]="module.isCompleted"
-                    (click)="selectModule(module)"
-                    style="display: none;">
-                    
-                    <div class="module-header">
-                        <span class="module-title">
-                            Module {{ i + 1 }}
-                        </span>
-                        <i [class]="getModuleStatusIcon(module)" class="module-status"></i>
-                    </div>
-                    
-                    <div class="module-meta">
-                        <span *ngIf="module.duration">
-                            <i class="fas fa-clock"></i>{{ module.duration }} min
-                        </span>
-                        <span>
-                            <i [class]="getModuleIcon(module)"></i>
-                            {{ module.videoUrl && module.documentUrl ? 'Video + PDF' : 
-                               module.videoUrl ? 'Video' : 
-                               module.documentUrl ? 'PDF' : 'Content' }}
-                        </span>
-                    </div>
-                    
-                    <div class="module-name">
-                        {{ module.moduleName || ('Module ' + (i + 1)) }}
-                    </div>
-                    
-                    <div class="module-actions">
-                        <button 
-                            class="btn-module btn-video"
-                            (click)="playVideo(module); $event.stopPropagation()">
-                            <i class="fas fa-play"></i>Video
-                        </button>
-                        <button 
-                            *ngIf="module.documentUrl"
-                            class="btn-module btn-pdf"
-                            (click)="downloadPdf(module); $event.stopPropagation()">
-                            <i class="fas fa-file-pdf"></i>PDF
-                        </button>
-                    </div>
-                </div>
-            </div>
+          </div>
         </div>
-
-        <!-- Bottom Section -->
-        <div class="bottom-section">
-            <div class="completion-status">
-                <div 
-                    class="completion-badge in-progress"
-                    [class.completed]="allModulesCompleted"
-                    [class.in-progress]="!allModulesCompleted">
-                    <i class="fas fa-check-circle" *ngIf="allModulesCompleted"></i>
-                    <i class="fas fa-hourglass-half" *ngIf="!allModulesCompleted"></i>
-                    {{ allModulesCompleted ? 'Course Completed!' : 'In Progress' }}
+      </div>
+ 
+      <!-- Right Content Area -->
+      <div class="col-lg-8 col-md-7">
+        <!-- Welcome Message -->
+        <div *ngIf="!selectedModule" class="welcome-section text-center py-5">
+          <div class="welcome-content">
+            <i class="fas fa-graduation-cap fa-4x text-primary mb-4"></i>
+            <h3 class="mb-3">Welcome to {{ courseDetail.courseName }}</h3>
+            <p class="text-muted mb-4">Select a module from the left sidebar to start learning</p>
+            <div class="course-stats row">
+              <div class="col-4">
+                <div class="stat-card text-center p-3">
+                  <h4 class="text-primary">{{ getTotalModulesCount() }}</h4>
+                  <p class="text-muted mb-0">Modules</p>
                 </div>
-                <span class="completion-text">
-                    {{ completedModules || 3 }} of {{ totalModules || 8 }} modules completed
-                </span>
+              </div>
+              <div class="col-4">
+                <div class="stat-card text-center p-3">
+                  <h4 class="text-success">{{ getCompletedModulesCount() }}</h4>
+                  <p class="text-muted mb-0">Completed</p>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="stat-card text-center p-3">
+                  <h4 class="text-warning">{{ getPendingModulesCount() }}</h4>
+                  <p class="text-muted mb-0">Remaining</p>
+                </div>
+              </div>
             </div>
-            
-            <!-- <button 
-                class="btn-assignment"
-                [disabled]="!allModulesCompleted || courseDetail?.assignmentDownloaded"
-                (click)="downloadAssignment()">
-                <i class="fas fa-download"></i>
-                {{ (courseDetail?.assignmentDownloaded) ? 'Assignment Downloaded' : 'Download Final Assignment' }}
-            </button> -->
+          </div>
         </div>
+ 
+        <!-- Selected Module Content -->
+        <div *ngIf="selectedModule && !showVideoPlayer && !showDocumentViewer" class="module-content">
+          <div class="card shadow-sm">
+            <div class="card-header bg-light">
+              <h4 class="mb-0">{{ selectedModule.moduleName }}</h4>
+            </div>
+            <div class="card-body">
+              <p class="card-text">{{ selectedModule.description || 'No description available.' }}</p>
+              <div class="module-actions">
+                <button *ngIf="selectedModule.videoUrl && isValidVideoUrl(selectedModule.videoUrl)"
+                        class="btn btn-primary me-3"
+                        (click)="playVideo(selectedModule)">
+                  <i class="fas fa-play me-2"></i>Watch Video
+                </button>
+                <button *ngIf="selectedModule.documentPath && isValidDocumentUrl(selectedModule.documentPath)"
+                        class="btn btn-outline-primary"
+                        (click)="viewDocument(selectedModule)">
+                  <i class="fas fa-file-pdf me-2"></i>View Document
+                </button>
+                <div *ngIf="!selectedModule.videoUrl && !selectedModule.documentPath" class="alert alert-info">
+                  <i class="fas fa-info-circle me-2"></i>No content available for this module.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+ 
+        <!-- Video Player -->
+        <div *ngIf="showVideoPlayer && selectedModule && sanitizedVideoUrl" class="video-player">
+          <div class="card shadow-sm">
+            <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+              <h5 class="mb-0">{{ selectedModule.moduleName }}</h5>
+              <button class="btn btn-sm btn-outline-light" (click)="closeVideoPlayer()">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+            <div class="card-body p-0">
+              <div class="video-container">
+                <!-- Try video element first -->
+                <video
+                  controls
+                  class="w-100"
+                  style="height: 400px;"
+                  [src]="selectedModule.videoUrl"
+                  (error)="onVideoError($event)">
+                  Your browser does not support the video tag.
+                </video>
+               
+                <!-- Fallback iframe if video fails -->
+                <iframe
+                  [src]="sanitizedVideoUrl"
+                  class="w-100"
+                  style="height: 400px; border: none; display: none;"
+                  allowfullscreen>
+                </iframe>
+               
+                <!-- Fallback link if both fail -->
+                <div class="p-3 text-center" style="display: none;">
+                  <p class="mb-3">Unable to display video player.</p>
+                  <a [href]="selectedModule.videoUrl" target="_blank" class="btn btn-primary">
+                    <i class="fas fa-external-link-alt me-2"></i>Open Video in New Tab
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+ 
+        <!-- Document Viewer -->
+        <div *ngIf="showDocumentViewer && selectedModule && sanitizedDocumentUrl" class="document-viewer">
+          <div class="card shadow-sm">
+            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+              <h5 class="mb-0">{{ selectedModule.moduleName }}</h5>
+              <div>
+                <a [href]="selectedModule.documentPath" target="_blank" class="btn btn-sm btn-outline-primary me-2">
+                  <i class="fas fa-external-link-alt me-1"></i>Open in New Tab
+                </a>
+                <button class="btn btn-sm btn-outline-secondary" (click)="closeDocumentViewer()">
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+            </div>
+            <div class="card-body p-0">
+              <div class="document-container">
+                <iframe
+                  [src]="sanitizedDocumentUrl"
+                  class="w-100"
+                  style="height: 600px; border: none;"
+                  (error)="onDocumentError($event)">
+                </iframe>
+               
+                <!-- Fallback if iframe fails -->
+                <div class="p-3 text-center" style="display: none;">
+                  <p class="mb-3">Unable to display document viewer.</p>
+                  <a [href]="selectedModule.documentPath" target="_blank" class="btn btn-primary">
+                    <i class="fas fa-external-link-alt me-2"></i>Open Document in New Tab
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-
-    <script>
-        // Sample JavaScript for demonstration purposes
-        document.addEventListener('DOMContentLoaded', function() {
-            // Add hover effects for module items
-            const moduleItems = document.querySelectorAll('.module-item');
-            moduleItems.forEach(item => {
-                item.addEventListener('mouseenter', function() {
-                    this.style.transform = 'translateY(-2px)';
-                });
-                
-                item.addEventListener('mouseleave', function() {
-                    if (!this.classList.contains('active')) {
-                        this.style.transform = 'translateY(0)';
-                    }
-                });
-            });
-
-            // Add click handlers for buttons
-            const videoButtons = document.querySelectorAll('.btn-video');
-            const pdfButtons = document.querySelectorAll('.btn-pdf');
-            
-            videoButtons.forEach(btn => {
-                btn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    console.log('Video button clicked');
-                    // Add your video loading logic here
-                });
-            });
-            
-            pdfButtons.forEach(btn => {
-                btn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    console.log('PDF button clicked');
-                    // Add your PDF download logic here
-                });
-            });
-
-            // Animate progress numbers on load
-            const numbers = document.querySelectorAll('.progress-item .number');
-            numbers.forEach(number => {
-                const finalValue = parseInt(number.textContent);
-                let currentValue = 0;
-                const increment = finalValue / 20;
-                
-                const timer = setInterval(() => {
-                    currentValue += increment;
-                    if (currentValue >= finalValue) {
-                        number.textContent = finalValue;
-                        clearInterval(timer);
-                    } else {
-                        number.textContent = Math.floor(currentValue);
-                    }
-                }, 50);
-            });
-        });
-    </script>
-</body>
-</html>
+  </div>

@@ -31,27 +31,32 @@ import { EditTaComponent } from './components/dashboard/edit-ta/edit-ta.componen
 import { ViewVideoComponent } from './components/main/view-video/view-video.component';
 import { CategoriesComponent } from './components/main/categories/categories.component';
 import { CoursesComponent } from './components/main/courses/courses.component';
-import {  CourseModuleViewComponent } from './components/main/courses-details/courses-details.component';
-import { ModuleviewerComponent } from './components/main/moduleviewer/moduleviewer.component';
+//import {  CourseModuleViewComponent } from './components/main/courses-details/courses-details.component';
+import { UpdateUserComponent } from './components/main/update-user/update-user.component';
 import { LearningpageComponent } from './components/main/learningpage/learningpage.component';
+import { CoursemodulevideocomponentComponent } from './components/main/coursemodulevideocomponent/coursemodulevideocomponent.component';
+import { ViewAssignmentComponent } from './components/dashboard/view-assignment/view-assignment.component';
+import { AddAssignmentComponent } from './components/dashboard/add-assignment/add-assignment.component';
+import { DownlaodReportComponent } from './components/dashboard/downlaod-report/downlaod-report.component';
+import { CoursesDetailComponent } from './components/main/courses-details/courses-details.component';
 
-
-
+// import { DashboardComponent } from './components/main/dashboard/dashboard.component';
 
 export const routes: Routes = [
     {path: '', component:LandingpageComponent},
     // {path:'user-login',component:LoginComponent},
     // {path:'admin-login',component:LoginComponent},
     {path:'login',component:LoginComponent},
+    // {path:'dash',component:DashboardComponent},
     {path:'home',component:HomeComponent},
     { path: 'categories', component: CategoriesComponent },
     { path: 'courses/:categoryId', component: CoursesComponent },
-    { path: 'course-detail/:courseId', component: CourseModuleViewComponent },
+    { path: 'course-detail/:courseId', component: CoursesDetailComponent },
     {path: 'video/:id', component: ViewVideoComponent},
-    {path: 'ashish/:id' , component: ModuleviewerComponent},
-    {path:'learningpage', component:LearningpageComponent},
-
-  
+    {path: 'updateuser', component: UpdateUserComponent},
+    {path: 'mylearning', component: LearningpageComponent},
+    {path:'module/:courseId',component:CoursemodulevideocomponentComponent },
+    
 
     { path: 'dashboard',component:DashboardhomeComponent , children: [
         { path: 'lob/add', component: AddLobComponent },
@@ -77,6 +82,8 @@ export const routes: Routes = [
         {path:'module/view/:id', component:ViewModuleComponent},
         {path:'module/edit/:id', component:EditModuleComponent},
        { path: 'ta/edit/:id', component: EditTaComponent },
-       
+       {path: 'assignment/view', component:ViewAssignmentComponent},
+       {path: 'assignment/add', component:AddAssignmentComponent},
+       {path: 'reports/generate', component:DownlaodReportComponent},
      ] }
 ];

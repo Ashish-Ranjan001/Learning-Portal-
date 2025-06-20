@@ -12,6 +12,7 @@ export interface VideoModuleResponse {
   duration: number;
   videopath: string;
   category_id:string;
+  pdfPath: string;
 }
 
 export interface ApiResponse {

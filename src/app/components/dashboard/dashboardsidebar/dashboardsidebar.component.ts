@@ -19,6 +19,8 @@ export class DashboardsidebarComponent {
   taOpen = false;
   adminOpen = false;
   courseOpen = false;
+  assignmentOpen = false; 
+  reportsOpen = false;
 
   toggleBusiness() { this.businessOpen = !this.businessOpen; }
   toggleSME()      { this.smeOpen      = !this.smeOpen; }
@@ -27,4 +29,6 @@ export class DashboardsidebarComponent {
   toggleAdmin()    { this.adminOpen    = !this.adminOpen; }
   toggleCourse()   { this.courseOpen   = !this.courseOpen; }
   toggleUser()   { this.usersOpen   = !this.usersOpen; }
+  toggleAssignment() { this.assignmentOpen = !this.assignmentOpen; }
+  toggleReports()    { this.reportsOpen = !this.reportsOpen; }
 }
