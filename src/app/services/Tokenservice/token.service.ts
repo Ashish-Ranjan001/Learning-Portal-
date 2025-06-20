@@ -9,6 +9,7 @@ export class TokenService {
   userEmail = 'john.doe@example.com';
   userAvatar = '/assets/avatar.png';
   userId: string ="";
+  lobid:string="";
 
 
 
@@ -30,6 +31,7 @@ export class TokenService {
 
       this.userName = decodedToken.Name || this.userName;
       this.userEmail = decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'] || this.userEmail;
+      this.lobid = decodedToken.LobId || this.lobid;
       const gender = decodedToken.Gender;
 
       this.userAvatar = gender === 'Male' ? 'male.svg' : 'female.jpg';
@@ -47,7 +49,8 @@ export class TokenService {
         userId: this.userId,
         userName: this.userName,
         userEmail: this.userEmail,
-        userAvatar: this.userAvatar
+        userAvatar: this.userAvatar,
+        lobid: this.lobid
       }
     }
   }
