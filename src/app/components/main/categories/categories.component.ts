@@ -26,7 +26,8 @@ export class CategoriesComponent implements OnInit {
     userId: '',
     userName: '',
     userEmail: '',
-    userAvatar: ''
+    userAvatar: '',
+    lobid:''
   };
 
   constructor(

@@ -79,10 +79,9 @@ export class TokenService {
   userName = 'John Doe';
   userEmail = 'john.doe@example.com';
   userAvatar = '/assets/avatar.png';
-  userId: string = "";
-  
-  private readonly AUTH_TOKEN_KEY = 'authToken';
-  private readonly REDIRECT_URL_KEY = 'redirectUrl';
+
+  userId: string ="";
+  lobid:string="";
 
   constructor() { 
     this.userId = this.getDecodedUserId() || "";
@@ -103,7 +102,10 @@ export class TokenService {
       // Update user info
       this.userName = decodedToken.Name || this.userName;
       this.userEmail = decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'] || this.userEmail;
-      
+
+
+      this.lobid = decodedToken.LobId || this.lobid;
+
       const gender = decodedToken.Gender;
       this.userAvatar = gender === 'Male' ? 'male.svg' : 'female.jpg';
 
@@ -139,6 +141,7 @@ export class TokenService {
       const decodedToken = this.getFullDecodedToken();
       if (!decodedToken) {
         return false;
+
       }
 
       // Check if token is expired

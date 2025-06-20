@@ -1340,35 +1340,67 @@ export class CardCarouselComponent implements OnInit, OnDestroy {
 
   private animateCount() {
     if (this.cards.length === 0) return;
-    
-    this.animatedCount.set(0)
-    const targetCount = this.currentCard().count
-    const duration = 1000 // Faster animation (1 second)
-    const steps = 20 // Fewer steps for faster animation
-    const increment = targetCount / steps
-    let currentStep = 0
-
-    // Clear existing timeouts
-    this.animationTimeouts.forEach((timeout) => clearTimeout(timeout))
-    this.animationTimeouts = []
-
+  
+    const current = this.currentCard();
+    if (!current) return;
+  
+    this.animatedCount.set(0);
+    const targetCount = current.count;
+    const duration = 1000;
+    const steps = 20;
+    let currentStep = 0;
+  
+    this.animationTimeouts.forEach((timeout) => clearTimeout(timeout));
+    this.animationTimeouts = [];
+  
     const animate = () => {
       if (currentStep < steps) {
-        // Cubic easing for smoother animation
-        const progress = currentStep / steps
-        const easedProgress = this.easeOutCubic(progress)
-        this.animatedCount.set(Math.floor(targetCount * easedProgress))
-        currentStep++
-        const timeout = setTimeout(animate, duration / steps)
-        this.animationTimeouts.push(timeout)
+        const progress = currentStep / steps;
+        const easedProgress = this.easeOutCubic(progress);
+        this.animatedCount.set(Math.floor(targetCount * easedProgress));
+        currentStep++;
+        const timeout = setTimeout(animate, duration / steps);
+        this.animationTimeouts.push(timeout);
       } else {
-        this.animatedCount.set(targetCount)
+        this.animatedCount.set(targetCount);
       }
-    }
-
-    // Start animation immediately
-    animate()
+    };
+  
+    animate();
   }
+  
+
+  // private animateCount() {
+  //   if (this.cards.length === 0) return;
+    
+  //   this.animatedCount.set(0)
+  //   const targetCount = this.currentCard().count
+  //   const duration = 1000 // Faster animation (1 second)
+  //   const steps = 20 // Fewer steps for faster animation
+  //   const increment = targetCount / steps
+  //   let currentStep = 0
+
+  //   // Clear existing timeouts
+  //   this.animationTimeouts.forEach((timeout) => clearTimeout(timeout))
+  //   this.animationTimeouts = []
+
+  //   const animate = () => {
+  //     if (currentStep < steps) {
+  //       // Cubic easing for smoother animation
+  //       const progress = currentStep / steps
+  //       const easedProgress = this.easeOutCubic(progress)
+  //       this.animatedCount.set(Math.floor(targetCount * easedProgress))
+  //       currentStep++
+  //       const timeout = setTimeout(animate, duration / steps)
+  //       this.animationTimeouts.push(timeout)
+  //     } else {
+  //       this.animatedCount.set(targetCount)
+  //     }
+  //   }
+
+  //   // Start animation immediately
+  //   animate()
+  // }
 
   // Cubic easing function for smoother animation
   private easeOutCubic(x: number): number {
