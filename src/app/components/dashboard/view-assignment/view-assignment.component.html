@@ -18,7 +18,7 @@
             required
             class="form-control"
           >
-            <option value="" disabled selected>Choose LOB</option>
+            <option value="" disabled selected>Choose Lob</option>
             <option *ngFor="let lob of lobList" [value]="lob.lobId">
               {{ lob.lobName || 'Unnamed LOB' }}
             </option>
@@ -43,7 +43,7 @@
             required
             class="form-control"
           >
-          <option value="" disabled selected>Choose LOB</option>
+          <option value="" disabled selected>Choose Course</option>
           <option *ngFor="let course of courseList" [value]="course.courseId">
             {{ course.courseName || 'Unnamed Course' }}
           </option>

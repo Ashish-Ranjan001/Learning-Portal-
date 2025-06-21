@@ -4,145 +4,125 @@
     <h1 class="typewriter-text">{{ displayText }}<span class="cursor">|</span></h1>
   </div>
 
-  <!-- Search Form with Enhanced Functionality -->
+  <!-- Enhanced Search Form -->
   <form class="search-form" (submit)="handleSearchSubmit($event)">
     <div class="search-container" [class.search-active]="isSearchActive">
       <!-- Search Filter Dropdown -->
       <div class="search-filter-dropdown">
         <button 
-          type="button" 
-          class="filter-button" 
+          type="button"
+          class="filter-button"
+          [class.active]="isFilterDropdownOpen"
           (click)="toggleFilterDropdown()"
-          [class.active]="isFilterDropdownOpen">
+        >
+          <i [class]="selectedFilter.icon"></i>
           <span class="filter-text">{{ selectedFilter.label }}</span>
-          <svg class="filter-arrow" [class.rotated]="isFilterDropdownOpen" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="m6 9 6 6 6-6"></path>
-          </svg>
+          <i class="fas fa-chevron-down filter-arrow" [class.rotated]="isFilterDropdownOpen"></i>
         </button>
         
-        <!-- Filter Options -->
+        <!-- Filter Options Dropdown -->
         <div class="filter-options" [class.show]="isFilterDropdownOpen">
           <button 
-            type="button" 
-            class="filter-option" 
-            *ngFor="let filter of filterOptions"
-            [class.selected]="selectedFilter.value === filter.value"
-            (click)="selectFilter(filter)">
-            <i [class]="filter.icon"></i>
-            <span>{{ filter.label }}</span>
+            type="button"
+            class="filter-option"
+            [class.selected]="selectedFilter.value === option.value"
+            *ngFor="let option of filterOptions"
+            (click)="selectFilter(option)"
+          >
+            <i [class]="option.icon"></i>
+            <span>{{ option.label }}</span>
           </button>
         </div>
       </div>
 
       <!-- Search Icon -->
-      <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="11" cy="11" r="8"></circle>
-        <path d="m21 21-4.3-4.3"></path>
-      </svg>
+      <i class="fas fa-search search-icon"></i>
 
       <!-- Search Input -->
-      <input 
-        type="search" 
-        class="search-input" 
-        placeholder="Search {{ selectedFilter.placeholder }}..."
-        [(ngModel)]="searchQuery" 
-        name="search"
+      <input
+        #searchInput
+        type="text"
+        class="search-input"
+        [(ngModel)]="searchQuery"
+        [placeholder]="'Search ' + selectedFilter.placeholder + '...'"
         (input)="onSearchInput()"
         (focus)="onSearchFocus()"
         (blur)="onSearchBlur()"
         autocomplete="off"
-        #searchInput
-      >
+      />
 
       <!-- Clear Search Button -->
       <button 
-        type="button" 
-        class="clear-search-btn" 
-        *ngIf="searchQuery && searchQuery.length > 0"
-        (click)="clearSearch()">
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="m18 6-12 12"></path>
-          <path d="m6 6 12 12"></path>
-        </svg>
+        type="button"
+        class="clear-search-btn"
+        *ngIf="searchQuery"
+        (click)="clearSearch()"
+      >
+        <i class="fas fa-times"></i>
       </button>
 
       <!-- Search Results Dropdown -->
-      <div class="search-results-dropdown" 
-           [class.show]="showSearchResults && (searchResults.length > 0 || isSearchLoading || (searchQuery && searchQuery.length > 0 && searchResults.length === 0 && !isSearchLoading))">
-        
+      <div class="search-results-dropdown" [class.show]="showSearchResults" @slideDown>
+        <!-- Search Results Header -->
+        <div class="search-results-header" *ngIf="!isSearchLoading">
+          <span class="results-count">
+            {{ searchResults.length }} result{{ searchResults.length !== 1 ? 's' : '' }} found
+          </span>
+          <span class="search-type">{{ selectedFilter.label }}</span>
+        </div>
+
         <!-- Loading State -->
         <div class="search-loading" *ngIf="isSearchLoading">
           <div class="loading-spinner"></div>
-          <p>Searching {{ selectedFilter.label.toLowerCase() }}...</p>
+          <p>Searching {{ selectedFilter.placeholder }}...</p>
         </div>
 
-        <!-- Search Results -->
-        <div *ngIf="!isSearchLoading && searchResults.length > 0">
-          <div class="search-results-header">
-            <span class="results-count">{{ searchResults.length }} result{{ searchResults.length !== 1 ? 's' : '' }} found</span>
-            <span class="search-type">{{ selectedFilter.label }}</span>
-          </div>
-          
-          <div class="search-results-list">
-            <div 
-              class="search-result-item" 
-              *ngFor="let result of searchResults; trackBy: trackByResultId"
-              (click)="onSearchResultClick(result)">
-              
-              <!-- Course Result -->
-              <div class="result-content" *ngIf="selectedFilter.value === 'course'">
-                <div class="result-icon course-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
-                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
-                  </svg>
-                </div>
-                <div class="result-details">
-                  <h4 class="result-title">{{ result.course_name }}</h4>
-                  <p class="result-subtitle">Category: {{ result.category_name || 'Database' }}</p>
-                  <span class="result-id">ID: {{ result.course_id }}</span>
-                </div>
-                <div class="result-status" [class.active]="result.status">
-                  <span class="status-dot"></span>
-                  {{ result.status ? 'Active' : 'Inactive' }}
-                </div>
+        <!-- Search Results List -->
+        <div class="search-results-list" *ngIf="!isSearchLoading && searchResults.length > 0">
+          <div 
+            class="search-result-item"
+            *ngFor="let result of searchResults; trackBy: trackByResultId"
+            (click)="onSearchResultClick(result)"
+          >
+            <div class="result-content">
+              <!-- Result Icon -->
+              <div class="result-icon" [ngClass]="selectedFilter.value === 'course' ? 'course-icon' : 'category-icon'">
+                <i [class]="selectedFilter.value === 'course' ? 'fas fa-book' : 'fas fa-th-large'"></i>
               </div>
 
-              <!-- Category Result -->
-              <div class="result-content" *ngIf="selectedFilter.value === 'category'">
-                <div class="result-icon category-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect width="7" height="7" x="3" y="3" rx="1"></rect>
-                    <rect width="7" height="7" x="14" y="3" rx="1"></rect>
-                    <rect width="7" height="7" x="14" y="14" rx="1"></rect>
-                    <rect width="7" height="7" x="3" y="14" rx="1"></rect>
-                  </svg>
-                </div>
-                <div class="result-details">
-                  <h4 class="result-title">{{ result.category_name || 'Database' }}</h4>
-                  <p class="result-subtitle">{{ getCourseCountByCategory(result.category_id) }} course{{ getCourseCountByCategory(result.category_id) !== 1 ? 's' : '' }}</p>
-                  <span class="result-id">ID: {{ result.category_id }}</span>
-                </div>
-                <div class="result-arrow">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="m9 18 6-6-6-6"></path>
-                  </svg>
-                </div>
+              <!-- Result Details -->
+              <div class="result-details">
+                <h4 class="result-title">
+                  {{ selectedFilter.value === 'course' ? result.course_name : (result.category_name || 'Database') }}
+                </h4>
+                <p class="result-subtitle" *ngIf="selectedFilter.value === 'course'">
+                  Category: {{ result.category_name || 'Database' }}
+                </p>
+                <p class="result-subtitle" *ngIf="selectedFilter.value === 'category'">
+                  {{ getCourseCountByCategory(result.category_id) }} course{{ getCourseCountByCategory(result.category_id) !== 1 ? 's' : '' }}
+                </p>
+                <span class="result-id">
+                  ID: {{ selectedFilter.value === 'course' ? result.course_id : result.category_id }}
+                </span>
               </div>
+
+              <!-- Result Status -->
+              <div class="result-status" [class.active]="result.status">
+                <span class="status-dot"></span>
+                {{ result.status ? 'Active' : 'Inactive' }}
+              </div>
+
+              <!-- Result Arrow -->
+              <i class="fas fa-chevron-right result-arrow"></i>
             </div>
           </div>
         </div>
 
         <!-- No Results -->
-        <div class="no-results" *ngIf="!isSearchLoading && searchQuery && searchQuery.length > 0 && searchResults.length === 0">
-          <div class="no-results-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="11" cy="11" r="8"></circle>
-              <path d="m21 21-4.3-4.3"></path>
-            </svg>
-          </div>
-          <p class="no-results-text">No {{ selectedFilter.label.toLowerCase() }} found</p>
-          <p class="no-results-suggestion">Try adjusting your search terms</p>
+        <div class="no-results" *ngIf="!isSearchLoading && searchResults.length === 0 && searchQuery">
+          <i class="fas fa-search no-results-icon fa-2x"></i>
+          <p class="no-results-text">No {{ selectedFilter.placeholder }} found</p>
+          <p class="no-results-suggestion">Try searching with different keywords</p>
         </div>
       </div>
     </div>
@@ -151,83 +131,74 @@
   <!-- Actions -->
   <div class="actions">
     <!-- My Learning Button -->
-    <button class="my-learning-button" (click)="onMyLearningClick()" aria-label="My Learning">
-      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
-        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
-      </svg>
+    <button class="my-learning-button" (click)="onMyLearningClick()">
+      <i class="fas fa-graduation-cap"></i>
       <span class="my-learning-text">My Learning</span>
     </button>
 
-    <!-- Profile Container with Dropdown -->
+    <!-- Profile Container -->
     <div class="profile-container">
-      <button class="profile-button" (click)="toggleProfileDropdown()" aria-label="User profile">
+      <button class="profile-button" (click)="toggleProfileDropdown()">
         <div class="avatar">
-          <img *ngIf="userAvatar" [src]="userAvatar" [alt]="userName" class="avatar-image">
+          <img 
+            *ngIf="userAvatar" 
+            [src]="userAvatar" 
+            [alt]="userName"
+            class="avatar-image"
+          />
           <span *ngIf="!userAvatar" class="avatar-initial">{{ getUserInitial() }}</span>
         </div>
-        <div class="profile-info d-none d-md-block">
+        <div class="profile-info">
           <span class="profile-name">{{ userName }}</span>
         </div>
-        <svg class="dropdown-arrow" [class.rotated]="isProfileDropdownOpen" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="m6 9 6 6 6-6"></path>
-        </svg>
+        <i class="fas fa-chevron-down dropdown-arrow" [class.rotated]="isProfileDropdownOpen"></i>
       </button>
 
-      <!-- Profile Dropdown Menu -->
+      <!-- Profile Dropdown -->
       <div class="profile-dropdown" [class.show]="isProfileDropdownOpen" @slideDown>
-        <!-- User Info Section -->
+        <!-- Dropdown Header -->
         <div class="dropdown-header">
           <div class="user-avatar-large">
-            <img *ngIf="userAvatar" [src]="userAvatar" [alt]="userName" class="avatar-image">
+            <img 
+              *ngIf="userAvatar" 
+              [src]="userAvatar" 
+              [alt]="userName"
+              class="avatar-image"
+            />
             <span *ngIf="!userAvatar" class="avatar-initial-large">{{ getUserInitial() }}</span>
           </div>
           <div class="user-details">
-            <h4 class="user-name">{{ userName }}</h4>
+            <h3 class="user-name">{{ userName }}</h3>
             <p class="user-email">{{ userEmail }}</p>
           </div>
         </div>
 
-        <!-- Divider -->
         <div class="dropdown-divider"></div>
 
-        <!-- Menu Items -->
+        <!-- Dropdown Menu Items -->
         <div class="dropdown-menu-items">
-          <!-- Account Settings -->
           <button class="dropdown-item" (click)="onAccountSettings()">
-            <i class="bi bi-gear"></i>
+            <i class="fas fa-user-cog item-icon"></i>
             <span>Account Settings</span>
           </button>
-
-          <!-- Change Password -->
+          
           <button class="dropdown-item" (click)="onChangePassword()">
-            <svg class="item-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect width="20" height="12" x="2" y="6" rx="2"></rect>
-              <circle cx="12" cy="12" r="2"></circle>
-            </svg>
+            <i class="fas fa-key item-icon"></i>
             <span>Change Password</span>
           </button>
+          
+          <button class="dropdown-item logout-item" (click)="onLogout()">
+            <i class="fas fa-sign-out-alt item-icon"></i>
+            <span>Logout</span>
+          </button>
         </div>
-
-        <!-- Divider -->
-        <div class="dropdown-divider"></div>
-
-        <!-- Logout -->
-        <button class="dropdown-item logout-item" (click)="onLogout()">
-          <svg class="item-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-            <polyline points="16 17 21 12 16 7"></polyline>
-            <line x1="21" y1="12" x2="9" y2="12"></line>
-          </svg>
-          <span>Logout</span>
-        </button>
       </div>
     </div>
   </div>
-
-  <!-- Search Backdrop -->
-  <div class="search-backdrop" [class.show]="showSearchResults" (click)="closeSearchResults()"></div>
-  
-  <!-- Profile Backdrop -->
-  <div class="dropdown-backdrop" [class.show]="isProfileDropdownOpen" (click)="closeDropdown()"></div>
 </header>
+
+<!-- Search Backdrop -->
+<div class="search-backdrop" [class.show]="showSearchResults" (click)="closeSearchResults()"></div>
+
+<!-- Dropdown Backdrop -->
+<div class="dropdown-backdrop" [class.show]="isProfileDropdownOpen" (click)="closeDropdown()"></div>
