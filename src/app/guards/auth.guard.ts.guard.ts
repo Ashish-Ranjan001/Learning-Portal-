@@ -30,9 +30,9 @@ export class AuthGuard implements CanActivate, CanLoad {
     }
 
     // Store the attempted URL for redirecting after login
-    if (redirectUrl) {
-      this.tokenService.setRedirectUrl(redirectUrl);
-    }
+    // if (redirectUrl) {
+    //   this.tokenService.setRedirectUrl(redirectUrl);
+    // }
 
     this.router.navigate(['/login']);
     return false;

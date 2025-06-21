@@ -23,7 +23,7 @@ export interface CourseBasicDto {
   
   // Course metadata
   duration?: string;
-  instructor?: string;
+  author?: string;
   
   // Enrollment status
   isEnrolled: boolean;
@@ -121,6 +121,11 @@ export class UserLearningService {
   getCourseDetail(courseId: string, userId: string): Observable<CourseDetailDto> {
     return this.http.get<CourseDetailDto>(`${this.baseUrl}/courses/${courseId}/user/${userId}`);
   }
+
+    getAssignment(courseId: string, userId: string) {
+    return this.http.get(`${this.baseUrl}/courses/${courseId}/user/${userId}`);
+  }
+
 
   enrollInCourse(enrollData: EnrollCourseDto): Observable<any> {
     return this.http.post(`${this.baseUrl}/enroll`, enrollData);

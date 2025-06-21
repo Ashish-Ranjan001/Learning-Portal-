@@ -3,74 +3,136 @@
     <!-- Left side with image -->
     <div class="col-md-6">
       <div class="login-image-container">
-        <img src="image.png" alt="Learn Bridge" class="login-image">
+        <img src="https://images.unsplash.com/photo-1554232456-8727aae0cfa4?q=80&w=435&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Learn Bridge" class="login-image" />
       </div>
     </div>
-   
+ 
     <!-- Right side with login form -->
     <div class="col-md-6">
       <div class="login-form-container">
-        <div class="login-logo-container">
-          <img src="evs.jpg" alt="EvalueServe University" class="university-logo">
-        </div>
-       
         <div class="login-form-content">
-          <h1>Sign-In to your account</h1>
-          <p class="welcome-text">Welcome to LearnBridge!</p>
-         
+          <!-- Logo -->
+          <div class="login-logo-container">
+            <img
+              src="https://mltfwbciccuo.i.optimole.com/cb:n4OZ.4d52/w:auto/h:auto/q:mauto/f:best/https://www.evalueserve.com/wp-content/uploads/2025/02/evalueserve-university.jpg"
+              alt="Evalueserve Learning"
+              class="university-logo"
+            />
+          </div>
+ 
+          <h1>Welcome Back! <span class="wave">👋</span></h1>
+          <p class="welcome-text">Please sign in to your Evalueserve Account</p>
+ 
           <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
             <!-- Email Field -->
-            <div class="form-group mb-4">
-              <label for="email" class="form-label">Email</label>
-              <div class="input-group">
+            <div class="form-group mb-24">
+              <label for="email" class="form-label mb-8 h6">
+                Email
+                <i class="bi bi-mailbox ms-2"></i>
+                <!-- ms-2 adds left margin -->
+              </label>
+              <div class="position-relative">
                 <input
                   type="email"
-                  class="form-control"
+                  class="form-control py-11 ps-40"
                   id="email"
+                  formControlName="email"
                   placeholder="Type your email"
-                  formControlName="email">
-                <span class="input-group-text">
-                  <i class="bi bi-person"></i>
+                  [class.is-invalid]="
+                    loginForm.get('email')?.invalid &&
+                    loginForm.get('email')?.touched
+                  "
+                />
+                <span class="input-icon">
+                  <i class="ph ph-user"></i>
                 </span>
               </div>
-              <div *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" class="text-danger mt-1">
-                <small *ngIf="loginForm.get('email')?.errors?.['required']">Email is required</small>
-                <small *ngIf="loginForm.get('email')?.errors?.['email']">Please enter a valid email</small>
+              <div
+                *ngIf="
+                  loginForm.get('email')?.invalid &&
+                  loginForm.get('email')?.touched
+                "
+                class="text-danger mt-1"
+              >
+                <small *ngIf="loginForm.get('email')?.errors?.['required']"
+                  >Email is required</small
+                >
+                <small *ngIf="loginForm.get('email')?.errors?.['email']"
+                  >Please enter a valid email</small
+                >
               </div>
             </div>
-           
+ 
             <!-- Password Field -->
-            <div class="form-group mb-4">
-              <label for="password" class="form-label">Password</label>
-              <div class="input-group">
+            <div class="form-group mb-24">
+              <label for="password" class="form-label mb-8 h6">
+                Password <i class="bi bi-house-lock ms-2"></i>
+                <!-- ms-2 = margin start (left) -->
+              </label>
+              <div class="position-relative">
                 <input
                   [type]="showPassword ? 'text' : 'password'"
-                  class="form-control"
+                  class="form-control py-11 ps-40"
                   id="password"
+                  formControlName="password"
                   placeholder="Enter Current Password"
-                  formControlName="password">
-                <span class="input-group-text password-toggle" (click)="togglePasswordVisibility()">
-                  <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+                  [class.is-invalid]="
+                    loginForm.get('password')?.invalid &&
+                    loginForm.get('password')?.touched
+                  "
+                />
+                <span class="input-icon">
+                  <i class="ph ph-lock"></i>
+                </span>
+                <span
+                  class="toggle-password"
+                  (click)="togglePasswordVisibility()"
+                >
+                  <i
+                    [class]="showPassword ? 'ph ph-eye' : 'ph ph-eye-slash'"
+                  ></i>
                 </span>
               </div>
-              <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="text-danger mt-1">
-                <small *ngIf="loginForm.get('password')?.errors?.['required']">Password is required</small>
-                <small *ngIf="loginForm.get('password')?.errors?.['minlength']">Password must be at least 6 characters</small>
+              <div
+                *ngIf="
+                  loginForm.get('password')?.invalid &&
+                  loginForm.get('password')?.touched
+                "
+                class="text-danger mt-1"
+              >
+                <small *ngIf="loginForm.get('password')?.errors?.['required']"
+                  >Password is required</small
+                >
+                <small *ngIf="loginForm.get('password')?.errors?.['minlength']"
+                  >Password must be at least 8 characters</small
+                >
               </div>
             </div>
-           
+             <!-- Remember Me & Forgot Password -->
+            <div class="mb-32 d-flex justify-content-between align-items-center flex-wrap gap-8">
+             
+              <a href="forgot-password" class="forgot-password">Forgot Password?</a>
+            </div>
             <!-- Error Message -->
             <div *ngIf="errorMessage" class="alert alert-danger mb-3">
               {{ errorMessage }}
             </div>
-           
+ 
             <!-- Submit Button -->
             <button
               type="submit"
               class="btn btn-primary w-100 sign-in-btn"
-              [disabled]="loginForm.invalid || isSubmitting">
-              <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-              Sign In
+              [ngClass]="{ 'login-success': loginSuccess }"
+              [disabled]="loginForm.invalid || isSubmitting"
+            >
+              <span
+                *ngIf="isSubmitting"
+                class="spinner-border spinner-border-sm me-2"
+              ></span>
+              <span class="btn-text" *ngIf="!loginSuccess">Sign In</span>
+              <span class="checkmark" *ngIf="loginSuccess">
+                <i class="ph ph-check-circle"></i>
+              </span>
             </button>
           </form>
         </div>
@@ -78,4 +140,3 @@
     </div>
   </div>
 </div>
- 

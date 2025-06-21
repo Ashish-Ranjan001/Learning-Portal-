@@ -712,6 +712,7 @@ export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
   tabSwitchCount = 0
   maxTabSwitches = 1
   showTabWarning = false
+  downloadAssinmentyash :string = ""
 
   private subscriptions = new Subscription()
   private userLearningService = inject(UserLearningService)
@@ -773,6 +774,11 @@ export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
         next: (courseDetail) => {
           this.courseDetail = courseDetail
           console.log(this.courseDetail)
+          this.userLearningService.getAssignment(this.courseId, this.userId).subscribe({
+            next:(data:any)=>{
+              this.downloadAssinmentyash = data.userProgress.assignmentFile
+              console.log("Assignment Path:", this.downloadAssinmentyash)
+            },})
           this.processCourseData()
           this.loading = false
         },
@@ -981,26 +987,43 @@ export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
   }
 
   downloadAssignment(): void {
-    if (this.courseDetail && !this.courseDetail.assignmentDownloaded) {
-      this.subscriptions.add(
-        this.userLearningService.downloadAssignment(this.userId, this.courseId).subscribe({
-          next: (response) => {
-            if (response && response.url) {
-              const link = document.createElement("a")
-              link.href = response.url
-              link.download = `${this.courseDetail!.courseName}_Assignment.pdf`
-              document.body.appendChild(link)
-              link.click()
-              document.body.removeChild(link)
-            }
-            this.courseDetail!.assignmentDownloaded = true
-          },
-          error: (error) => {
-            console.error("Error downloading assignment:", error)
-          },
-        }),
-      )
-    }
+    // console.log("Downloading assignment for course:", this.courseDetail)
+    // if (this.courseDetail && !this.courseDetail.assignmentDownloaded) {
+    //   this.subscriptions.add(
+    //     this.userLearningService.downloadAssignment(this.userId, this.courseId).subscribe({
+    //       next: (response) => {
+    //         if (response && response.url) {
+    //           const link = document.createElement("a")
+    //           link.href = response.url
+    //           link.download = this.downloadAssignmentyash ;
+    //           document.body.appendChild(link)
+    //           link.click()
+    //           document.body.removeChild(link)
+    //         }
+    //         this.courseDetail!.assignmentDownloaded = true
+    //       },
+    //       error: (error) => {
+    //         console.error("Error downloading assignment:", error)
+    //       },
+    //     }),
+    //   )
+    // }
+    if (!this.downloadAssinmentyash) {
+      console.log(this.downloadAssinmentyash)
+    console.warn('Assignment file URL is not available.');
+    return;
+  }
+
+  // Create and trigger <a> element to open the file in a new tab
+  const anchor = document.createElement('a');
+  anchor.href = this.downloadAssinmentyash;
+  anchor.target = '_blank';
+  anchor.rel = 'noopener noreferrer';
+  document.body.appendChild(anchor);
+  anchor.click();
+  document.body.removeChild(anchor);
+
+
   }
 
   // ===== QUIZ FUNCTIONALITY =====

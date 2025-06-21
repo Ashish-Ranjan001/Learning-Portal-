@@ -70,6 +70,7 @@ interface DecodedToken {
   iss: string;
   sub: string;
   nameid?: string;
+  LobId?: string;
 }
 
 @Injectable({
@@ -90,7 +91,7 @@ export class TokenService {
   // Your existing method - enhanced with better error handling
   getDecodedUserId(): string | null {
     try {
-      const token = localStorage.getItem(this.AUTH_TOKEN_KEY);
+      const token = localStorage.getItem("authToken");
       if (!token) {
         console.error("No auth token found in localStorage.");
         return null;
@@ -124,7 +125,8 @@ export class TokenService {
       userId: this.userId,
       userName: this.userName,
       userEmail: this.userEmail,
-      userAvatar: this.userAvatar
+      userAvatar: this.userAvatar,
+      lobid:this.lobid,
     }
   }
 
@@ -206,7 +208,7 @@ export class TokenService {
 
   // Get raw token from localStorage
   getToken(): string | null {
-    return localStorage.getItem(this.AUTH_TOKEN_KEY);
+    return localStorage.getItem("authToken");
   }
 
   // Get full decoded token (private method for internal use)
@@ -223,39 +225,39 @@ export class TokenService {
   }
 
   // Set auth token
-  setToken(token: string): void {
-    localStorage.setItem(this.AUTH_TOKEN_KEY, token);
-    // Update user info when token is set
-    this.userId = this.getDecodedUserId() || "";
-  }
+  // setToken(token: string): void {
+  //   localStorage.setItem(this.AUTH_TOKEN_KEY, token);
+  //   // Update user info when token is set
+  //   this.userId = this.getDecodedUserId() || "";
+  // }
 
   // Remove auth token
-  removeToken(): void {
-    localStorage.removeItem(this.AUTH_TOKEN_KEY);
-    localStorage.removeItem(this.REDIRECT_URL_KEY);
-    // Reset user info
-    this.userId = "";
-    this.userName = 'John Doe';
-    this.userEmail = 'john.doe@example.com';
-    this.userAvatar = '/assets/avatar.png';
-  }
+  // removeToken(): void {
+  //   localStorage.removeItem(this.AUTH_TOKEN_KEY);
+  //   localStorage.removeItem(this.REDIRECT_URL_KEY);
+  //   // Reset user info
+  //   this.userId = "";
+  //   this.userName = 'John Doe';
+  //   this.userEmail = 'john.doe@example.com';
+  //   this.userAvatar = '/assets/avatar.png';
+  // }
 
   // Set redirect URL for post-login navigation
-  setRedirectUrl(url: string): void {
-    localStorage.setItem(this.REDIRECT_URL_KEY, url);
-  }
+  // setRedirectUrl(url: string): void {
+  //   localStorage.setItem(this.REDIRECT_URL_KEY, url);
+  // }
 
   // Get and clear redirect URL
-  getAndClearRedirectUrl(): string | null {
-    const url = localStorage.getItem(this.REDIRECT_URL_KEY);
-    localStorage.removeItem(this.REDIRECT_URL_KEY);
-    return url;
-  }
+  // getAndClearRedirectUrl(): string | null {
+  //   const url = localStorage.getItem(this.REDIRECT_URL_KEY);
+  //   localStorage.removeItem(this.REDIRECT_URL_KEY);
+  //   return url;
+  // }
 
   // Logout method
-  logout(): void {
-    this.removeToken();
-  }
+  // logout(): void {
+  //   this.removeToken();
+  // }
 
   // Check if token is about to expire (within 5 minutes)
   isTokenExpiringSoon(): boolean {

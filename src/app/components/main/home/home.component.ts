@@ -408,7 +408,7 @@ import { FolderComponent } from '../folder/folder.component';
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
-  standalone:true,
+  standalone: true,
   imports: [
     MainfooterComponent,
     MainheaderComponent,
