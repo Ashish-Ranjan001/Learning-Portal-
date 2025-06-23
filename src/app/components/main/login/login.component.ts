@@ -78,7 +78,7 @@ export class LoginComponent {
           setTimeout(() => {
             if (roleId === 1 || roleId === '1') {
               console.log('Role ID matches 1 - redirecting to /categories');
-              this.router.navigate(['/categories']);
+              this.router.navigate(['/home']);
             } else {
               console.log('Role ID does not match 1 - redirecting to /dashboard');
               this.router.navigate(['/dashboard']);

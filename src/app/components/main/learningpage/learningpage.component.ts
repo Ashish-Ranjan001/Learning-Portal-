@@ -75,7 +75,8 @@ export class LearningpageComponent implements OnInit {
     userName: '',
     userEmail: '',
     userAvatar: '',
-    lobid:''
+    lobid: undefined as string | undefined,
+    roleId: 0
   };
   
    // User ID will be set after decoding JWT
