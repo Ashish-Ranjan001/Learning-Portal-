@@ -702,6 +702,8 @@
 //   }
 // }
 
+
+
 import {
   Component,
   OnInit,
@@ -719,6 +721,7 @@ import { DashboardServicesService } from '../../../services/homedashboard/dashbo
 import { jwtDecode } from 'jwt-decode'
 import { UserLearningService } from "../../../services/user-learning.service"
 import { Router } from "@angular/router"
+import { SaveFavoriteCourseServiceService, toggleFavorite } from "../../../services/SaveFavoriteCourse/save-favorite-course-service.service"
 
 interface Course {
   id: string
@@ -796,7 +799,7 @@ export class FavoriteCoursesComponent implements OnInit, OnDestroy, AfterViewIni
   courses: Course[] = []
   isLoading = true
   error: string | null = null
-
+  
   // 3D Gallery properties
   isScreenSizeSm = false
   cylinderWidth = 1200
@@ -827,6 +830,7 @@ export class FavoriteCoursesComponent implements OnInit, OnDestroy, AfterViewIni
     private renderer: Renderer2,
     private dashboardService: DashboardServicesService,
     private router:Router,
+    private saveFavoriteCourseService: SaveFavoriteCourseServiceService,
   ) {}
 
   ngOnInit(): void {
@@ -1033,20 +1037,59 @@ export class FavoriteCoursesComponent implements OnInit, OnDestroy, AfterViewIni
     // Log the click event
     // console.log("Course clicked:", course)
   }
-
   toggleFavorite(course: Course, event: Event): void {
-    event.stopPropagation() // Prevent card click event
-
-    course.isFavorite = !course.isFavorite
-
-    if (course.isFavorite) {
-      alert(`"${course.title}" has been added to your favorite courses!`)
-    } else {
-      alert(`"${course.title}" has been removed from your favorite courses!`)
+    event.stopPropagation(); // Prevent card click
+  
+    const userId = this.getDecodedUserId();
+    if (!userId) {
+      alert('Unable to get user ID. Please log in again.');
+      return;
     }
-
-    console.log(`Course ${course.title} favorite status:`, course.isFavorite)
+  
+    // Toggle the current favorite status
+    const toggleFavoriteRequest: toggleFavorite = {
+      UserId: userId,
+      CourseId: course.id,
+      IsFavorited: !course.isFavorite, // ✅ Toggle the value
+      IsSaved: course.isSaved || false
+    };
+  
+    this.saveFavoriteCourseService.toggleFavorite(toggleFavoriteRequest).subscribe({
+      next: (response: any) => {
+        console.log('Toggle favorite response:', response);
+  
+        if (response && response.success === true) { // ✅ backend returns `{ success: true }`
+          course.isFavorite = toggleFavoriteRequest.IsFavorited;
+  
+          if (course.isFavorite) {
+            alert(`"${course.title}" has been added to your favorites!`);
+          } else {
+            alert(`"${course.title}" has been removed from your favorites!`);
+            // If it's the favorite course page, reload to remove it
+            setTimeout(() => this.loadFavoriteCourses(), 1000);
+          }
+        } else {
+          console.error('Unexpected response format:', response);
+          alert('Unexpected response from server. Please try again.');
+        }
+      },
+      error: (error: any) => {
+        console.error('Error toggling favorite status:', error);
+  
+        let errorMessage = 'Failed to update favorite status. Please try again.';
+        if (error.status === 0) {
+          errorMessage = 'No connection. Check internet.';
+        } else if (error.status >= 400 && error.status < 500) {
+          errorMessage = 'Invalid request. Please refresh.';
+        } else if (error.status >= 500) {
+          errorMessage = 'Server error. Try later.';
+        }
+  
+        alert(errorMessage);
+      }
+    });
   }
+  
 
   onSeeAll(): void {
     console.log("See All clicked")
