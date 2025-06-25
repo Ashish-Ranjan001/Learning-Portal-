@@ -435,7 +435,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   userEmail = 'john.doe@example.com';
   userAvatar = '/assets/avatar.png';
   userId: string | null = null;
-
+lobid:string='';
   // Component lifecycle
   private destroy$ = new Subject<void>();
 
@@ -499,6 +499,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       const gender = decodedToken.Gender;
 
       this.userAvatar = gender === 'Male' ? 'male.svg' : 'female.jpg';
+      this.lobid = decodedToken.LobId;
 
       const userId = decodedToken.UserId || decodedToken.nameid || decodedToken.sub;
       console.log("=== EXTRACTED USER ID ===", userId);
