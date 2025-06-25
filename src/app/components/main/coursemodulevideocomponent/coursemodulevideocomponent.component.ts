@@ -50,6 +50,7 @@ export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
   quizScore = 0
   correctAnswers = 0
   quizTaken = false
+  quizStatus=0
   quizTimer: Subscription | null = null
   isSubmittingQuiz = false // Add loading state for quiz submission
 
@@ -81,18 +82,18 @@ export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
     try {
       const token = localStorage.getItem("authToken")
       if (!token) {
-        console.error("No auth token found in localStorage.")
+        // console.error("No auth token found in localStorage.")
         return ""
       }
 
       const decodedToken: any = jwtDecode(token)
-      console.log("=== DECODED TOKEN ===", decodedToken)
+      // console.log("=== DECODED TOKEN ===", decodedToken)
 
       const userId = decodedToken.UserId || decodedToken.nameid || decodedToken.sub
-      console.log("=== EXTRACTED USER ID ===", userId)
+      // console.log("=== EXTRACTED USER ID ===", userId)
       return userId
     } catch (error) {
-      console.error("Error decoding JWT:", error)
+      // console.error("Error decoding JWT:", error)
       return ""
     }
   }
@@ -118,20 +119,20 @@ export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
 
   // Add this method to refresh assignment status
   refreshAssignmentStatus(): void {
-    console.log('🔄 Refreshing assignment status...');
+    // console.log('🔄 Refreshing assignment status...');
 
     if (this.userId && this.courseId) {
       this.userLearningService.getAssignment(this.courseId, this.userId).subscribe({
         next: (data: any) => {
-          console.log('🔄 Refreshed assignment data:', data);
+          // console.log('🔄 Refreshed assignment data:', data);
 
           if (data.userProgress && this.courseDetail) {
             this.courseDetail.assignmentDownloadStatus = data.userProgress.assignmentDownloaded;
-            console.log('🔄 Updated assignment status:', this.courseDetail.assignmentDownloadStatus);
+            // console.log('🔄 Updated assignment status:', this.courseDetail.assignmentDownloadStatus);
           }
         },
         error: (error) => {
-          console.error('❌ Error refreshing assignment status:', error);
+          // console.error('❌ Error refreshing assignment status:', error);
         }
       });
     }
@@ -145,24 +146,25 @@ export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
       this.userLearningService.getCourseDetail(this.courseId, this.userId).subscribe({
         next: (courseDetail) => {
           this.courseDetail = courseDetail
-          console.log('📚 Course Detail loaded:', this.courseDetail)
-          console.log('📚 Assignment Downloaded Status:', this.dstatus)
+          // console.log('📚 Course Detail loaded:', this.courseDetail)
+          // console.log('📚 Assignment Downloaded Status:', this.dstatus)
 
           this.userLearningService.getAssignment(this.courseId, this.userId).subscribe({
             next: (data: any) => {
               this.downloadAssinmentyash = data.userProgress.assignmentFile
               this.dstatus=data.userProgress.assignmentDownloadStatus
-              console.log("📄 Assignment Path:", this.downloadAssinmentyash)
-              console.log("📄 Full Assignment Data:", data)
+              this.quizStatus=data.userProgress.quizStatus
+              // console.log("📄 Assignment Path:", this.downloadAssinmentyash)
+              // console.log("📄 Full Assignment Data:", data)
 
               // Check if assignment download status is in the response
               if (data.userProgress && data.userProgress.assignmentDownloaded !== undefined) {
                 this.courseDetail!.assignmentDownloadStatus = data.userProgress.assignmentDownloaded;
-                console.log("📄 Assignment Downloaded from API:", data.userProgress.assignmentDownloaded);
+                // console.log("📄 Assignment Downloaded from API:", data.userProgress.assignmentDownloaded);
               }
             },
             error: (error) => {
-              console.error("❌ Error loading assignment data:", error);
+              // console.error("❌ Error loading assignment data:", error);
             }
           })
           this.processCourseData()
@@ -171,7 +173,7 @@ export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
         error: (error) => {
           this.error = "Failed to load course data"
           this.loading = false
-          console.error("Error loading course:", error)
+          // console.error("Error loading course:", error)
         },
       }),
     )
@@ -234,7 +236,7 @@ export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
           this.videoLoading = false
         },
         error: (error) => {
-          console.error("Error loading video data:", error)
+          // console.error("Error loading video data:", error)
           this.videoLoading = false
         },
       }),
@@ -279,7 +281,7 @@ export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
 
   startWatchingVideo(): void {
     this.videoWatched = true
-    console.log("User started watching video for module:", this.selectedModule?.moduleName)
+    // console.log("User started watching video for module:", this.selectedModule?.moduleName)
   }
 
   onVideoLoad(): void {
@@ -310,9 +312,9 @@ export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
       link.click()
       document.body.removeChild(link)
 
-      console.log("Downloading PDF from:", pdfUrl)
+      // console.log("Downloading PDF from:", pdfUrl)
     } else {
-      console.error("No document path available for this module")
+      // console.error("No document path available for this module")
     }
   }
 
@@ -346,7 +348,7 @@ export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
             this.loadCourseData()
           },
           error: (error) => {
-            console.error("Error updating progress:", error)
+            // console.error("Error updating progress:", error)
           },
         }),
       )
@@ -376,32 +378,32 @@ export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
 
   downloadAssignment(): void {
     if (!this.downloadAssinmentyash) {
-      console.log('Assignment file URL:', this.downloadAssinmentyash)
-      console.warn('Assignment file URL is not available.');
+      // console.log('Assignment file URL:', this.downloadAssinmentyash)
+      // console.warn('Assignment file URL is not available.');
       return;
     }
 
     if (this.isDownloading) return; // Prevent multiple clicks
     this.isDownloading = true;
 
-    console.log('Starting assignment download...');
-    console.log('User ID:', this.userId);
-    console.log('Course ID:', this.courseId);
-    console.log('Assignment URL:', this.downloadAssinmentyash);
+    // console.log('Starting assignment download...');
+    // console.log('User ID:', this.userId);
+    // console.log('Course ID:', this.courseId);
+    // console.log('Assignment URL:', this.downloadAssinmentyash);
 
     // Update the backend FIRST, then download the file
     if (this.userId && this.courseId) {
-      console.log('Calling backend API to update assignment status...');
+      // console.log('Calling backend API to update assignment status...');
 
       // FIXED: Call the actual download API to update the status in database
       this.userLearningService.downloadAssignment(this.userId, this.courseId).subscribe({
         next: (response: any) => {
-          console.log('✅ Assignment download recorded successfully:', response);
+          // console.log('✅ Assignment download recorded successfully:', response);
           
           // Update the local state immediately after successful API call
           if (this.courseDetail) {
             this.courseDetail.assignmentDownloadStatus = 1;
-            console.log('✅ Local state updated - assignmentDownloadStatus:', this.courseDetail.assignmentDownloadStatus);
+            // console.log('✅ Local state updated - assignmentDownloadStatus:', this.courseDetail.assignmentDownloadStatus);
           }
           
           // Now download the file after backend update is successful
@@ -411,8 +413,8 @@ export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
           this.isDownloading = false;
         },
         error: (error: any) => {
-          console.error('❌ Error recording assignment download:', error);
-          console.error('Full error object:', JSON.stringify(error, null, 2));
+          // console.error('❌ Error recording assignment download:', error);
+          // console.error('Full error object:', JSON.stringify(error, null, 2));
 
           // Check if it's a network error or server error
           if (error.status === 0) {
@@ -429,7 +431,7 @@ export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
           // Update local state to prevent repeated API calls
           if (this.courseDetail) {
             this.courseDetail.assignmentDownloadStatus = 1;
-            console.log('⚠️ Local state updated despite API error');
+            // console.log('⚠️ Local state updated despite API error');
           }
           
           // Reset loading state
@@ -437,9 +439,9 @@ export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
         }
       });
     } else {
-      console.error('❌ Missing userId or courseId');
-      console.log('UserId:', this.userId);
-      console.log('CourseId:', this.courseId);
+      // console.error('❌ Missing userId or courseId');
+      // console.log('UserId:', this.userId);
+      // console.log('CourseId:', this.courseId);
 
       // Still allow file download even without backend update
       this.performFileDownload();
@@ -454,7 +456,7 @@ export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
 }
 
   private performFileDownload(): void {
-    console.log('📁 Performing file download...');
+    // console.log('📁 Performing file download...');
 
     // Create and trigger <a> element to open the file in a new tab
     const anchor = document.createElement('a');
@@ -494,7 +496,7 @@ export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
 
   loadQuizData(): void {
     if (!this.courseDetail?.quizPath) {
-      console.error("No quiz path available")
+      // console.error("No quiz path available")
       return
     }
 
@@ -507,7 +509,7 @@ export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
           this.initializeQuiz()
         },
         error: (error) => {
-          console.error("Error loading quiz data:", error)
+          // console.error("Error loading quiz data:", error)
           alert("Failed to load quiz. Please try again.")
         },
       }),
@@ -684,7 +686,7 @@ export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
     this.removeQuizEventListeners()
 
     // Don't save quiz result here - wait for user to click "Complete"
-    console.log("Quiz submitted but not saved yet. Score:", this.quizScore)
+    // console.log("Quiz submitted but not saved yet. Score:", this.quizScore)
   }
 
   // UPDATED: New method to handle quiz completion and backend update
@@ -714,7 +716,7 @@ export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
       QuizScore: this.quizScore
     }
 
-    console.log('🎯 Saving quiz results:', quizRequest)
+    // console.log('🎯 Saving quiz results:', quizRequest)
 
     // Call the backend API to save quiz results
     this.subscriptions.add(
@@ -723,7 +725,7 @@ export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
           console.log('✅ Quiz results saved successfully:', response)
           
           // Show success message
-          alert(`✅ Quiz completed successfully!\n\nYour score of ${this.quizScore}% has been recorded.`)
+          // alert(`✅ Quiz completed successfully!\n\nYour score of ${this.quizScore}% has been recorded.`)
           
           // Close the quiz
           this.closeQuiz()
@@ -737,7 +739,7 @@ export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
           console.error('❌ Error saving quiz results:', error)
           
           // Show error message but still allow closing
-          alert(`⚠️ Quiz completed but there was an error saving your results.\n\nScore: ${this.quizScore}%\n\nPlease contact support if this persists.`)
+          // alert(`⚠️ Quiz completed but there was an error saving your results.\n\nScore: ${this.quizScore}%\n\nPlease contact support if this persists.`)
           
           // Still close the quiz even if save failed
           this.closeQuiz()
@@ -759,7 +761,7 @@ export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
       completedAt: new Date().toISOString(),
     }
 
-    console.log("Quiz Result (legacy method):", quizResult)
+    
   }
 
   removeQuizEventListeners(): void {
