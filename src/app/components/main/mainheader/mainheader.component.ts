@@ -94,7 +94,7 @@ export class MainheaderComponent implements OnInit, OnDestroy {
 
   // Typewriter effect properties
   displayText = ""
-  fullText = "Evalueserve University"
+  fullText = "Learning Portal"
   typewriterSpeed = 100
   private typewriterInterval: any
   private currentIndex = 0
@@ -156,7 +156,7 @@ export class MainheaderComponent implements OnInit, OnDestroy {
           this.allCourses = response.data || []
           this.allCourses = this.allCourses.map((course) => ({
             ...course,
-            category_name: course.category_name || "Database",
+            category_name: course.category_name ,
           }))
           console.log("Courses loaded:", this.allCourses.length, this.allCourses)
         },

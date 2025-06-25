@@ -1,7 +1,7 @@
 <nav class="sidebar" [class.closed]="collapsed">
   <div class="sidebar-header text-center">
     <img src="evslogo.png" alt="Logo" class="sidebar-logo" />
-    <div class="sidebar-title">EVALUESERVE University</div>
+    <div class="sidebar-title">Learning Portal</div>
   </div>
 
   <ul class="nav flex-column mt-3">
@@ -82,7 +82,7 @@
 
     <!-- Courses Section -->
     <li class="nav-item" *ngIf="shouldShowMenuItem('courses')">
-      <a routerLink="/courses" class="nav-link"
+      <a  class="nav-link"
        [class.selected]="courseOpen"
        (click)="toggleCourse()">
         <i class="bi bi-journal-bookmark"></i>

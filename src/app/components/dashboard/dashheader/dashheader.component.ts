@@ -97,7 +97,7 @@ export class DashheaderComponent implements OnInit, OnDestroy {
 
   // Typewriter effect properties
   displayText = ""
-  fullText = "Evalueserve"
+  fullText = "Learning Portal"
   typewriterSpeed = 100
   private typewriterInterval: any
   private currentIndex = 0

@@ -47,23 +47,24 @@ export interface CourseDetailDto {
   assignmentDownloaded:boolean;
   assignmentSubmitted: boolean;
   quizSubmitted: boolean;
-  quizPath: string
+  quizPath: string;
+  assignmentDownloadStatus: number;
 }
 
-export interface CourseDetailDto1 {
-  assignmentPath: string;
-  courseId: string;
-  courseName: string;
-  description: string;
-  thumbnailUrl: string;
-  modules: ModuleDto[];
-  progress: number;
-  isCompleted: boolean;
-  assignmentDownloadStatus: number;
-  assignmentSubmitted: boolean;
-  quizSubmitted: boolean;
-  quizPath: string
-}
+// export interface CourseDetailDto1 {
+//   assignmentPath: string;
+//   courseId: string;
+//   courseName: string;
+//   description: string;
+//   thumbnailUrl: string;
+//   modules: ModuleDto[];
+//   progress: number;
+//   isCompleted: boolean;
+//   assignmentDownloadStatus: number;
+//   assignmentSubmitted: boolean;
+//   quizSubmitted: boolean;
+//   quizPath: string
+// }
 
 export interface ModuleDto {
   moduleId: string;
@@ -138,9 +139,9 @@ export class UserLearningService {
     return this.http.get<CourseDetailDto>(`${this.baseUrl}/courses/${courseId}/user/${userId}`);
   }
 
-  getCourseDetail1(courseId: string, userId: string): Observable<CourseDetailDto1> {
-    return this.http.get<CourseDetailDto1>(`${this.baseUrl}/courses/${courseId}/user/${userId}`);
-  }
+  // getCourseDetail1(courseId: string, userId: string): Observable<CourseDetailDto1> {
+  //   return this.http.get<CourseDetailDto1>(`${this.baseUrl}/courses/${courseId}/user/${userId}`);
+  // }
 
     getAssignment(courseId: string, userId: string) {
     return this.http.get(`${this.baseUrl}/courses/${courseId}/user/${userId}`);
