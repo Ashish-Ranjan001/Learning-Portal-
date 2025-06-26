@@ -276,7 +276,7 @@
 
                 <div class="module-content">
                   <div class="module-header">
-                    <h4 class="module-title">{{ module.moduleName }}</h4>
+                    <h4 class="module-title" [title]="module.moduleName">{{ module.moduleName }}</h4>
                     <div class="module-status">
                       <i [class]="getModuleStatusIcon(module)"></i>
                     </div>
@@ -446,16 +446,6 @@
                     <div class="final-actions">
                       <div class="row g-3 justify-content-center">
                         <div class="col-md-6">
-                          <!-- <button class="btn btn-primary btn-lg w-100" 
-                                  (click)="downloadAssignment()"
-                                  [disabled]="courseDetail.assignmentDownloadStatus==1 || isDownloading">
-                            <i class="fas fa-spinner fa-spin me-2" *ngIf="isDownloading"></i>
-                            <i class="fas fa-download me-2" *ngIf="!courseDetail.assignmentDownloadStatus && !isDownloading"></i>
-                            <i class="fas fa-check me-2" *ngIf="courseDetail.assignmentDownloadStatus && !isDownloading"></i>
-                            {{ isDownloading ? 'Downloading...' : 
-                               courseDetail.assignmentDownloadStatus ? 'Assignment Downloaded' : 'Download Assignment' }}
-                          </button> -->
-
                           <button
                             class="btn btn-primary btn-lg w-100"
                             (click)="downloadAssignment()"
@@ -499,6 +489,36 @@
                         </div>
                       </div>
 
+                      <!-- Submit Assignment Button - Shows when download is disabled -->
+                      <div class="row g-3 justify-content-center mt-3" *ngIf="dstatus === 1">
+                        <div class="col-md-6">
+                          <button
+                            class="btn btn-success btn-lg w-100 submit-assignment-btn"
+                            (click)="openFileUpload()"
+                            [disabled]="isSubmittingAssignment"
+                          >
+                            <i
+                              class="fas fa-spinner fa-spin me-2"
+                              *ngIf="isSubmittingAssignment"
+                            ></i>
+                            <i
+                              class="fas fa-upload me-2"
+                              *ngIf="!isSubmittingAssignment"
+                            ></i>
+                            {{ isSubmittingAssignment ? "Submitting..." : "Submit Assignment" }}
+                          </button>
+                        </div>
+                      </div>
+
+                      <!-- Hidden File Input -->
+                      <input
+                        type="file"
+                        #fileInput
+                        (change)="onFileSelected($event)"
+                        accept=".pdf,.docx,.doc"
+                        style="display: none;"
+                      />
+
                       <!-- Assignment Status Display -->
                       <div
                         class="assignment-status mt-3"
@@ -507,6 +527,14 @@
                         <div class="alert alert-success">
                           <i class="fas fa-check-circle me-2"></i>
                           Assignment has been downloaded successfully!
+                        </div>
+                      </div>
+
+                      <!-- Assignment Submission Status -->
+                      <div class="assignment-submission-status mt-3" *ngIf="assignmentSubmitted">
+                        <div class="alert alert-info">
+                          <i class="fas fa-check-circle me-2"></i>
+                          Assignment submitted successfully!
                         </div>
                       </div>
 

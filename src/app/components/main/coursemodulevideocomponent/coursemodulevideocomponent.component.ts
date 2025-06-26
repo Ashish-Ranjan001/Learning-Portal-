@@ -1,13 +1,11 @@
-
-
-import { Component, type OnInit, type OnDestroy, inject } from "@angular/core"
+import { Component, type OnInit, type OnDestroy, inject, ViewChild, type ElementRef } from "@angular/core"
 import { ActivatedRoute, Router } from "@angular/router"
 import { CommonModule } from "@angular/common"
-import { Subscription, interval, Observable } from "rxjs"
+import { Subscription, interval } from "rxjs"
 import { HttpClient } from "@angular/common/http"
 import { UserLearningService, type CourseDetailDto, type ModuleDto } from "../../../services/user-learning.service"
 import { ModuleServicesService } from "../../../services/Module/module-services.service"
-import { AssignmentService } from "../../../services/Assignment/assignment.service" // Add this import
+import { AssignmentService  , SubmitAssignmentDto} from "../../../services/Assignment/assignment.service" // Add this import
 import { DomSanitizer, type SafeResourceUrl } from "@angular/platform-browser"
 import { jwtDecode } from "jwt-decode"
 
@@ -25,6 +23,8 @@ interface QuizQuestion {
   styleUrl: "./coursemodulevideocomponent.component.css",
 })
 export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
+  @ViewChild("fileInput") fileInput!: ElementRef<HTMLInputElement>
+
   courseDetail: CourseDetailDto | null = null
   selectedModule: ModuleDto | null = null
   courseId = ""
@@ -50,7 +50,7 @@ export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
   quizScore = 0
   correctAnswers = 0
   quizTaken = false
-  quizStatus=0
+  quizStatus = 0
   quizTimer: Subscription | null = null
   isSubmittingQuiz = false // Add loading state for quiz submission
 
@@ -58,9 +58,15 @@ export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
   tabSwitchCount = 0
   maxTabSwitches = 1
   showTabWarning = false
-  downloadAssinmentyash: string = ""
+  downloadAssinmentyash = ""
 
-  dstatus:number=0
+  dstatus = 0
+
+  // Assignment submission properties
+  isSubmittingAssignment = false
+  assignmentSubmitted = false
+  selectedFile: File | null = null
+  assignmentSubmissionError = ''
 
   // API base URL - update this to match your backend
   private baseUrl = "https://localhost:7264/api" // Update this URL to match your backend
@@ -127,14 +133,14 @@ export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
           // console.log('🔄 Refreshed assignment data:', data);
 
           if (data.userProgress && this.courseDetail) {
-            this.courseDetail.assignmentDownloadStatus = data.userProgress.assignmentDownloaded;
+            this.courseDetail.assignmentDownloadStatus = data.userProgress.assignmentDownloaded
             // console.log('🔄 Updated assignment status:', this.courseDetail.assignmentDownloadStatus);
           }
         },
         error: (error) => {
           // console.error('❌ Error refreshing assignment status:', error);
-        }
-      });
+        },
+      })
     }
   }
 
@@ -152,20 +158,20 @@ export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
           this.userLearningService.getAssignment(this.courseId, this.userId).subscribe({
             next: (data: any) => {
               this.downloadAssinmentyash = data.userProgress.assignmentFile
-              this.dstatus=data.userProgress.assignmentDownloadStatus
-              this.quizStatus=data.userProgress.quizStatus
+              this.dstatus = data.userProgress.assignmentDownloadStatus
+              this.quizStatus = data.userProgress.quizStatus
               // console.log("📄 Assignment Path:", this.downloadAssinmentyash)
               // console.log("📄 Full Assignment Data:", data)
 
               // Check if assignment download status is in the response
               if (data.userProgress && data.userProgress.assignmentDownloaded !== undefined) {
-                this.courseDetail!.assignmentDownloadStatus = data.userProgress.assignmentDownloaded;
+                this.courseDetail!.assignmentDownloadStatus = data.userProgress.assignmentDownloaded
                 // console.log("📄 Assignment Downloaded from API:", data.userProgress.assignmentDownloaded);
               }
             },
             error: (error) => {
               // console.error("❌ Error loading assignment data:", error);
-            }
+            },
           })
           this.processCourseData()
           this.loading = false
@@ -374,17 +380,17 @@ export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
     }
   }
 
-  isDownloading = false;
+  isDownloading = false
 
   downloadAssignment(): void {
     if (!this.downloadAssinmentyash) {
       // console.log('Assignment file URL:', this.downloadAssinmentyash)
       // console.warn('Assignment file URL is not available.');
-      return;
+      return
     }
 
-    if (this.isDownloading) return; // Prevent multiple clicks
-    this.isDownloading = true;
+    if (this.isDownloading) return // Prevent multiple clicks
+    this.isDownloading = true
 
     // console.log('Starting assignment download...');
     // console.log('User ID:', this.userId);
@@ -399,18 +405,18 @@ export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
       this.userLearningService.downloadAssignment(this.userId, this.courseId).subscribe({
         next: (response: any) => {
           // console.log('✅ Assignment download recorded successfully:', response);
-          
+
           // Update the local state immediately after successful API call
           if (this.courseDetail) {
-            this.courseDetail.assignmentDownloadStatus = 1;
+            this.courseDetail.assignmentDownloadStatus = 1
             // console.log('✅ Local state updated - assignmentDownloadStatus:', this.courseDetail.assignmentDownloadStatus);
           }
-          
+
           // Now download the file after backend update is successful
-          this.performFileDownload();
-          
+          this.performFileDownload()
+
           // Reset loading state
-          this.isDownloading = false;
+          this.isDownloading = false
         },
         error: (error: any) => {
           // console.error('❌ Error recording assignment download:', error);
@@ -418,56 +424,293 @@ export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
 
           // Check if it's a network error or server error
           if (error.status === 0) {
-            console.error('Network error - check if backend is running');
+            console.error("Network error - check if backend is running")
           } else if (error.status >= 400 && error.status < 500) {
-            console.error('Client error:', error.status, error.message);
+            console.error("Client error:", error.status, error.message)
           } else if (error.status >= 500) {
-            console.error('Server error:', error.status, error.message);
+            console.error("Server error:", error.status, error.message)
           }
 
           // Still download the file even if backend update fails
-          this.performFileDownload();
+          this.performFileDownload()
 
           // Update local state to prevent repeated API calls
           if (this.courseDetail) {
-            this.courseDetail.assignmentDownloadStatus = 1;
+            this.courseDetail.assignmentDownloadStatus = 1
             // console.log('⚠️ Local state updated despite API error');
           }
-          
+
           // Reset loading state
-          this.isDownloading = false;
-        }
-      });
+          this.isDownloading = false
+        },
+      })
     } else {
       // console.error('❌ Missing userId or courseId');
       // console.log('UserId:', this.userId);
       // console.log('CourseId:', this.courseId);
 
       // Still allow file download even without backend update
-      this.performFileDownload();
-      
+      this.performFileDownload()
+
       // Reset loading state
-      this.isDownloading = false;
+      this.isDownloading = false
     }
   }
 
   isButtonDisabled(): boolean {
-  return this.dstatus == 1 || this.isDownloading;
-}
+    return this.dstatus == 1 || this.isDownloading
+  }
 
   private performFileDownload(): void {
     // console.log('📁 Performing file download...');
 
     // Create and trigger <a> element to open the file in a new tab
-    const anchor = document.createElement('a');
-    anchor.href = this.downloadAssinmentyash;
-    anchor.target = '_blank';
-    anchor.rel = 'noopener noreferrer';
-    document.body.appendChild(anchor);
-    anchor.click();
-    document.body.removeChild(anchor);
+    const anchor = document.createElement("a")
+    anchor.href = this.downloadAssinmentyash
+    anchor.target = "_blank"
+    anchor.rel = "noopener noreferrer"
+    document.body.appendChild(anchor)
+    anchor.click()
+    document.body.removeChild(anchor)
 
-    console.log('📁 File download triggered');
+    console.log("📁 File download triggered")
+  }
+
+  // Assignment submission methods
+  openFileUpload(): void {
+    this.fileInput.nativeElement.click()
+  }
+
+  // onFileSelected(event: any): void {
+  //   const file = event.target.files[0]
+  //   if (file) {
+  //     // Validate file type
+  //     const allowedTypes = [
+  //       "application/pdf",
+  //       "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  //       "application/msword",
+  //     ]
+  //     if (!allowedTypes.includes(file.type)) {
+  //       alert("Please select a PDF or Word document (.pdf, .docx, .doc)")
+  //       return
+  //     }
+
+  //     // Validate file size (e.g., max 10MB)
+  //     const maxSize = 10 * 1024 * 1024 // 10MB
+  //     if (file.size > maxSize) {
+  //       alert("File size must be less than 10MB")
+  //       return
+  //     }
+
+  //     this.selectedFile = file
+  //     this.submitAssignment()
+  //   }
+  // }
+
+  // submitAssignment(): void {
+  //   if (!this.selectedFile || !this.userId || !this.courseId) {
+  //     console.error('Missing required data for assignment submission')
+  //     return
+  //   }
+
+  //   this.isSubmittingAssignment = true
+
+  //   const formData = new FormData()
+  //   formData.append("file", this.selectedFile)
+  //   formData.append("userId", this.userId)
+  //   formData.append("courseId", this.courseId)
+
+  //   // You would need to create this method in your assignment service
+  //   // For now, I'll simulate the API call
+  //   this.simulateAssignmentSubmission(formData)
+  // }
+
+  // private simulateAssignmentSubmission(formData: FormData): void {
+  //   // Simulate API call - replace this with actual service call
+  //   console.log("file", formData.get("file"))
+  //   setTimeout(() => {
+  //     console.log("Assignment submitted successfully")
+  //     this.assignmentSubmitted = true
+  //     this.isSubmittingAssignment = false
+  //     this.selectedFile = null
+
+  //     // Reset file input
+  //     if (this.fileInput) {
+  //       this.fileInput.nativeElement.value = ""
+  //     }
+  //   }, 9000)
+  // }
+  onFileSelected(event: any): void {
+    const file = event.target.files[0]
+    if (file) {
+      // Validate file type
+      const allowedTypes = [
+        "application/pdf",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "application/msword",
+      ]
+      if (!allowedTypes.includes(file.type)) {
+        alert("Please select a PDF or Word document (.pdf, .docx, .doc)")
+        return
+      }
+  
+      // Validate file size (e.g., max 10MB)
+      const maxSize = 10 * 1024 * 1024 // 10MB
+      if (file.size > maxSize) {
+        alert("File size must be less than 10MB")
+        return
+      }
+  
+      this.selectedFile = file
+      this.submitAssignment()
+    }
+  }
+  
+  // Helper method to convert file to base64
+  private convertFileToBase64(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = () => {
+        // Remove the data URL prefix (e.g., "data:application/pdf;base64,")
+        const base64String = (reader.result as string).split(',')[1]
+        resolve(base64String)
+      }
+      reader.onerror = () => {
+        reject(new Error('Failed to read file'))
+      }
+      reader.readAsDataURL(file)
+    })
+  }
+  
+  // Updated submitAssignment method
+  async submitAssignment(): Promise<void> {
+    if (!this.selectedFile || !this.userId || !this.courseId) {
+      console.error('Missing required data for assignment submission')
+      return
+    }
+  
+    // Show confirmation dialog
+    const confirmed = confirm(
+      `📄 Submit Assignment\n\n` +
+      `File: ${this.selectedFile.name}\n` +
+      `Size: ${(this.selectedFile.size / 1024 / 1024).toFixed(2)} MB\n\n` +
+      `Are you sure you want to submit this assignment?`
+    )
+  
+    if (!confirmed) {
+      // Reset file selection if user cancels
+      this.selectedFile = null
+      if (this.fileInput) {
+        this.fileInput.nativeElement.value = ''
+      }
+      return
+    }
+  
+    this.isSubmittingAssignment = true
+    this.assignmentSubmissionError = ''
+  
+    console.log('🚀 Starting assignment submission...')
+    console.log('User ID:', this.userId)
+    console.log('Course ID:', this.courseId)
+    console.log('File:', this.selectedFile.name)
+  
+    try {
+      // Convert file to base64
+      console.log('🔄 Converting file to base64...')
+      const base64File = await this.convertFileToBase64(this.selectedFile)
+      
+      // Prepare submission data according to DTO structure
+      const submitData: SubmitAssignmentDto = {
+        UserId: this.userId,
+        CourseId: this.courseId,
+        assignment_sme_file: base64File
+      }
+  
+      console.log('📤 Submitting assignment data...')
+  
+      // Call the assignment service to submit the data
+      this.subscriptions.add(
+        this.assignmentService.submitAssignment(submitData).subscribe({
+          next: (response: any) => {
+            console.log('✅ Assignment submitted successfully:', response)
+            
+            // Show success message
+            alert(`✅ Assignment submitted successfully!\n\nFile: ${this.selectedFile?.name}\nStatus: Under Review`)
+            
+            // Update local state
+            this.assignmentSubmitted = true
+            this.isSubmittingAssignment = false
+            this.selectedFile = null
+  
+            // Reset file input
+            if (this.fileInput) {
+              this.fileInput.nativeElement.value = ''
+            }
+  
+            // Refresh course data to show updated assignment status
+            this.loadCourseData()
+          },
+          error: (error: any) => {
+            console.error('❌ Error submitting assignment:', error)
+            
+            let errorMessage = 'Failed to submit assignment. Please try again.'
+            
+            if (error.status === 400) {
+              errorMessage = 'Invalid submission data. Please check your file and try again.'
+            } else if (error.status === 404) {
+              errorMessage = 'Course enrollment not found. Please contact support.'
+            } else if (error.status === 500) {
+              errorMessage = 'Server error. Please try again later.'
+            } else if (error.status === 0) {
+              errorMessage = 'Network error. Please check your connection.'
+            }
+  
+            this.assignmentSubmissionError = errorMessage
+            alert(`❌ Assignment Submission Failed\n\n${errorMessage}`)
+            
+            // Reset states
+            this.isSubmittingAssignment = false
+            this.selectedFile = null
+  
+            // Reset file input
+            if (this.fileInput) {
+              this.fileInput.nativeElement.value = ''
+            }
+          }
+        })
+      )
+    } catch (fileError) {
+      console.error('❌ Error converting file to base64:', fileError)
+      
+      this.assignmentSubmissionError = 'Failed to process file. Please try again.'
+      alert(`❌ File Processing Failed\n\nFailed to process file. Please try again.`)
+      
+      // Reset states
+      this.isSubmittingAssignment = false
+      this.selectedFile = null
+  
+      // Reset file input
+      if (this.fileInput) {
+        this.fileInput.nativeElement.value = ''
+      }
+    }
+  }
+  
+  // Optional: Method to check if assignment can be submitted
+  canSubmitAssignment(): boolean {
+    // Check if user has downloaded the assignment and hasn't submitted yet
+    return this.dstatus === 1 && !this.assignmentSubmitted && !this.isSubmittingAssignment
+  }
+  
+  // Optional: Method to get assignment submission status text
+  getAssignmentSubmissionStatus(): string {
+    if (this.assignmentSubmitted) {
+      return 'Submitted - Under Review'
+    } else if (this.dstatus === 1) {
+      return 'Ready to Submit'
+    } else {
+      return 'Download Assignment First'
+    }
   }
 
   // ===== QUIZ FUNCTIONALITY =====
@@ -480,13 +723,13 @@ export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
     // Show confirmation dialog
     const confirmed = confirm(
       "🎯 Ready to take the quiz?\n\n" +
-      "⚠️ Important Instructions:\n" +
-      "• You will have 1 minute per question\n" +
-      "• The screen will be monitored during the quiz\n" +
-      "• You cannot skip questions or go back\n" +
-      "• The quiz will auto-submit when time runs out\n" +
-      "• Tab switching is limited - be careful!\n\n" +
-      "Do you want to proceed?",
+        "⚠️ Important Instructions:\n" +
+        "• You will have 1 minute per question\n" +
+        "• The screen will be monitored during the quiz\n" +
+        "• You cannot skip questions or go back\n" +
+        "• The quiz will auto-submit when time runs out\n" +
+        "• Tab switching is limited - be careful!\n\n" +
+        "Do you want to proceed?",
     )
 
     if (confirmed && this.courseDetail?.quizPath) {
@@ -698,9 +941,9 @@ export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
     // Show confirmation
     const confirmed = confirm(
       `🎯 Quiz Complete!\n\n` +
-      `Your Score: ${this.quizScore}%\n` +
-      `Status: ${this.quizScore >= 70 ? 'PASSED' : 'FAILED'}\n\n` +
-      `Click OK to save your results and close the quiz.`
+        `Your Score: ${this.quizScore}%\n` +
+        `Status: ${this.quizScore >= 70 ? "PASSED" : "FAILED"}\n\n` +
+        `Click OK to save your results and close the quiz.`,
     )
 
     if (!confirmed) {
@@ -713,7 +956,7 @@ export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
     const quizRequest = {
       UserId: this.userId,
       CourseId: this.courseId,
-      QuizScore: this.quizScore
+      QuizScore: this.quizScore,
     }
 
     // console.log('🎯 Saving quiz results:', quizRequest)
@@ -722,31 +965,31 @@ export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
     this.subscriptions.add(
       this.assignmentService.completeQuiz(quizRequest).subscribe({
         next: (response: any) => {
-          console.log('✅ Quiz results saved successfully:', response)
-          
+          console.log("✅ Quiz results saved successfully:", response)
+
           // Show success message
           // alert(`✅ Quiz completed successfully!\n\nYour score of ${this.quizScore}% has been recorded.`)
-          
+
           // Close the quiz
           this.closeQuiz()
-          
+
           // Refresh course data to reflect updated status
           this.loadCourseData()
-          
+
           this.isSubmittingQuiz = false
         },
         error: (error: any) => {
-          console.error('❌ Error saving quiz results:', error)
-          
+          console.error("❌ Error saving quiz results:", error)
+
           // Show error message but still allow closing
           // alert(`⚠️ Quiz completed but there was an error saving your results.\n\nScore: ${this.quizScore}%\n\nPlease contact support if this persists.`)
-          
+
           // Still close the quiz even if save failed
           this.closeQuiz()
-          
+
           this.isSubmittingQuiz = false
-        }
-      })
+        },
+      }),
     )
   }
 
@@ -760,8 +1003,6 @@ export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
       totalQuestions: this.quizQuestions.length,
       completedAt: new Date().toISOString(),
     }
-
-    
   }
 
   removeQuizEventListeners(): void {
