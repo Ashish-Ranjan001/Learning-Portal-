@@ -1,11 +1,17 @@
+
+
+
 // import { Component, OnInit, OnDestroy, ElementRef, ViewChild, Output, EventEmitter } from '@angular/core';
 // import { CommonModule } from '@angular/common';
+// import { DashboardServicesService } from '../../../services/homedashboard/dashboard-services.service';
+// import { jwtDecode } from 'jwt-decode';
 
 // interface CategoryData {
-//   name: string;
+//   categoryName: string;
 //   totalCourses: number;
+//   enrolledCourses: number;
 //   completedCourses: number;
-//   ongoingCourses: number;
+//   inProgressCourses: number;
 // }
 
 // interface ChartDataset {
@@ -34,17 +40,11 @@
 //   @ViewChild('chartCanvas', { static: true }) chartCanvas!: ElementRef<HTMLCanvasElement>;
 //   @Output() action = new EventEmitter<any>();
 
-//   // Static data for categories
-//   categoryData: CategoryData[] = [
-//     { name: 'Web Dev', totalCourses: 25, completedCourses: 15, ongoingCourses: 22 },
-//     { name: 'Mobile', totalCourses: 18, completedCourses: 12, ongoingCourses: 20 },
-//     { name: 'Design', totalCourses: 32, completedCourses: 28, ongoingCourses: 38 },
-//     { name: 'Data Sci', totalCourses: 28, completedCourses: 20, ongoingCourses: 35 },
-//     { name: 'AI/ML', totalCourses: 40, completedCourses: 32, ongoingCourses: 46 },
-//     { name: 'DevOps', totalCourses: 22, completedCourses: 18, ongoingCourses: 28 },
-//     { name: 'Security', totalCourses: 30, completedCourses: 22, ongoingCourses: 35 },
-//     { name: 'Cloud', totalCourses: 35, completedCourses: 25, ongoingCourses: 42 }
-//   ];
+//   // Dynamic data from API
+//   categoryData: CategoryData[] = [];
+//   userId: string = '';
+//   isLoading = true;
+//   error: string | null = null;
 
 //   datasets: ChartDataset[] = [
 //     {
@@ -54,7 +54,7 @@
 //       fillColor: 'rgba(59, 130, 246, 0.2)'
 //     },
 //     {
-//       label: 'Ongoing Courses',
+//       label: 'In Progress Courses',
 //       data: [],
 //       color: '#10b981',
 //       fillColor: 'rgba(16, 185, 129, 0.2)'
@@ -75,9 +75,16 @@
 //   private animationId!: number;
 //   private isAnimating = false;
 
+//   constructor(private dashboardService: DashboardServicesService) {}
+
 //   ngOnInit(): void {
-//     this.prepareData();
-//     this.initializeChart();
+//     this.userId = this.getDecodedUserId();
+//     if (this.userId) {
+//       this.loadCategoryStats();
+//     } else {
+//       this.error = 'Unable to retrieve user ID from token';
+//       this.isLoading = false;
+//     }
 //   }
 
 //   ngOnDestroy(): void {
@@ -86,12 +93,67 @@
 //     }
 //   }
 
+//   getDecodedUserId(): string{
+//     try {
+//       const token = localStorage.getItem("authToken");
+//       if (!token) {
+//         console.error("No auth token found in localStorage.");
+//         return '';
+//       }
+
+//       const decodedToken: any = jwtDecode(token);
+//       console.log("=== DECODED TOKEN ===", decodedToken);
+
+//       const userId = decodedToken.UserId || decodedToken.nameid || decodedToken.sub;
+//       console.log("=== EXTRACTED USER ID ===", userId);
+//       return userId ;
+//     } catch (error) {
+//       console.error("Error decoding JWT:", error);
+//       return '';
+//     }
+//   }
+
+//   loadCategoryStats(): void {
+//     if (!this.userId) return;
+
+//     this.isLoading = true;
+//     this.dashboardService.getStatsForHomeBanner(this.userId).subscribe({
+//       next: (data: CategoryData[]) => {
+//         console.log('Category stats received:', data);
+//         this.categoryData = data;
+//         this.prepareData();
+//         this.initializeChart();
+//         this.isLoading = false;
+//         this.error = null;
+//       },
+//       error: (error:any) => {
+//         console.error('Error loading category stats:', error);
+//         this.error = 'Failed to load category statistics';
+//         this.isLoading = false;
+//         // Initialize with empty data to show empty chart
+//         this.categoryData = [];
+//         this.prepareData();
+//         this.initializeChart();
+//       }
+//     });
+//   }
+
 //   prepareData(): void {
-//     this.datasets[0].data = this.categoryData.map(cat => cat.completedCourses);
-//     this.datasets[1].data = this.categoryData.map(cat => cat.ongoingCourses);
+//     if (this.categoryData && this.categoryData.length > 0) {
+//       this.datasets[0].data = this.categoryData.map(cat => cat.completedCourses || 0);
+//       this.datasets[1].data = this.categoryData.map(cat => cat.inProgressCourses || 0);
+//     } else {
+//       this.datasets[0].data = [];
+//       this.datasets[1].data = [];
+//     }
 //   }
 
 //   initializeChart(): void {
+//     if (!this.chartCanvas) {
+//       console.error('Chart canvas not found');
+//       return;
+//     }
+
 //     this.canvas = this.chartCanvas.nativeElement;
 //     this.ctx = this.canvas.getContext('2d')!;
     
@@ -100,7 +162,21 @@
 //     this.canvas.addEventListener('mousemove', this.onMouseMove.bind(this));
 //     this.canvas.addEventListener('mouseleave', this.onMouseLeave.bind(this));
     
-//     this.animateChart();
+//     if (this.categoryData.length > 0) {
+//       this.animateChart();
+//     } else {
+//       this.drawEmptyState();
+//     }
+//   }
+
+//   drawEmptyState(): void {
+//     const { width, height } = this.canvas;
+//     this.ctx.clearRect(0, 0, width, height);
+    
+//     this.ctx.fillStyle = '#64748b';
+//     this.ctx.font = '16px Inter, system-ui, sans-serif';
+//     this.ctx.textAlign = 'center';
+//     this.ctx.fillText('No data available', width / 2, height / 2);
 //   }
 
 //   resizeCanvas(): void {
@@ -137,6 +213,11 @@
 //   }
 
 //   drawChart(animationProgress: number = 1): void {
+//     if (this.categoryData.length === 0) {
+//       this.drawEmptyState();
+//       return;
+//     }
+
 //     const { width, height } = this.canvas;
 //     const padding = { top: 30, right: 40, bottom: 50, left: 60 };
 //     const chartWidth = width - padding.left - padding.right;
@@ -144,13 +225,15 @@
 
 //     this.ctx.clearRect(0, 0, width, height);
 
-//     const maxValue = Math.max(...this.datasets.flatMap(dataset => dataset.data));
+//     const maxValue = Math.max(...this.datasets.flatMap(dataset => dataset.data), 1); // Prevent division by zero
 //     const scale = chartHeight / maxValue;
 
 //     this.drawGrid(padding, chartWidth, chartHeight, maxValue);
 
 //     this.datasets.forEach((dataset, index) => {
-//       this.drawAreaChart(dataset, padding, chartWidth, chartHeight, scale, animationProgress);
+//       if (dataset.data.length > 0) {
+//         this.drawAreaChart(dataset, padding, chartWidth, chartHeight, scale, animationProgress);
+//       }
 //     });
 
 //     this.drawAxes(padding, chartWidth, chartHeight, maxValue);
@@ -170,20 +253,22 @@
 //     }
 
 //     // Vertical grid lines
-//     const stepX = chartWidth / (this.categoryData.length - 1);
-//     for (let i = 0; i < this.categoryData.length; i++) {
-//       const x = padding.left + stepX * i;
-//       this.ctx.strokeStyle = '#f8fafc';
-//       this.ctx.beginPath();
-//       this.ctx.moveTo(x, padding.top);
-//       this.ctx.lineTo(x, padding.top + chartHeight);
-//       this.ctx.stroke();
+//     if (this.categoryData.length > 1) {
+//       const stepX = chartWidth / (this.categoryData.length - 1);
+//       for (let i = 0; i < this.categoryData.length; i++) {
+//         const x = padding.left + stepX * i;
+//         this.ctx.strokeStyle = '#f8fafc';
+//         this.ctx.beginPath();
+//         this.ctx.moveTo(x, padding.top);
+//         this.ctx.lineTo(x, padding.top + chartHeight);
+//         this.ctx.stroke();
+//       }
 //     }
 //   }
 
 //   drawAreaChart(dataset: ChartDataset, padding: any, chartWidth: number, chartHeight: number, scale: number, animationProgress: number): void {
 //     const points: { x: number; y: number }[] = [];
-//     const stepX = chartWidth / (this.categoryData.length - 1);
+//     const stepX = this.categoryData.length > 1 ? chartWidth / (this.categoryData.length - 1) : chartWidth;
 
 //     // Calculate points with animation
 //     dataset.data.forEach((value: number, i: number) => {
@@ -192,6 +277,8 @@
 //       const y = padding.top + chartHeight - (animatedValue * scale);
 //       points.push({ x, y });
 //     });
+
+//     if (points.length === 0) return;
 
 //     // Create smooth curve points
 //     const smoothPoints = this.createSmoothCurve(points);
@@ -277,16 +364,22 @@
 //     }
 
 //     // X-axis labels
-//     const stepX = chartWidth / (this.categoryData.length - 1);
-//     this.categoryData.forEach((category, i) => {
-//       const x = padding.left + stepX * i;
-//       this.ctx.textAlign = 'center';
-//       this.ctx.fillText(category.name, x, padding.top + chartHeight + 25);
-//     });
+//     if (this.categoryData.length > 0) {
+//       const stepX = this.categoryData.length > 1 ? chartWidth / (this.categoryData.length - 1) : chartWidth;
+//       this.categoryData.forEach((category, i) => {
+//         const x = padding.left + stepX * i;
+//         this.ctx.textAlign = 'center';
+//         // Truncate long category names
+//         const displayName = category.categoryName.length > 10 
+//           ? category.categoryName.substring(0, 8) + '...' 
+//           : category.categoryName;
+//         this.ctx.fillText(displayName, x, padding.top + chartHeight + 25);
+//       });
+//     }
 //   }
 
 //   onMouseMove(event: MouseEvent): void {
-//     if (this.isAnimating) return;
+//     if (this.isAnimating || this.categoryData.length === 0) return;
 
 //     const rect = this.canvas.getBoundingClientRect();
 //     const x = event.clientX - rect.left;
@@ -294,7 +387,7 @@
 
 //     const padding = { top: 30, right: 40, bottom: 50, left: 60 };
 //     const chartWidth = this.canvas.width - padding.left - padding.right;
-//     const stepX = chartWidth / (this.categoryData.length - 1);
+//     const stepX = this.categoryData.length > 1 ? chartWidth / (this.categoryData.length - 1) : chartWidth;
 
 //     const categoryIndex = Math.round((x - padding.left) / stepX);
     
@@ -307,9 +400,19 @@
 //           color: this.datasets[0].color
 //         },
 //         {
-//           label: 'Ongoing Courses',
-//           value: category.ongoingCourses,
+//           label: 'In Progress Courses',
+//           value: category.inProgressCourses,
 //           color: this.datasets[1].color
+//         },
+//         {
+//           label: 'Total Courses',
+//           value: category.totalCourses,
+//           color: '#6366f1'
+//         },
+//         {
+//           label: 'Enrolled Courses',
+//           value: category.enrolledCourses,
+//           color: '#f59e0b'
 //         }
 //       ];
 
@@ -317,7 +420,7 @@
 //         show: true,
 //         x: event.clientX - rect.left,
 //         y: event.clientY - rect.top,
-//         category: category.name,
+//         category: category.categoryName,
 //         data
 //       };
 //     }
@@ -330,6 +433,12 @@
 //   onPeriodChange(period: string): void {
 //     this.selectedPeriod = period;
 //     this.action.emit({ type: 'periodChange', period });
+//   }
+
+//   refreshData(): void {
+//     if (this.userId) {
+//       this.loadCategoryStats();
+//     }
 //   }
 // }
 
@@ -379,6 +488,9 @@ export class HeroBannerComponent implements OnInit, OnDestroy {
   isLoading = true;
   error: string | null = null;
 
+  // Session storage key
+  private sessionStorageKey: string = '';
+
   datasets: ChartDataset[] = [
     {
       label: 'Completed Courses',
@@ -413,7 +525,25 @@ export class HeroBannerComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.userId = this.getDecodedUserId();
     if (this.userId) {
-      this.loadCategoryStats();
+      this.sessionStorageKey = `heroBannerStats_${this.userId}`;
+      // Check session storage for cached data
+      const cached = sessionStorage.getItem(this.sessionStorageKey);
+      if (cached) {
+        try {
+          const parsed = JSON.parse(cached);
+          this.categoryData = parsed;
+          this.prepareData();
+          this.initializeChart();
+          this.isLoading = false;
+          this.error = null;
+        } catch (e) {
+          this.loadCategoryStats();
+        }
+      } else {
+        this.loadCategoryStats();
+      }
+      // Listen for logout event (storage event)
+      window.addEventListener('storage', this.handleStorageChange);
     } else {
       this.error = 'Unable to retrieve user ID from token';
       this.isLoading = false;
@@ -424,7 +554,17 @@ export class HeroBannerComponent implements OnInit, OnDestroy {
     if (this.animationId) {
       cancelAnimationFrame(this.animationId);
     }
+    window.removeEventListener('storage', this.handleStorageChange);
   }
+
+  // Listen for logout (token removal)
+  handleStorageChange = (event: StorageEvent) => {
+    if (event.key === 'authToken' && event.newValue === null) {
+      if (this.sessionStorageKey) {
+        sessionStorage.removeItem(this.sessionStorageKey);
+      }
+    }
+  };
 
   getDecodedUserId(): string{
     try {
@@ -452,7 +592,8 @@ export class HeroBannerComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     this.dashboardService.getStatsForHomeBanner(this.userId).subscribe({
       next: (data: CategoryData[]) => {
-        console.log('Category stats received:', data);
+        // Cache to session storage
+        sessionStorage.setItem(this.sessionStorageKey, JSON.stringify(data));
         this.categoryData = data;
         this.prepareData();
         this.initializeChart();
@@ -770,6 +911,8 @@ export class HeroBannerComponent implements OnInit, OnDestroy {
 
   refreshData(): void {
     if (this.userId) {
+      // Clear cache and fetch again
+      sessionStorage.removeItem(this.sessionStorageKey);
       this.loadCategoryStats();
     }
   }
