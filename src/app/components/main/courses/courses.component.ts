@@ -63,7 +63,7 @@ export class CoursesComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
-      this.categoryId = params["categoryId"]
+      this.categoryId = atob(params["categoryId"])
     })
 
     this.route.queryParams.subscribe((params) => {
@@ -215,7 +215,7 @@ export class CoursesComponent implements OnInit {
 
   viewCourseDetail(courseId: string): void {
     // console.log("Navigating to course detail:", courseId)
-    this.router.navigate([`/module/${courseId}`])
+    this.router.navigate([`/module/${btoa(courseId)}`])
   }
 
   enrollInCourse(course: CourseWithImageStatusByCategory, event: Event): void {

@@ -107,7 +107,7 @@ export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.subscriptions.add(
       this.route.params.subscribe((params) => {
-        this.courseId = params["courseId"]
+        this.courseId = atob(params["courseId"])
         if (this.courseId) {
           this.loadCourseData()
         }

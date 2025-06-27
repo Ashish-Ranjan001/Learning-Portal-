@@ -134,7 +134,7 @@ export class AssignmentService {
   }
 
   submitAssignment(submitData: SubmitAssignmentDto): Observable<any> {
-    const url = `${this.apiBaseUrl}/api/assignment/submit`;
+    const url = `${this.apiBaseUrl}/api/UserLearning/assignment/submit`;
     
     const headers = new HttpHeaders({
       'Content-Type': 'application/json'
