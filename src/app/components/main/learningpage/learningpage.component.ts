@@ -18,10 +18,11 @@ import { DashboardServicesService } from '../../../services/homedashboard/dashbo
 import { MainheaderComponent } from '../mainheader/mainheader.component';
 import { MainfooterComponent } from '../mainfooter/mainfooter.component';
 import { TokenService } from '../../../services/Tokenservice/token.service';
+import { Router } from '@angular/router';
  
 interface Course {
   id: string;
-  title: string;
+  courseName: string;
   description: string;
   progress?: number;
   completedDate?: Date;
@@ -74,12 +75,13 @@ export class LearningpageComponent implements OnInit {
     userName: '',
     userEmail: '',
     userAvatar: '',
-    lobid:''
+    lobid: undefined as string | undefined,
+    roleId: 0
   };
   
    // User ID will be set after decoding JWT
  
-  constructor(private dashSerive: DashboardServicesService , private userLearningService:UserLearningService , private tokenService:TokenService ) {
+  constructor(private dashSerive: DashboardServicesService , private userLearningService:UserLearningService , private tokenService:TokenService , private router: Router) {
       // TODO: Get userId from your authentication service
       this.user = tokenService.getDecodedToken() ;
    
@@ -132,7 +134,10 @@ export class LearningpageComponent implements OnInit {
     this.dashSerive.getSavedCourses(this.user.userId).subscribe({
       next: (data:any) => {
         this.savedCourses = data;
+        console.log('Saved courses without filter:', this.savedCourses);
+         this.savedCourses = this.mapCoursesToUI( data , 'saved');
         this.filterCourses();
+
       },
       error: (error:any) => {
         console.error('Error loading saved  courses:', error);
@@ -144,6 +149,7 @@ export class LearningpageComponent implements OnInit {
   private loadCategories() {
     this.dashSerive.getAllCategories(this.user.userId).subscribe({
       next: (categories) => {
+        console.log('yash  without mapping Raw categories data:', categories);
         this.allCategories = this.mapCategoriesToUI(categories);
         this.filterCourses();
       },
@@ -158,6 +164,7 @@ export class LearningpageComponent implements OnInit {
   private loadCompletedCourses() {
     this.userLearningService.getUserCompletedCourses(this.user.userId).subscribe({
       next: (courses:any) => {
+        console.log('Raw completed courses data without mapping :', courses);
         this.completedCourses = this.mapCoursesToUI(courses, 'completed');
         this.filterCourses();
       },
@@ -183,25 +190,29 @@ export class LearningpageComponent implements OnInit {
     });
   }
  
-  private mapCategoriesToUI(apiCategories: CategoryWithCoursesDto[]): Category[] {
-    return apiCategories.map(category => ({
+private mapCategoriesToUI(apiCategories: CategoryWithCoursesDto[]): Category[] {
+  return apiCategories.map(category => {
+    const imageUrl = category.imagePath || this.getDefaultCategoryImage();
+    console.log("after mapping og categoires ",imageUrl); // Log the image URL here
+    return {
       id: category.id,
       name: category.name,
       subCategory: category.description || 'Learning Category',
-      imageUrl: category.imagePath || this.getDefaultCategoryImage(),
+      imageUrl: imageUrl,
       courseCount: category.courseCount
-    }));
-  }
+    };
+  });
+}
  
-  private mapCoursesToUI(apiCourses: CourseBasicDto[], category: 'completed' | 'ongoing'): Course[] {
+  private mapCoursesToUI(apiCourses: CourseBasicDto[], category: 'completed' | 'ongoing' | 'saved' ): Course[] {
     return apiCourses.map(course => ({
       id: course.courseId,
-      title: course.courseName,
+      courseName: course.courseName,
       description: course.description || '',
       category: category,
-      imageUrl: this.getCourseImageUrl(course),
+      imageUrl: `https://localhost:7264${this.getCourseImageUrl(course)}`,
       subCategory: 'Course', // You might want to add category info to your DTO
-      author: course.instructor || 'Unknown Instructor',
+      author: course.author || 'Unknown Instructor',
       progress: course.progress || (category === 'completed' ? 100 : 0),
       isEnrolled: course.isEnrolled,
       isCompleted: course.isCompleted,
@@ -275,18 +286,20 @@ export class LearningpageComponent implements OnInit {
   }
  
   // Method to handle category view button click
-  onViewCategory(categoryId: string) {
-    // You can navigate to category detail page or load courses for this category
-    console.log('View category:', categoryId);
-    // Example: this.router.navigate(['/category', categoryId]);
-  }
+onViewCategory(categoryId: string , categoryName: string) {
+  console.log('View category:', categoryId);
+  this.router.navigate([`courses/${categoryId}`], { 
+    queryParams: { categoryName: categoryName } 
+  });
+}
  
   // Method to handle course view button click
   onViewCourse(courseId: string) {
     // Navigate to course detail page
-    console.log('View course:', courseId);
+    this.router.navigate([`module/${courseId}`]);
     // Example: this.router.navigate(['/course', courseId]);
   }
+
  
   // Method to refresh data
   refreshData() {

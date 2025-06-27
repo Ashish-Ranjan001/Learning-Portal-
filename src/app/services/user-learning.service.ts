@@ -23,7 +23,7 @@ export interface CourseBasicDto {
   
   // Course metadata
   duration?: string;
-  instructor?: string;
+  author?: string;
   
   // Enrollment status
   isEnrolled: boolean;
@@ -36,6 +36,7 @@ export interface CourseBasicDto {
   rating?: number;
 }
 export interface CourseDetailDto {
+  assignmentPath: string;
   courseId: string;
   courseName: string;
   description: string;
@@ -43,11 +44,27 @@ export interface CourseDetailDto {
   modules: ModuleDto[];
   progress: number;
   isCompleted: boolean;
-  assignmentDownloaded: boolean;
+  assignmentDownloaded:boolean;
   assignmentSubmitted: boolean;
   quizSubmitted: boolean;
-  quizPath:string
+  quizPath: string;
+  assignmentDownloadStatus: number;
 }
+
+// export interface CourseDetailDto1 {
+//   assignmentPath: string;
+//   courseId: string;
+//   courseName: string;
+//   description: string;
+//   thumbnailUrl: string;
+//   modules: ModuleDto[];
+//   progress: number;
+//   isCompleted: boolean;
+//   assignmentDownloadStatus: number;
+//   assignmentSubmitted: boolean;
+//   quizSubmitted: boolean;
+//   quizPath: string
+// }
 
 export interface ModuleDto {
   moduleId: string;
@@ -121,6 +138,15 @@ export class UserLearningService {
   getCourseDetail(courseId: string, userId: string): Observable<CourseDetailDto> {
     return this.http.get<CourseDetailDto>(`${this.baseUrl}/courses/${courseId}/user/${userId}`);
   }
+
+  // getCourseDetail1(courseId: string, userId: string): Observable<CourseDetailDto1> {
+  //   return this.http.get<CourseDetailDto1>(`${this.baseUrl}/courses/${courseId}/user/${userId}`);
+  // }
+
+    getAssignment(courseId: string, userId: string) {
+    return this.http.get(`${this.baseUrl}/courses/${courseId}/user/${userId}`);
+  }
+
 
   enrollInCourse(enrollData: EnrollCourseDto): Observable<any> {
     return this.http.post(`${this.baseUrl}/enroll`, enrollData);

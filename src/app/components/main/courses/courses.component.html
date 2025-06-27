@@ -4,17 +4,17 @@
     <div class="breadcrumb-container">
       <div class="breadcrumb-item">
         <a routerLink="/home" class="breadcrumb-link">
-          <i class="fas fa-home"></i>
+          <i class="bi bi-house"></i>
           <span>Home</span>
         </a>
-        <i class="fas fa-chevron-right breadcrumb-separator"></i>
+        <i class="bi bi-chevron-right breadcrumb-separator"></i>
       </div>
       <div class="breadcrumb-item">
         <a routerLink="/categories" class="breadcrumb-link">
-          <i class="fas fa-th-large"></i>
+          <i class="bi bi-grid-3x3-gap"></i>
           <span>Categories</span>
         </a>
-        <i class="fas fa-chevron-right breadcrumb-separator"></i>
+        <i class="bi bi-chevron-right breadcrumb-separator"></i>
       </div>
       <div class="breadcrumb-item active">
         <span class="breadcrumb-current">{{ categoryName }}</span>
@@ -35,11 +35,11 @@
   <!-- Error State -->
   <div *ngIf="error" class="error-container">
     <div class="error-card">
-      <i class="fas fa-exclamation-triangle error-icon"></i>
+      <i class="bi bi-exclamation-triangle error-icon"></i>
       <h3 class="error-title">Oops! Something went wrong</h3>
       <p class="error-message">{{ error }}</p>
       <button class="retry-btn" (click)="loadCourses()">
-        <i class="fas fa-redo"></i>
+        <i class="bi bi-arrow-clockwise"></i>
         <span>Try Again</span>
       </button>
     </div>
@@ -52,7 +52,7 @@
       <div class="header-content">
         <div class="header-info">
           <h1 class="page-title">
-            <i class="fas fa-graduation-cap title-icon"></i>
+            <i class="bi bi-mortarboard title-icon"></i>
             {{ categoryName }}
           </h1>
           <p class="page-subtitle">Explore and master new skills with our curated courses</p>
@@ -84,10 +84,10 @@
         </div>
         <div class="view-toggle">
           <button class="view-btn" [class.active]="viewMode === 'grid'" (click)="setViewMode('grid')">
-            <i class="fas fa-th-large"></i>
+            <i class="bi bi-grid-3x3-gap"></i>
           </button>
           <button class="view-btn" [class.active]="viewMode === 'list'" (click)="setViewMode('list')">
-            <i class="fas fa-list"></i>
+            <i class="bi bi-list"></i>
           </button>
         </div>
       </div>
@@ -118,14 +118,14 @@
                 
                 <div *ngIf="course.imageLoadError" class="fallback-image">
                   <div class="fallback-content">
-                    <i class="fas fa-book-open fallback-icon"></i>
+                    <i class="bi bi-book fallback-icon"></i>
                     <span class="fallback-text">{{ course.courseName }}</span>
                   </div>
                 </div>
                 
                 <div class="course-overlay">
                   <div class="play-button">
-                    <i class="fas fa-play"></i>
+                    <i class="bi bi-play-fill"></i>
                   </div>
                 </div>
               </div>
@@ -133,17 +133,36 @@
               <!-- Status Badge -->
               <div class="status-badge">
                 <span *ngIf="course.isCompleted" class="badge completed">
-                  <i class="fas fa-check"></i>
+                  <i class="bi bi-check-circle"></i>
                   Completed
                 </span>
                 <span *ngIf="course.isEnrolled && !course.isCompleted" class="badge enrolled">
-                  <i class="fas fa-user-check"></i>
+                  <i class="bi bi-person-check"></i>
                   Enrolled
                 </span>
                 <span *ngIf="!course.isEnrolled && !course.isCompleted" class="badge available">
-                  <i class="fas fa-plus"></i>
+                  <i class="bi bi-plus-circle"></i>
                   Available
                 </span>
+              </div>
+
+              <!-- Save and Favorite Buttons -->
+              <div class="course-actions-overlay">
+                <button class="action-icon-btn save-btn" 
+                        [class.active]="course.isSaved"
+                        (click)="toggleSave(course, $event)"
+                        [title]="course.isSaved ? 'Remove from saved' : 'Save course'"
+                        [attr.aria-label]="course.isSaved ? 'Remove from saved courses' : 'Save course'">
+                  <i class="bi" [class.bi-bookmark-fill]="course.isSaved" [class.bi-bookmark]="!course.isSaved"></i>
+                </button>
+                
+                <button class="action-icon-btn favorite-btn" 
+                        [class.active]="course.isFavorited"
+                        (click)="toggleFavorite(course, $event)"
+                        [title]="course.isFavorited ? 'Remove from favorites' : 'Add to favorites'"
+                        [attr.aria-label]="course.isFavorited ? 'Remove from favorites' : 'Add to favorites'">
+                  <i class="bi" [class.bi-heart-fill]="course.isFavorited" [class.bi-heart]="!course.isFavorited"></i>
+                </button>
               </div>
             </div>
             
@@ -159,15 +178,15 @@
               <!-- Course Meta Information -->
               <div class="course-meta">
                 <div class="meta-item" *ngIf="course.durationInMinutes">
-                  <i class="fas fa-clock meta-icon"></i>
+                  <i class="bi bi-clock meta-icon"></i>
                   <span class="meta-text">{{ course.durationInHours }} hours</span>
                 </div>
                 <div class="meta-item" *ngIf="course.author">
-                  <i class="fas fa-user meta-icon"></i>
+                  <i class="bi bi-person meta-icon"></i>
                   <span class="meta-text">{{ course.author }}</span>
                 </div>
                 <div class="meta-item">
-                  <i class="fas fa-signal meta-icon"></i>
+                  <i class="bi bi-signal meta-icon"></i>
                   <span class="meta-text">{{ getDifficultyLevel(course) }}</span>
                 </div>
               </div>
@@ -193,19 +212,19 @@
                         [class]="getButtonClass(course)"
                         (click)="course.isEnrolled ? viewCourseDetail(course.courseId) : enrollInCourse(course, $event)"
                         [disabled]="course.isCompleted">
-                  <i class="btn-icon" 
-                     [class.fa-play]="!course.isEnrolled && !course.isCompleted"
-                     [class.fa-arrow-right]="course.isEnrolled && !course.isCompleted"
-                     [class.fa-check]="course.isCompleted"></i>
+                  <i class="btn-icon bi" 
+                     [class.bi-play-fill]="!course.isEnrolled && !course.isCompleted"
+                     [class.bi-arrow-right]="course.isEnrolled && !course.isCompleted"
+                     [class.bi-check-circle]="course.isCompleted"></i>
                   <span>{{ getButtonText(course) }}</span>
                 </button>
                 
                 <div class="course-rating" *ngIf="course.isCompleted">
-                  <i class="fas fa-star rating-star"></i>
-                  <i class="fas fa-star rating-star"></i>
-                  <i class="fas fa-star rating-star"></i>
-                  <i class="fas fa-star rating-star"></i>
-                  <i class="fas fa-star rating-star"></i>
+                  <i class="bi bi-star-fill rating-star"></i>
+                  <i class="bi bi-star-fill rating-star"></i>
+                  <i class="bi bi-star-fill rating-star"></i>
+                  <i class="bi bi-star-fill rating-star"></i>
+                  <i class="bi bi-star-fill rating-star"></i>
                 </div>
               </div>
             </div>
@@ -217,7 +236,7 @@
     <!-- Empty State -->
     <div *ngIf="getFilteredCourses().length === 0" class="empty-state">
       <div class="empty-illustration">
-        <i class="fas fa-search empty-icon"></i>
+        <i class="bi bi-search empty-icon"></i>
         <div class="empty-circles">
           <div class="circle circle-1"></div>
           <div class="circle circle-2"></div>
@@ -230,11 +249,11 @@
       </p>
       <div class="empty-actions">
         <button class="action-btn secondary" routerLink="/categories">
-          <i class="fas fa-arrow-left"></i>
+          <i class="bi bi-arrow-left"></i>
           <span>Browse Categories</span>
         </button>
         <button class="action-btn outline" (click)="resetFilters()">
-          <i class="fas fa-refresh"></i>
+          <i class="bi bi-arrow-clockwise"></i>
           <span>Reset Filters</span>
         </button>
       </div>

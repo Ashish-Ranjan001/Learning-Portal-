@@ -1,3 +1,6 @@
+/* Import Bootstrap Icons */
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css");
+
 /* Modern Courses Component Styles */
 
 /* Global Container */
@@ -120,8 +123,12 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .loading-text {
@@ -210,7 +217,7 @@
 }
 
 .header-content::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -322,7 +329,7 @@
 
 .view-toggle {
   display: flex;
-  background: #0080ff;
+  background: #f8f9fa;
   border-radius: 10px;
   padding: 0.25rem;
 }
@@ -339,7 +346,7 @@
 }
 
 .view-btn.active {
-  background: rgb(255, 255, 255);
+  background: white;
   color: #667eea;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
@@ -510,12 +517,113 @@
   color: white;
 }
 
+/* Course Actions Overlay for Save and Favorite Buttons */
+.course-actions-overlay {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  z-index: 15;
+}
+
+.action-icon-btn {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  position: relative;
+  font-size: 1.1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.action-icon-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+.action-icon-btn:active {
+  transform: scale(0.95);
+}
+
+/* Save Button Styles */
+.save-btn {
+  background: rgba(255, 255, 255, 0.9);
+  color: #6c757d;
+}
+
+.save-btn:hover {
+  background: rgba(255, 255, 255, 1);
+  color: #495057;
+}
+
+.save-btn.active {
+  background: linear-gradient(135deg, #ffc107 0%, #ff8f00 100%);
+  color: white;
+}
+
+.save-btn.active:hover {
+  background: linear-gradient(135deg, #ffb300 0%, #ff6f00 100%);
+}
+
+/* Favorite Button Styles */
+.favorite-btn {
+  background: rgba(255, 255, 255, 0.9);
+  color: #6c757d;
+}
+
+.favorite-btn:hover {
+  background: rgba(255, 255, 255, 1);
+  color: #495057;
+}
+
+.favorite-btn.active {
+  background: linear-gradient(135deg, #e91e63 0%, #c2185b 100%);
+  color: white;
+  animation: heartBeat 0.6s ease-in-out;
+}
+
+.favorite-btn.active:hover {
+  background: linear-gradient(135deg, #d81b60 0%, #ad1457 100%);
+}
+
+@keyframes heartBeat {
+  0% {
+    transform: scale(1);
+  }
+  14% {
+    transform: scale(1.3);
+  }
+  28% {
+    transform: scale(1);
+  }
+  42% {
+    transform: scale(1.3);
+  }
+  70% {
+    transform: scale(1);
+  }
+}
+
+/* Button Focus States */
+.action-icon-btn:focus {
+  outline: 3px solid rgba(102, 126, 234, 0.3);
+  outline-offset: 2px;
+}
+
 /* Course Content */
 .course-content {
   padding: 2rem;
   display: flex;
   flex-direction: column;
-  height: calc(100% - 1000px);
+  height: calc(100% - 200px);
 }
 
 .course-header {
@@ -634,8 +742,12 @@
 }
 
 @keyframes shimmer {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
 }
 
 /* Course Actions */
@@ -770,7 +882,8 @@
 }
 
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(0.8);
     opacity: 0.3;
   }
@@ -935,6 +1048,18 @@
     max-width: 250px;
     justify-content: center;
   }
+
+  /* Mobile adjustments for action buttons */
+  .course-actions-overlay {
+    top: 0.5rem;
+    left: 0.5rem;
+  }
+
+  .action-icon-btn {
+    width: 35px;
+    height: 35px;
+    font-size: 1rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -972,6 +1097,12 @@
   .header-content {
     padding: 1rem;
   }
+
+  .action-icon-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 0.9rem;
+  }
 }
 
 /* Focus and Accessibility */
@@ -997,7 +1128,8 @@
   .modern-breadcrumb,
   .filter-section,
   .loading-container,
-  .error-container {
+  .error-container,
+  .course-actions-overlay {
     display: none;
   }
 

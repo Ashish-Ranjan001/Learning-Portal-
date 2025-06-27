@@ -1,39 +1,45 @@
+// role.guard.ts
 import { Injectable } from '@angular/core';
-import { CanActivate, CanLoad, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-import { Observable } from 'rxjs';
-import { TokenService } from '../services/Tokenservice/token.service';
+import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { jwtDecode } from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RoleGuard implements CanActivate {
-  
-  constructor(
-    private tokenService: TokenService,
-    private router: Router
-  ) {}
+
+  constructor(private router: Router) {}
 
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
-  ): Observable<boolean> | Promise<boolean> | boolean {
+  ): boolean {
+    const token = localStorage.getItem('authToken');
     
-    if (!this.tokenService.isAuthenticated()) {
+    if (!token) {
       this.router.navigate(['/login']);
       return false;
     }
 
-    const requiredRoles = route.data['roles'] as Array<string>;
-    
-    if (!requiredRoles || requiredRoles.length === 0) {
-      return true;
-    }
+    try {
+      const decodedToken: any = jwtDecode(token);
+      const roleId = parseInt(decodedToken.RoleId);
+      
+      console.log('User Role ID:', roleId);
 
-    if (this.tokenService.hasAnyRole(requiredRoles)) {
-      return true;
+      // Check if user has admin privileges (RoleId > 1)
+      // RoleId 1 = User, RoleId > 1 = Admin/SME/TA
+      if (roleId > 1) {
+        return true; // Allow access to dashboard
+      } else {
+        console.log('Insufficient privileges, redirecting to home');
+        this.router.navigate(['/home']);
+        return false;
+      }
+    } catch (error) {
+      console.error('Error checking role:', error);
+      this.router.navigate(['/login']);
+      return false;
     }
-
-    this.router.navigate(['/unauthorized']);
-    return false;
   }
 }

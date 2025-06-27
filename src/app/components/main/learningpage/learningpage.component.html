@@ -67,7 +67,7 @@
           </div>
  
           <div class="card-footer">
-            <button class="view-btn" (click)="onViewCategory(category.id)">
+            <button class="view-btn" (click)="onViewCategory(category.id ,  category.name)">
               <span class="btn-icon">👁️</span>
               View
             </button>
@@ -85,7 +85,7 @@
           <div class="card-image-container">
             <img
               [src]="course.imageUrl"
-              [alt]="course.title"
+              [alt]="course.courseName"
               class="card-image"
               (error)="onImageError($event)">
            
@@ -107,7 +107,7 @@
          
           <div class="card-content">
             <div class="course-category">{{ course.subCategory }}</div>
-            <h3 class="course-name">{{ course.title }}</h3>
+            <h3 class="course-name">{{ course.courseName }}</h3>
             <div class="author-name" *ngIf="course.author">by {{ course.author }}</div>
           </div>
  
