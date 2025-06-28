@@ -276,7 +276,9 @@
 
                 <div class="module-content">
                   <div class="module-header">
-                    <h4 class="module-title" [title]="module.moduleName">{{ module.moduleName }}</h4>
+                    <h4 class="module-title" [title]="module.moduleName">
+                      {{ module.moduleName }}
+                    </h4>
                     <div class="module-status">
                       <i [class]="getModuleStatusIcon(module)"></i>
                     </div>
@@ -343,7 +345,7 @@
 
                     <div
                       class="video-overlay"
-                      *ngIf="!videoWatched && !videoLoading && safeVideoUrl"
+                      *ngIf="showVideoOverlay && !videoLoading && safeVideoUrl"
                       (click)="startWatchingVideo()"
                     >
                       <div class="play-button">
@@ -477,20 +479,28 @@
                           <button
                             class="btn btn-warning btn-lg w-100 quiz-btn"
                             (click)="startQuiz()"
-                            [disabled]="quizStatus==2"
+                            [disabled]="quizStatus == 2"
                           >
                             <i
                               class="fas fa-clipboard-check me-2"
                               *ngIf="!quizTaken"
                             ></i>
-                            <i class="fas fa-trophy me-2" *ngIf="quizStatus"></i>
-                            {{ quizStatus==2 ? "Quiz Completed" : "Take Quiz" }}
+                            <i
+                              class="fas fa-trophy me-2"
+                              *ngIf="quizStatus"
+                            ></i>
+                            {{
+                              quizStatus == 2 ? "Quiz Completed" : "Take Quiz"
+                            }}
                           </button>
                         </div>
                       </div>
 
                       <!-- Submit Assignment Button - Shows when download is disabled -->
-                      <div class="row g-3 justify-content-center mt-3" *ngIf="dstatus === 1">
+                      <div
+                        class="row g-3 justify-content-center mt-3"
+                        *ngIf="dstatus === 1"
+                      >
                         <div class="col-md-6">
                           <button
                             class="btn btn-success btn-lg w-100 submit-assignment-btn"
@@ -505,7 +515,11 @@
                               class="fas fa-upload me-2"
                               *ngIf="!isSubmittingAssignment"
                             ></i>
-                            {{ isSubmittingAssignment ? "Submitting..." : "Submit Assignment" }}
+                            {{
+                              isSubmittingAssignment
+                                ? "Submitting..."
+                                : "Submit Assignment"
+                            }}
                           </button>
                         </div>
                       </div>
@@ -516,7 +530,7 @@
                         #fileInput
                         (change)="onFileSelected($event)"
                         accept=".pdf,.docx,.doc"
-                        style="display: none;"
+                        style="display: none"
                       />
 
                       <!-- Assignment Status Display -->
@@ -531,7 +545,10 @@
                       </div>
 
                       <!-- Assignment Submission Status -->
-                      <div class="assignment-submission-status mt-3" *ngIf="assignmentSubmitted">
+                      <div
+                        class="assignment-submission-status mt-3"
+                        *ngIf="assignmentSubmitted"
+                      >
                         <div class="alert alert-info">
                           <i class="fas fa-check-circle me-2"></i>
                           Assignment submitted successfully!
