@@ -1254,6 +1254,7 @@ export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
           this.courseDetail = courseDetail
           this.userLearningService.getAssignment(this.courseId, this.userId).subscribe({
             next: (data: any) => {
+              console.log(data)
               this.downloadAssinmentyash = data.userProgress.assignmentFile
               this.dstatus = data.userProgress.assignmentDownloadStatus
               this.quizStatus = data.userProgress.quizStatus
@@ -1678,54 +1679,94 @@ export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
 
   isDownloading = false
 
-  downloadAssignment(): void {
-    if (!this.downloadAssinmentyash) {
-      return
-    }
-
-    if (this.isDownloading) return
-
-    this.isDownloading = true
-
-    if (this.userId && this.courseId) {
-      this.userLearningService.downloadAssignment(this.userId, this.courseId).subscribe({
-        next: (response: any) => {
-          if (this.courseDetail) {
-            this.courseDetail.assignmentDownloadStatus = 1
-          }
-          this.performFileDownload()
-          this.isDownloading = false
-        },
-        error: (error: any) => {
-          console.error("❌ Error recording assignment download:", error)
-          this.performFileDownload()
-          if (this.courseDetail) {
-            this.courseDetail.assignmentDownloadStatus = 1
-          }
-          this.isDownloading = false
-        },
-      })
-    } else {
-      this.performFileDownload()
-      this.isDownloading = false
-    }
+downloadAssignment(): void {
+  // Don't proceed if no assignment available
+  if (!this.downloadAssinmentyash) {
+    return
   }
 
-  isButtonDisabled(): boolean {
-    return this.dstatus == 1 || this.isDownloading
-  }
+  if (this.isDownloading) return
 
-  private performFileDownload(): void {
-    const anchor = document.createElement("a")
-    anchor.href = this.downloadAssinmentyash
-    anchor.target = "_blank"
-    anchor.rel = "noopener noreferrer"
-    document.body.appendChild(anchor)
-    anchor.click()
-    document.body.removeChild(anchor)
-    console.log("📁 File download triggered")
-  }
+  this.isDownloading = true
 
+  if (this.userId && this.courseId) {
+    this.userLearningService.downloadAssignment(this.userId, this.courseId).subscribe({
+      next: (response: any) => {
+        if (this.courseDetail) {
+          this.courseDetail.assignmentDownloadStatus = 1
+        }
+        this.performFileDownload()
+        this.isDownloading = false
+      },
+      error: (error: any) => {
+        console.error("❌ Error recording assignment download:", error)
+        this.performFileDownload()
+        if (this.courseDetail) {
+          this.courseDetail.assignmentDownloadStatus = 1
+        }
+        this.isDownloading = false
+      },
+    })
+  } else {
+    this.performFileDownload()
+    this.isDownloading = false
+  }
+}
+
+isButtonDisabled(): boolean {
+  // Disable if: no assignment available, already downloaded, or currently downloading
+  return !this.downloadAssinmentyash || this.dstatus == 1 || this.isDownloading
+}
+
+// Helper method to check if assignment is available
+hasAssignment(): boolean {
+  return !!(this.downloadAssinmentyash && this.downloadAssinmentyash.trim())
+}
+
+// Helper method to get button text
+// getButtonText(): string {
+//   if (!this.hasAssignment()) {
+//     return "No Assignment Currently"
+//   }
+  
+//   if (this.isDownloading) {
+//     return "Downloading..."
+//   }
+  
+//   if (this.dstatus === 1) {
+//     return "Assignment Downloaded"
+//   }
+  
+//   return "Download Assignment"
+// }
+
+// Helper method to get button icon class
+getButtonIcon(): string {
+  if (!this.hasAssignment()) {
+    return "fas fa-exclamation-circle" // or "fas fa-ban" or "fas fa-times-circle"
+  }
+  
+  if (this.isDownloading) {
+    return "fas fa-spinner fa-spin"
+  }
+  
+  if (this.dstatus === 1) {
+    return "fas fa-check"
+  }
+  
+  return "fas fa-download"
+}
+
+private performFileDownload(): void {
+  const anchor = document.createElement("a")
+  anchor.href = this.downloadAssinmentyash
+  anchor.target = "_blank"
+  anchor.rel = "noopener noreferrer"
+  document.body.appendChild(anchor)
+  anchor.click()
+  document.body.removeChild(anchor)
+  console.log("📁 File download triggered")
+}
   // Assignment submission methods
   openFileUpload(): void {
     this.fileInput.nativeElement.click()
