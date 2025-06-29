@@ -434,7 +434,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   userName = 'John Doe';
   userEmail = 'john.doe@example.com';
   userAvatar = '/assets/avatar.png';
-  userId: string | null = null;
+  userId: string ="";
 lobid:string='';
   // Component lifecycle
   private destroy$ = new Subject<void>();

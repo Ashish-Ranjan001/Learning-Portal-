@@ -5,7 +5,7 @@
   </div>
 
   <!-- Enhanced Search Form -->
-  <form class="search-form" (submit)="handleSearchSubmit($event)">
+  <form class="search-form" (ngSubmit)="handleSearchSubmit($event)">
     <div class="search-container" [class.search-active]="isSearchActive">
       <!-- Search Filter Dropdown -->
       <div class="search-filter-dropdown">
@@ -37,20 +37,22 @@
 
       <!-- Search Icon -->
       <i class="fas fa-search search-icon"></i>
-
+      
       <!-- Search Input -->
       <input
         #searchInput
+        name="search"
         type="text"
-        class="search-input"
-        [(ngModel)]="searchQuery"
-        [placeholder]="'Search ' + selectedFilter.placeholder + '...'"
-        (input)="onSearchInput()"
+        [ngModel]="searchQuery"
+        (ngModelChange)="onSearchInput($event)"
         (focus)="onSearchFocus()"
         (blur)="onSearchBlur()"
-        autocomplete="off"
+        class="search-bar"
+        placeholder="Search..."
       />
-
+      
+      <button type="submit" class="search-submit-btn" style="display: none"></button>
+      
       <!-- Clear Search Button -->
       <button 
         type="button"
@@ -62,7 +64,8 @@
       </button>
 
       <!-- Search Results Dropdown -->
-      <div class="search-results-dropdown" [class.show]="showSearchResults" @slideDown>
+      <div class="search-results-dropdown" [class.show]="showSearchResults" [@slideDown]>
+  
         <!-- Search Results Header -->
         <div class="search-results-header" *ngIf="!isSearchLoading">
           <span class="results-count">
@@ -70,33 +73,33 @@
           </span>
           <span class="search-type">{{ selectedFilter.label }}</span>
         </div>
-
-        <!-- Loading State -->
+        
+        <!-- Loading Spinner -->
         <div class="search-loading" *ngIf="isSearchLoading">
           <div class="loading-spinner"></div>
           <p>Searching {{ selectedFilter.placeholder }}...</p>
         </div>
 
         <!-- Search Results List -->
-        <div class="search-results-list" *ngIf="!isSearchLoading && searchResults.length > 0">
+        <div 
+          class="search-results-list"
+          *ngIf="!isSearchLoading && searchResults && searchResults.length > 0"
+        >
           <div 
             class="search-result-item"
-            *ngFor="let result of searchResults; trackBy: trackByResultId"
+            *ngFor="let result of searchResults; let i = index; trackBy: trackByResultId"
             (click)="onSearchResultClick(result)"
           >
             <div class="result-content">
-              <!-- Result Icon -->
               <div class="result-icon" [ngClass]="selectedFilter.value === 'course' ? 'course-icon' : 'category-icon'">
                 <i [class]="selectedFilter.value === 'course' ? 'fas fa-book' : 'fas fa-th-large'"></i>
               </div>
-
-              <!-- Result Details -->
               <div class="result-details">
                 <h4 class="result-title">
-                  {{ selectedFilter.value === 'course' ? result.course_name : (result.category_name || 'Database') }}
+                  {{ selectedFilter.value === 'course' ? result.course_name : result.category_name }}
                 </h4>
                 <p class="result-subtitle" *ngIf="selectedFilter.value === 'course'">
-                  Category: {{ result.category_name || 'Database' }}
+                  Category: {{ getCategoryNameById(result.category_id) }}
                 </p>
                 <p class="result-subtitle" *ngIf="selectedFilter.value === 'category'">
                   {{ getCourseCountByCategory(result.category_id) }} course{{ getCourseCountByCategory(result.category_id) !== 1 ? 's' : '' }}
@@ -105,21 +108,17 @@
                   ID: {{ selectedFilter.value === 'course' ? result.course_id : result.category_id }}
                 </span>
               </div>
-
-              <!-- Result Status -->
               <div class="result-status" [class.active]="result.status">
                 <span class="status-dot"></span>
                 {{ result.status ? 'Active' : 'Inactive' }}
               </div>
-
-              <!-- Result Arrow -->
               <i class="fas fa-chevron-right result-arrow"></i>
             </div>
           </div>
         </div>
 
         <!-- No Results -->
-        <div class="no-results" *ngIf="!isSearchLoading && searchResults.length === 0 && searchQuery">
+        <div class="no-results" *ngIf="!isSearchLoading && searchQuery && (!searchResults || searchResults.length === 0)">
           <i class="fas fa-search no-results-icon fa-2x"></i>
           <p class="no-results-text">No {{ selectedFilter.placeholder }} found</p>
           <p class="no-results-suggestion">Try searching with different keywords</p>
