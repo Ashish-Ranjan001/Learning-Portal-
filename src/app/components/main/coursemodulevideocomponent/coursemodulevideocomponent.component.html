@@ -238,6 +238,17 @@
                     </span>
                   </div>
                 </div>
+                <div class="col-md-3 text-end" *ngIf="isCourseFullyCompleted()">
+                  <button 
+                    class="btn btn-success btn-lg download-certificate-header-btn"
+                    (click)="downloadCourseCertificate()"
+                    [disabled]="isGeneratingCertificate"
+                  >
+                    <i class="fas fa-spinner fa-spin me-2" *ngIf="isGeneratingCertificate"></i>
+                    <i class="fas fa-certificate me-2" *ngIf="!isGeneratingCertificate"></i>
+                    {{ isGeneratingCertificate ? 'Generating...' : 'Download Certificate' }}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -653,4 +664,18 @@
       </div>
     </div>
   </div>
+  <!-- Certificate Modal -->
+<div class="certificate-modal" *ngIf="showCertificateModal">
+  <div class="certificate-modal-backdrop" (click)="closeCertificateModal()"></div>
+  <div class="certificate-modal-content">
+    <button class="close-modal-btn" (click)="closeCertificateModal()">
+      <i class="fas fa-times"></i>
+    </button>
+    <app-certificate 
+      [userName]="userName" 
+      [courseName]="courseDetail.courseName || ''"
+      [showDownloadButton]="true">
+    </app-certificate>
+  </div>
+</div>
 </div>

@@ -10,6 +10,7 @@ import { ModuleServicesService } from "../../../services/Module/module-services.
 import { AssignmentService,  SubmitAssignmentDto } from "../../../services/Assignment/assignment.service"
 import { DomSanitizer, type SafeResourceUrl } from "@angular/platform-browser"
 import { jwtDecode } from "jwt-decode"
+import { CertificateComponent } from "../certificate/certificate.component"
 
 interface QuizQuestion {
   question: string
@@ -20,13 +21,14 @@ interface QuizQuestion {
 @Component({
   selector: "app-course-module-view",
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule , CertificateComponent],
   templateUrl: "./coursemodulevideocomponent.component.html",
   styleUrl: "./coursemodulevideocomponent.component.css",
 })
 export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
   @ViewChild("fileInput") fileInput!: ElementRef<HTMLInputElement>
   @ViewChild("videoPlayer") videoPlayer!: ElementRef<HTMLVideoElement>
+  @ViewChild(CertificateComponent) certificateComponent!: CertificateComponent 
 
   courseDetail: CourseDetailDto | null = null
   selectedModule: ModuleDto | null = null
@@ -82,6 +84,11 @@ export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
   assignmentSubmitted = false
   selectedFile: File | null = null
   assignmentSubmissionError = ""
+  userName:string=''
+
+
+  showCertificateModal = false
+isGeneratingCertificate = false
 
   // API base URL
   private baseUrl = "https://localhost:7264/api"
@@ -106,6 +113,7 @@ export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
       }
       const decodedToken: any = jwtDecode(token)
       const userId = decodedToken.UserId || decodedToken.nameid || decodedToken.sub
+      this.userName=decodedToken.Name
       return userId
     } catch (error) {
       return ""
@@ -180,6 +188,40 @@ export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
         },
       }),
     )
+  }
+
+  downloadCourseCertificate(): void {
+    if (!this.isCourseFullyCompleted()) {
+      alert('Please complete all course requirements before downloading the certificate.');
+      return;
+    }
+  
+    // Show certificate modal
+    this.showCertificateModal = true;
+    
+    // Wait for Angular to render the certificate component
+    setTimeout(() => {
+      if (this.certificateComponent) {
+        this.isGeneratingCertificate = true;
+        
+        // Generate and download certificate
+        this.certificateComponent.generateCertificate(
+          this.userName, 
+          this.courseDetail?.courseName || ''
+        );
+        
+        // Hide modal and reset state after download
+        setTimeout(() => {
+          this.showCertificateModal = false;
+          this.isGeneratingCertificate = false;
+        }, 2000);
+      }
+    }, 100);
+  }
+
+
+  closeCertificateModal(): void {
+    this.showCertificateModal = false;
   }
 
   processCourseData(): void {
@@ -627,22 +669,6 @@ hasAssignment(): boolean {
   return !!(this.downloadAssinmentyash && this.downloadAssinmentyash.trim())
 }
 
-// Helper method to get button text
-// getButtonText(): string {
-//   if (!this.hasAssignment()) {
-//     return "No Assignment Currently"
-//   }
-  
-//   if (this.isDownloading) {
-//     return "Downloading..."
-//   }
-  
-//   if (this.dstatus === 1) {
-//     return "Assignment Downloaded"
-//   }
-  
-//   return "Download Assignment"
-// }
 
 // Helper method to get button icon class
 getButtonIcon(): string {
@@ -1145,4 +1171,13 @@ private performFileDownload(): void {
   getModuleDuration(module: ModuleDto): string {
     return (module as any).duration || ""
   }
+
+  isCourseFullyCompleted(): boolean {
+    console.log("Checking course completion status:", this.courseDetail?.modules)
+    return  this.dstatus === 1 && this.quizStatus === 2; 
+  }
+
+
+
+
 }
