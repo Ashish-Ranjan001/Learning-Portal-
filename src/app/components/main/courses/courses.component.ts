@@ -98,6 +98,7 @@ export class CoursesComponent implements OnInit {
         )
         this.filteredCourses = [...this.courses]
         this.loading = false
+        console.log("Courses loaded successfully:", courses)
       },
       error: (error) => {
         this.error = "Failed to load courses. Please try again."

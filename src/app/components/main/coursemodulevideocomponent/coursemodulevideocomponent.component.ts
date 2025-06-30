@@ -173,12 +173,15 @@ isGeneratingCertificate = false
               if (data.userProgress && data.userProgress.assignmentDownloaded !== undefined) {
                 this.courseDetail!.assignmentDownloadStatus = data.userProgress.assignmentDownloaded
               }
+              
+              // RECALCULATE PROGRESS AFTER QUIZ STATUS IS LOADED
+              this.processCourseData()
             },
             error: (error) => {
               console.error("❌ Error loading assignment data:", error)
+              this.processCourseData() // Still process course data even if assignment loading fails
             },
           })
-          this.processCourseData()
           this.loading = false
         },
         error: (error) => {
@@ -224,20 +227,40 @@ isGeneratingCertificate = false
     this.showCertificateModal = false;
   }
 
+  // processCourseData(): void {
+  //   if (this.courseDetail?.modules) {
+  //     this.courseDetail.modules.sort((a, b) => a.order - b.order)
+  //     this.totalModules = this.courseDetail.modules.length
+  //     this.completedModules = this.courseDetail.modules.filter((m) => m.isCompleted).length
+  //     this.allModulesCompleted = this.completedModules === this.totalModules
+
+  //     if (!this.courseDetail.progress) {
+  //       this.courseDetail.progress = Math.round((this.completedModules / this.totalModules) * 100)
+  //     }
+
+  //     const firstIncompleteModule = this.courseDetail.modules.find((m) => !m.isCompleted)
+  //     this.selectedModule = firstIncompleteModule || this.courseDetail.modules[0]
+
+  //     if (this.selectedModule) {
+  //       this.loadModuleData(this.selectedModule)
+  //     }
+  //   }
+  // }
   processCourseData(): void {
     if (this.courseDetail?.modules) {
       this.courseDetail.modules.sort((a, b) => a.order - b.order)
       this.totalModules = this.courseDetail.modules.length
       this.completedModules = this.courseDetail.modules.filter((m) => m.isCompleted).length
       this.allModulesCompleted = this.completedModules === this.totalModules
-
+  
+      // UPDATED PROGRESS CALCULATION
       if (!this.courseDetail.progress) {
-        this.courseDetail.progress = Math.round((this.completedModules / this.totalModules) * 100)
+        this.courseDetail.progress = this.calculateOverallProgress()
       }
-
+  
       const firstIncompleteModule = this.courseDetail.modules.find((m) => !m.isCompleted)
       this.selectedModule = firstIncompleteModule || this.courseDetail.modules[0]
-
+  
       if (this.selectedModule) {
         this.loadModuleData(this.selectedModule)
       }
@@ -553,16 +576,45 @@ isGeneratingCertificate = false
     }
   }
 
+  // updateProgress(): void {
+  //   if (this.courseDetail?.modules) {
+  //     this.completedModules = this.courseDetail.modules.filter((m) => m.isCompleted).length
+  //     this.allModulesCompleted = this.completedModules === this.totalModules
+  //     this.courseDetail.progress = Math.round((this.completedModules / this.totalModules) * 100)
+
+  //     if (this.allModulesCompleted) {
+  //       this.courseDetail.isCompleted = true
+  //     }
+  //   }
+  // }
+
   updateProgress(): void {
     if (this.courseDetail?.modules) {
       this.completedModules = this.courseDetail.modules.filter((m) => m.isCompleted).length
       this.allModulesCompleted = this.completedModules === this.totalModules
-      this.courseDetail.progress = Math.round((this.completedModules / this.totalModules) * 100)
-
-      if (this.allModulesCompleted) {
+      
+      // UPDATED PROGRESS CALCULATION
+      this.courseDetail.progress = this.calculateOverallProgress()
+  
+      if (this.allModulesCompleted && this.quizStatus === 2) {
         this.courseDetail.isCompleted = true
       }
     }
+  }
+
+  private calculateOverallProgress(): number {
+    if (this.totalModules === 0) return 0
+    
+    // Calculate module progress (80% weight)
+    const moduleProgress = (this.completedModules / this.totalModules) * 80
+    
+    // Calculate quiz progress (20% weight)
+    const quizProgress = this.quizStatus === 2 ? 20 : 0
+    
+    // Combined progress
+    const totalProgress = moduleProgress + quizProgress
+    
+    return Math.round(totalProgress)
   }
 
   // Get video completion status text
@@ -1037,46 +1089,53 @@ private performFileDownload(): void {
     this.removeQuizEventListeners()
   }
 
-  completeQuiz(): void {
-    if (!this.quizCompleted || this.isSubmittingQuiz) {
-      return
-    }
-
-    const confirmed = confirm(
-      `🎯 Quiz Complete!\n\n` +
-        `Your Score: ${this.quizScore}%\n` +
-        `Status: ${this.quizScore >= 70 ? "PASSED" : "FAILED"}\n\n` +
-        `Click OK to save your results and close the quiz.`,
-    )
-
-    if (!confirmed) {
-      return
-    }
-
-    this.isSubmittingQuiz = true
-
-    const quizRequest = {
-      UserId: this.userId,
-      CourseId: this.courseId,
-      QuizScore: this.quizScore,
-    }
-
-    this.subscriptions.add(
-      this.assignmentService.completeQuiz(quizRequest).subscribe({
-        next: (response: any) => {
-          console.log("✅ Quiz results saved successfully:", response)
-          this.closeQuiz()
-          this.loadCourseData()
-          this.isSubmittingQuiz = false
-        },
-        error: (error: any) => {
-          console.error("❌ Error saving quiz results:", error)
-          this.closeQuiz()
-          this.isSubmittingQuiz = false
-        },
-      }),
-    )
+  
+// 5. UPDATE in completeQuiz() method around line 796 (after quiz completion)
+completeQuiz(): void {
+  if (!this.quizCompleted || this.isSubmittingQuiz) {
+    return
   }
+
+  const confirmed = confirm(
+    `🎯 Quiz Complete!\n\n` +
+      `Your Score: ${this.quizScore}%\n` +
+      `Status: ${this.quizScore >= 70 ? "PASSED" : "FAILED"}\n\n` +
+      `Click OK to save your results and close the quiz.`,
+  )
+
+  if (!confirmed) {
+    return
+  }
+
+  this.isSubmittingQuiz = true
+
+  const quizRequest = {
+    UserId: this.userId,
+    CourseId: this.courseId,
+    QuizScore: this.quizScore,
+  }
+
+  this.subscriptions.add(
+    this.assignmentService.completeQuiz(quizRequest).subscribe({
+      next: (response: any) => {
+        console.log("✅ Quiz results saved successfully:", response)
+        
+        // UPDATE QUIZ STATUS AND RECALCULATE PROGRESS
+        this.quizStatus = 2 // Mark quiz as completed
+        this.updateProgress() // This will now use the new calculation
+        
+        this.closeQuiz()
+        this.loadCourseData()
+        this.isSubmittingQuiz = false
+      },
+      error: (error: any) => {
+        console.error("❌ Error saving quiz results:", error)
+        this.closeQuiz()
+        this.isSubmittingQuiz = false
+      },
+    }),
+  )
+}
 
   saveQuizResult(): void {
     const quizResult = {
@@ -1173,10 +1232,9 @@ private performFileDownload(): void {
   }
 
   isCourseFullyCompleted(): boolean {
-    console.log("Checking course completion status:", this.courseDetail?.modules)
+    // console.log("Checking course completion status:", this.courseDetail?.modules)
     return  this.dstatus === 1 && this.quizStatus === 2; 
   }
-
 
 
 
