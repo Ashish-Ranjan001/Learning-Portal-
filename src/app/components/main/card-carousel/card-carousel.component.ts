@@ -475,13 +475,24 @@ export class CardCarouselComponent implements OnInit, OnDestroy {
 
   cards: CourseCard[] = []
 
-  currentCard = computed(() => this.cards[this.currentIndex()])
+  // FIX: Add null safety to currentCard computed
+  currentCard = computed(() => {
+    if (!this.cards || this.cards.length === 0) {
+      return this.getDefaultCard();
+    }
+    const index = this.currentIndex();
+    return this.cards[index] || this.getDefaultCard();
+  })
+
   animatedCount = signal(0)
   isTransitioning = signal(false)
 
   private sessionStorageKey: string = '';
 
   constructor(private dashboardService: DashboardServicesService , private router:Router) {
+    // Initialize with default cards to prevent undefined errors
+    this.setDefaultCards();
+    
     // Progress bar effect
     effect(() => {
       if (!this.isTransitioning()) {
@@ -528,6 +539,21 @@ export class CardCarouselComponent implements OnInit, OnDestroy {
     window.removeEventListener('storage', this.handleStorageChange);
   }
 
+
+  // FIX: Add method to return default card when cards array is empty
+  private getDefaultCard(): CourseCard {
+    return {
+      id: 1,
+      title: "Loading...",
+      count: 0,
+      icon: "🎯",
+      color: "#667eea",
+      bgGradient: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+      graphColor: "#667eea",
+      shadowColor: "rgba(102, 126, 234, 0.3)",
+    };
+  }
+
   // Listen for logout (token removal)
   handleStorageChange = (event: StorageEvent) => {
     if (event.key === 'authToken' && event.newValue === null) {
@@ -536,6 +562,7 @@ export class CardCarouselComponent implements OnInit, OnDestroy {
       }
     }
   };
+
 
   getDecodedUserId(): string | null {
     try {
@@ -802,7 +829,7 @@ export class CardCarouselComponent implements OnInit, OnDestroy {
   
     animate();
   }
-  
+
   private easeOutCubic(x: number): number {
     return 1 - Math.pow(1 - x, 3)
   }
