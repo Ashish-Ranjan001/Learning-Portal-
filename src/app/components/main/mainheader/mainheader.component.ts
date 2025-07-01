@@ -16,6 +16,8 @@ import  { Router } from "@angular/router"
 import { trigger, state, style, transition, animate } from "@angular/animations"
 import  { CourseServicesService } from "../../../services/courses/course-services.service"
 import { Subject, takeUntil, debounceTime, distinctUntilChanged } from "rxjs"
+import { Subscription } from 'rxjs';
+import { NotificationService } from "../../../services/Notifications/notification.service"
 
 interface Course {
   course_id: string
@@ -78,6 +80,7 @@ export class MainheaderComponent implements OnInit, OnDestroy {
   @Input() userEmail = "john.doe@example.com"
   @Input() userAvatar: string | undefined
   @Input() lobid: string | undefined
+  @Input() userId:string='';
 
   // Output events
   @Output() searchSubmit = new EventEmitter<string>()
@@ -86,6 +89,11 @@ export class MainheaderComponent implements OnInit, OnDestroy {
   @Output() changePasswordClick = new EventEmitter<void>()
   @Output() logoutClick = new EventEmitter<void>()
   @Output() myLearningClick = new EventEmitter<void>()
+
+  notifications: any[] = [];
+  showDropdown: boolean = false;
+  private connectionSub!: Subscription;
+
 
   // Search data arrays
   courseData: CourseData[] = []
@@ -128,12 +136,41 @@ export class MainheaderComponent implements OnInit, OnDestroy {
     private router: Router,
     private courseService: CourseServicesService,
     private cdr: ChangeDetectorRef,
+    private notificationService:NotificationService,
   ) {}
 
   ngOnInit(): void {
     this.startTypewriterEffect()
     this.setupSearchDebounce()
     this.loadCourses()
+    this.notificationService.startConnection(this.userId);
+
+    this.loadUnreadNotifications();
+
+    // Listen to real-time messages
+    this.notificationService['hubConnection'].on('ReceiveNotification', (notification: any) => {
+      this.notifications.unshift(notification); // Add to top
+    });
+  }
+
+  loadUnreadNotifications() {
+    this.notificationService.getUnread(this.userId).subscribe((data) => {
+      this.notifications = data;
+    });
+  }
+  
+  toggleDropdown(): void {
+    this.showDropdown = !this.showDropdown;
+  }
+
+  markNotificationAsRead(id: number, index: number): void {
+    this.notificationService.markAsRead(id).subscribe(() => {
+      this.notifications.splice(index, 1);
+    });
+  }
+
+  get unreadCount(): number {
+    return this.notifications.length;
   }
 
   ngOnDestroy(): void {
@@ -142,6 +179,7 @@ export class MainheaderComponent implements OnInit, OnDestroy {
     if (this.typewriterInterval) {
       clearInterval(this.typewriterInterval)
     }
+    this.notificationService['hubConnection'].off('ReceiveNotification');
   }
 
   /**

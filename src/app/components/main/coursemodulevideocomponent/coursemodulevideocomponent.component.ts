@@ -78,6 +78,7 @@ export class CoursemodulevideocomponentComponent implements OnInit, OnDestroy {
 
   downloadAssinmentyash = ""
   dstatus = 0
+ 
 
   // Assignment submission properties
   isSubmittingAssignment = false
@@ -1233,9 +1234,12 @@ completeQuiz(): void {
 
   isCourseFullyCompleted(): boolean {
     // console.log("Checking course completion status:", this.courseDetail?.modules)
-    return  this.dstatus === 1 && this.quizStatus === 2; 
+    // console.log(this.dstatus, this.quizStatus)
+   if(this.hasAssignment()){
+    return this.dstatus === 1 && this.quizStatus === 2; 
   }
-
-
-
+  else{
+    return  this.quizStatus === 2;
+  }
+}
 }

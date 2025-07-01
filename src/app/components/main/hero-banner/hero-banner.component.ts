@@ -613,15 +613,32 @@ export class HeroBannerComponent implements OnInit, OnDestroy {
   }
 
   prepareData(): void {
+    console.log('=== PREPARING DATA ===');
+    console.log('Category data:', this.categoryData);
+    
     if (this.categoryData && this.categoryData.length > 0) {
-      this.datasets[0].data = this.categoryData.map(cat => cat.completedCourses || 0);
-      this.datasets[1].data = this.categoryData.map(cat => cat.inProgressCourses || 0);
+      // Map completed courses
+      this.datasets[0].data = this.categoryData.map(cat => {
+        const value = cat.completedCourses || 0;
+        console.log(`${cat.categoryName} - Completed: ${value}`);
+        return value;
+      });
+      
+      // Map in-progress courses
+      this.datasets[1].data = this.categoryData.map(cat => {
+        const value = cat.inProgressCourses || 0;
+        console.log(`${cat.categoryName} - In Progress: ${value}`);
+        return value;
+      });
     } else {
+      console.log('No category data available, setting empty arrays');
       this.datasets[0].data = [];
       this.datasets[1].data = [];
     }
+    
+    console.log('Final datasets:', this.datasets);
+    console.log('=== DATA PREPARATION COMPLETE ===');
   }
-
   initializeChart(): void {
     if (!this.chartCanvas) {
       console.error('Chart canvas not found');
@@ -740,74 +757,234 @@ export class HeroBannerComponent implements OnInit, OnDestroy {
     }
   }
 
+  // drawAreaChart(dataset: ChartDataset, padding: any, chartWidth: number, chartHeight: number, scale: number, animationProgress: number): void {
+  //   const points: { x: number; y: number }[] = [];
+  //   const stepX = this.categoryData.length > 1 ? chartWidth / (this.categoryData.length - 1) : chartWidth;
+
+  //   // Calculate points with animation
+  //   dataset.data.forEach((value: number, i: number) => {
+  //     const animatedValue = value * animationProgress;
+  //     const x = padding.left + stepX * i;
+  //     const y = padding.top + chartHeight - (animatedValue * scale);
+  //     points.push({ x, y });
+  //   });
+
+  //   if (points.length === 0) return;
+
+  //   // Create smooth curve points
+  //   const smoothPoints = this.createSmoothCurve(points);
+
+  //   // Draw filled area
+  //   this.ctx.fillStyle = dataset.fillColor;
+  //   this.ctx.beginPath();
+  //   this.ctx.moveTo(smoothPoints[0].x, padding.top + chartHeight);
+    
+  //   for (let i = 0; i < smoothPoints.length - 1; i += 3) {
+  //     const cp1 = smoothPoints[i + 1];
+  //     const cp2 = smoothPoints[i + 2];
+  //     const end = smoothPoints[i + 3] || smoothPoints[smoothPoints.length - 1];
+  //     this.ctx.bezierCurveTo(cp1.x, cp1.y, cp2.x, cp2.y, end.x, end.y);
+  //   }
+    
+  //   this.ctx.lineTo(smoothPoints[smoothPoints.length - 1].x, padding.top + chartHeight);
+  //   this.ctx.closePath();
+  //   this.ctx.fill();
+
+  //   // Draw line
+  //   this.ctx.strokeStyle = dataset.color;
+  //   this.ctx.lineWidth = 2;
+  //   this.ctx.beginPath();
+  //   this.ctx.moveTo(smoothPoints[0].x, smoothPoints[0].y);
+    
+  //   for (let i = 0; i < smoothPoints.length - 1; i += 3) {
+  //     const cp1 = smoothPoints[i + 1];
+  //     const cp2 = smoothPoints[i + 2];
+  //     const end = smoothPoints[i + 3] || smoothPoints[smoothPoints.length - 1];
+  //     this.ctx.bezierCurveTo(cp1.x, cp1.y, cp2.x, cp2.y, end.x, end.y);
+  //   }
+  //   this.ctx.stroke();
+
+  //   // Draw data points
+  //   points.forEach((point, i) => {
+  //     this.ctx.fillStyle = '#ffffff';
+  //     this.ctx.strokeStyle = dataset.color;
+  //     this.ctx.lineWidth = 2;
+  //     this.ctx.beginPath();
+  //     this.ctx.arc(point.x, point.y, 4, 0, 2 * Math.PI);
+  //     this.ctx.fill();
+  //     this.ctx.stroke();
+  //   });
+  // }
+
   drawAreaChart(dataset: ChartDataset, padding: any, chartWidth: number, chartHeight: number, scale: number, animationProgress: number): void {
     const points: { x: number; y: number }[] = [];
-    const stepX = this.categoryData.length > 1 ? chartWidth / (this.categoryData.length - 1) : chartWidth;
-
-    // Calculate points with animation
+    const stepX = this.categoryData.length > 1 ? chartWidth / (this.categoryData.length - 1) : chartWidth / 2;
+  
+    // Calculate points with animation and validation
     dataset.data.forEach((value: number, i: number) => {
+      // Validate the value
+      if (typeof value !== 'number' || isNaN(value)) {
+        console.warn(`Invalid data value at index ${i}:`, value);
+        value = 0; // Default to 0 for invalid values
+      }
+      
       const animatedValue = value * animationProgress;
       const x = padding.left + stepX * i;
       const y = padding.top + chartHeight - (animatedValue * scale);
+      
+      // Validate calculated coordinates
+      if (isNaN(x) || isNaN(y)) {
+        console.warn(`Invalid coordinates calculated for index ${i}:`, { x, y, value, animatedValue });
+        return; // Skip this point
+      }
+      
       points.push({ x, y });
     });
-
-    if (points.length === 0) return;
-
+  
+    if (points.length === 0) {
+      console.warn('No valid points to draw');
+      return;
+    }
+  
     // Create smooth curve points
     const smoothPoints = this.createSmoothCurve(points);
-
+    
+    // Additional safety check
+    if (!smoothPoints || smoothPoints.length === 0) {
+      console.warn('No smooth points generated, falling back to original points');
+      // Fall back to drawing straight lines
+      this.drawStraightLineChart(dataset, points, padding, chartHeight);
+      return;
+    }
+  
     // Draw filled area
     this.ctx.fillStyle = dataset.fillColor;
     this.ctx.beginPath();
-    this.ctx.moveTo(smoothPoints[0].x, padding.top + chartHeight);
     
-    for (let i = 0; i < smoothPoints.length - 1; i += 3) {
-      const cp1 = smoothPoints[i + 1];
-      const cp2 = smoothPoints[i + 2];
-      const end = smoothPoints[i + 3] || smoothPoints[smoothPoints.length - 1];
-      this.ctx.bezierCurveTo(cp1.x, cp1.y, cp2.x, cp2.y, end.x, end.y);
+    // Ensure first point exists
+    if (smoothPoints[0] && typeof smoothPoints[0].x === 'number' && typeof smoothPoints[0].y === 'number') {
+      this.ctx.moveTo(smoothPoints[0].x, padding.top + chartHeight);
+      
+      for (let i = 0; i < smoothPoints.length - 1; i += 3) {
+        const cp1 = smoothPoints[i + 1];
+        const cp2 = smoothPoints[i + 2];
+        const end = smoothPoints[i + 3] || smoothPoints[smoothPoints.length - 1];
+        
+        // Validate control points
+        if (cp1 && cp2 && end && 
+            typeof cp1.x === 'number' && typeof cp1.y === 'number' &&
+            typeof cp2.x === 'number' && typeof cp2.y === 'number' &&
+            typeof end.x === 'number' && typeof end.y === 'number') {
+          this.ctx.bezierCurveTo(cp1.x, cp1.y, cp2.x, cp2.y, end.x, end.y);
+        }
+      }
+      
+      this.ctx.lineTo(smoothPoints[smoothPoints.length - 1].x, padding.top + chartHeight);
+      this.ctx.closePath();
+      this.ctx.fill();
+  
+      // Draw line
+      this.ctx.strokeStyle = dataset.color;
+      this.ctx.lineWidth = 2;
+      this.ctx.beginPath();
+      this.ctx.moveTo(smoothPoints[0].x, smoothPoints[0].y);
+      
+      for (let i = 0; i < smoothPoints.length - 1; i += 3) {
+        const cp1 = smoothPoints[i + 1];
+        const cp2 = smoothPoints[i + 2];
+        const end = smoothPoints[i + 3] || smoothPoints[smoothPoints.length - 1];
+        
+        if (cp1 && cp2 && end && 
+            typeof cp1.x === 'number' && typeof cp1.y === 'number' &&
+            typeof cp2.x === 'number' && typeof cp2.y === 'number' &&
+            typeof end.x === 'number' && typeof end.y === 'number') {
+          this.ctx.bezierCurveTo(cp1.x, cp1.y, cp2.x, cp2.y, end.x, end.y);
+        }
+      }
+      this.ctx.stroke();
     }
+  
+    // Draw data points
+    points.forEach((point, i) => {
+      if (point && typeof point.x === 'number' && typeof point.y === 'number') {
+        this.ctx.fillStyle = '#ffffff';
+        this.ctx.strokeStyle = dataset.color;
+        this.ctx.lineWidth = 2;
+        this.ctx.beginPath();
+        this.ctx.arc(point.x, point.y, 4, 0, 2 * Math.PI);
+        this.ctx.fill();
+        this.ctx.stroke();
+      }
+    });
+  }
+  
+  // Fallback method for straight line drawing
+  private drawStraightLineChart(dataset: ChartDataset, points: { x: number; y: number }[], padding: any, chartHeight: number): void {
+    if (points.length === 0) return;
+  
+    // Draw filled area
+    this.ctx.fillStyle = dataset.fillColor;
+    this.ctx.beginPath();
+    this.ctx.moveTo(points[0].x, padding.top + chartHeight);
     
-    this.ctx.lineTo(smoothPoints[smoothPoints.length - 1].x, padding.top + chartHeight);
+    points.forEach(point => {
+      this.ctx.lineTo(point.x, point.y);
+    });
+    
+    this.ctx.lineTo(points[points.length - 1].x, padding.top + chartHeight);
     this.ctx.closePath();
     this.ctx.fill();
-
+  
     // Draw line
     this.ctx.strokeStyle = dataset.color;
     this.ctx.lineWidth = 2;
     this.ctx.beginPath();
-    this.ctx.moveTo(smoothPoints[0].x, smoothPoints[0].y);
+    this.ctx.moveTo(points[0].x, points[0].y);
     
-    for (let i = 0; i < smoothPoints.length - 1; i += 3) {
-      const cp1 = smoothPoints[i + 1];
-      const cp2 = smoothPoints[i + 2];
-      const end = smoothPoints[i + 3] || smoothPoints[smoothPoints.length - 1];
-      this.ctx.bezierCurveTo(cp1.x, cp1.y, cp2.x, cp2.y, end.x, end.y);
-    }
-    this.ctx.stroke();
-
-    // Draw data points
-    points.forEach((point, i) => {
-      this.ctx.fillStyle = '#ffffff';
-      this.ctx.strokeStyle = dataset.color;
-      this.ctx.lineWidth = 2;
-      this.ctx.beginPath();
-      this.ctx.arc(point.x, point.y, 4, 0, 2 * Math.PI);
-      this.ctx.fill();
-      this.ctx.stroke();
+    points.forEach(point => {
+      this.ctx.lineTo(point.x, point.y);
     });
+    
+    this.ctx.stroke();
   }
 
   createSmoothCurve(points: { x: number; y: number }[]): { x: number; y: number }[] {
-    if (points.length < 3) return points;
-
+    // Add validation for empty or invalid points
+    if (!points || points.length === 0) {
+      return [];
+    }
+    
+    // If only one point, return it
+    if (points.length === 1) {
+      return points;
+    }
+    
+    // If only two points, return them as is
+    if (points.length === 2) {
+      return points;
+    }
+  
     const smoothPoints: { x: number; y: number }[] = [];
-    smoothPoints.push(points[0]);
-
+    
+    // Ensure first point exists and is valid
+    if (points[0] && typeof points[0].x === 'number' && typeof points[0].y === 'number') {
+      smoothPoints.push(points[0]);
+    } else {
+      console.error('Invalid first point:', points[0]);
+      return points; // Return original points if first point is invalid
+    }
+  
     for (let i = 0; i < points.length - 1; i++) {
       const current = points[i];
       const next = points[i + 1];
+      
+      // Validate current and next points
+      if (!current || !next || 
+          typeof current.x !== 'number' || typeof current.y !== 'number' ||
+          typeof next.x !== 'number' || typeof next.y !== 'number') {
+        console.error('Invalid points at index', i, current, next);
+        continue;
+      }
       
       const cp1 = {
         x: current.x + (next.x - current.x) * 0.3,
@@ -818,12 +995,38 @@ export class HeroBannerComponent implements OnInit, OnDestroy {
         x: next.x - (next.x - current.x) * 0.3,
         y: next.y
       };
-
+  
       smoothPoints.push(cp1, cp2, next);
     }
-
+  
     return smoothPoints;
   }
+
+  // createSmoothCurve(points: { x: number; y: number }[]): { x: number; y: number }[] {
+  //   if (points.length < 3) return points;
+
+  //   const smoothPoints: { x: number; y: number }[] = [];
+  //   smoothPoints.push(points[0]);
+
+  //   for (let i = 0; i < points.length - 1; i++) {
+  //     const current = points[i];
+  //     const next = points[i + 1];
+      
+  //     const cp1 = {
+  //       x: current.x + (next.x - current.x) * 0.3,
+  //       y: current.y
+  //     };
+      
+  //     const cp2 = {
+  //       x: next.x - (next.x - current.x) * 0.3,
+  //       y: next.y
+  //     };
+
+  //     smoothPoints.push(cp1, cp2, next);
+  //   }
+
+  //   return smoothPoints;
+  // }
 
   drawAxes(padding: any, chartWidth: number, chartHeight: number, maxValue: number): void {
     this.ctx.fillStyle = '#64748b';
