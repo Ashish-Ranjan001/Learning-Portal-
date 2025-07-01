@@ -1,4 +1,5 @@
 
+
 // import { Component, type OnInit, type OnDestroy, signal, computed, effect } from "@angular/core"
 // import { CommonModule } from "@angular/common"
 // import { DashboardServicesService } from '../../../services/homedashboard/dashboard-services.service';
@@ -486,6 +487,8 @@ export class CardCarouselComponent implements OnInit, OnDestroy {
   animatedCount = signal(0)
   isTransitioning = signal(false)
 
+  private sessionStorageKey: string = '';
+
   constructor(private dashboardService: DashboardServicesService , private router:Router) {
     // Initialize with default cards to prevent undefined errors
     this.setDefaultCards();
@@ -501,7 +504,25 @@ export class CardCarouselComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.userId = this.getDecodedUserId();
     if (this.userId) {
-      this.loadCourseStats();
+      this.sessionStorageKey = `cardCarouselStats_${this.userId}`;
+      // Check session storage first
+      const cached = sessionStorage.getItem(this.sessionStorageKey);
+      if (cached) {
+        try {
+          const parsed = JSON.parse(cached);
+          this.processCategoryStats(parsed);
+          this.isLoading.set(false);
+          this.error.set(null);
+          this.initializeCarousel();
+        } catch (e) {
+          // If corrupted, fallback to API
+          this.loadCourseStats();
+        }
+      } else {
+        this.loadCourseStats();
+      }
+      // Listen for logout event (storage event)
+      window.addEventListener('storage', this.handleStorageChange);
     } else {
       this.error.set('Unable to retrieve user ID from token');
       this.isLoading.set(false);
@@ -515,7 +536,9 @@ export class CardCarouselComponent implements OnInit, OnDestroy {
       clearInterval(this.intervalId)
     }
     this.animationTimeouts.forEach((timeout) => clearTimeout(timeout))
+    window.removeEventListener('storage', this.handleStorageChange);
   }
+
 
   // FIX: Add method to return default card when cards array is empty
   private getDefaultCard(): CourseCard {
@@ -530,6 +553,16 @@ export class CardCarouselComponent implements OnInit, OnDestroy {
       shadowColor: "rgba(102, 126, 234, 0.3)",
     };
   }
+
+  // Listen for logout (token removal)
+  handleStorageChange = (event: StorageEvent) => {
+    if (event.key === 'authToken' && event.newValue === null) {
+      if (this.sessionStorageKey) {
+        sessionStorage.removeItem(this.sessionStorageKey);
+      }
+    }
+  };
+
 
   getDecodedUserId(): string | null {
     try {
@@ -556,10 +589,10 @@ export class CardCarouselComponent implements OnInit, OnDestroy {
 
     this.isLoading.set(true);
     
-    // Note: Based on your comment, the service now accepts string userId
     this.dashboardService.getStatsForHomeBanner(this.userId).subscribe({
       next: (data: any) => {
-        console.log('Course stats received for carousel:', data);
+        // Cache to session storage
+        sessionStorage.setItem(this.sessionStorageKey, JSON.stringify(data));
         this.processCategoryStats(data);
         this.isLoading.set(false);
         this.error.set(null);
@@ -797,7 +830,6 @@ export class CardCarouselComponent implements OnInit, OnDestroy {
     animate();
   }
 
-  // Cubic easing function for smoother animation
   private easeOutCubic(x: number): number {
     return 1 - Math.pow(1 - x, 3)
   }
@@ -833,6 +865,8 @@ export class CardCarouselComponent implements OnInit, OnDestroy {
 
   refreshData(): void {
     if (this.userId) {
+      // Clear cache and fetch again
+      sessionStorage.removeItem(this.sessionStorageKey);
       this.loadCourseStats();
     }
   }
