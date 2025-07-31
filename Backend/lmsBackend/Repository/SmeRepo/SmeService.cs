@@ -1,0 +1,92 @@
+﻿using AutoMapper;
+using lmsBackend.DataAccessLayer;
+using lmsBackend.Dtos.SmeDtos;
+using lmsBackend.Models;
+using Microsoft.EntityFrameworkCore;
+
+namespace lmsBackend.Repository.SmeRepo
+{
+    public class SmeService : ISme
+    {
+
+        private readonly AppDbContext _context;
+        private readonly IMapper _mapper;
+
+        public SmeService(AppDbContext context, IMapper mapper)
+        {
+            _context = context;
+            _mapper = mapper;
+        }
+
+        public async Task<IEnumerable<SmeResponseDto>> GetSmesAsync()
+        {
+            var smes = await _context.Smes.Include(s => s.Admin).ToListAsync();
+            return _mapper.Map<IEnumerable<SmeResponseDto>>(smes);
+        }
+
+        public async Task<SmeResponseDto?> GetSmeByIdAsync(string id)
+        {
+            var sme = await _context.Smes.Include(s => s.Admin).FirstOrDefaultAsync(s => s.SmeId == id);
+            return sme == null ? null : _mapper.Map<SmeResponseDto>(sme);
+        }
+
+        public async Task<SmeResponseDto?> CreateSmeAsync(CreateSmeDto createSmeDto)
+        {
+            var admin = await _context.Admins.Include(a => a.User).FirstOrDefaultAsync(a => a.User.Email == createSmeDto.Email && a.User.Phone == createSmeDto.Phone);
+            if (admin == null) return null;
+
+            var sme = _mapper.Map<Sme>(createSmeDto);
+            sme.AdminId = admin.AdminId;
+            sme.Password = BCrypt.Net.BCrypt.HashPassword("Evs@1234");
+            string timestamp = DateTime.UtcNow.ToString("yyyyMMdd-HHmmss");
+            string randomString = Guid.NewGuid().ToString().Substring(0, 6).ToUpper();
+            string name = createSmeDto.Name.Split('_')[0].ToUpper();
+            sme.SmeId = $"SME-{name}-{timestamp}-{randomString}";
+            admin.SmeId =sme.SmeId ;
+            _context.Smes.Add(sme);
+            _context.Entry(admin).State = EntityState.Modified;
+            admin.User.RoleId = 3;
+            _context.Entry(admin.User).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            sme = await _context.Smes.Include(s => s.Admin).FirstOrDefaultAsync(s => s.SmeId == sme.SmeId);
+            return sme == null ? null : _mapper.Map<SmeResponseDto>(sme);
+        }
+
+        //public async Task<SmeResponseDto> updateSme(string id)
+        //{
+        //    var sme = await _context.Smes.Include(s => s.Admin).FirstOrDefaultAsync(s => s.SmeId == id);
+        //    if (sme == null) throw new Exception("SME not found");
+        //    sme.Status = !sme.Status;
+        //    _context.Entry(sme).State = EntityState.Modified;
+        //    await _context.SaveChangesAsync();
+        //    return _mapper.Map<SmeResponseDto>(sme);
+        //}
+
+        public async Task<SmeResponseDto?> UpdateSmeAsync(string id, UpdateSmeStatusRequest  request)
+        {
+            var sme = await _context.Smes.Include(s => s.Admin).FirstOrDefaultAsync(s => s.SmeId == id);
+            if (sme == null) throw new Exception("SME not found");
+
+            // Set the status to the value sent from frontend
+            sme.Status = request.Status;
+            _context.Entry(sme).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            return _mapper.Map<SmeResponseDto>(sme);
+        }
+
+        public async Task<List<SmeCourseDetailDto?>> SmeAllCoures(string id)
+        {
+            var sme = await _context.Smes.Include(s => s.Courses).FirstOrDefaultAsync(s => s.SmeId == id);
+            if(sme == null)
+            {
+                return null;
+            }
+            
+           return  _mapper.Map<List<SmeCourseDetailDto?>>(sme.Courses);
+
+        }
+    }
+}
+

@@ -1,0 +1,409 @@
+﻿//using AutoMapper;
+//using lmsBackend.DataAccessLayer;
+//using lmsBackend.Dtos.ModuleDtos;
+//using lmsBackend.Models;
+//using lmsBackend.Repository.AdminRepo;
+//using lmsBackend.Repository.UserRepo;
+//using Microsoft.EntityFrameworkCore;
+//using System;
+//using System.Collections.Generic;
+//using System.IO;
+//using System.Linq;
+//using System.Threading.Tasks;
+
+//namespace lmsBackend.Repository.ModuleRepo
+//{
+//    public class ModuleService : IModule
+//    {
+//        private readonly AppDbContext _context;
+//        private readonly IMapper _mapper;
+
+//        public ModuleService(AppDbContext context, IMapper mapper)
+//        {
+//            _context = context;
+//            _mapper = mapper;
+//        }
+
+//        public async Task<IEnumerable<ResponseModuleDtos>> GetAllAsync()
+//        {
+//            var modules = await _context.Modules.Include(m => m.Course).ToListAsync();
+//            return _mapper.Map<IEnumerable<ResponseModuleDtos>>(modules);
+//        }
+
+//        public async Task<ResponseModuleDtos?> GetByIdAsync(string id)
+//        {
+//            var module = await _context.Modules.Include(m => m.Course)
+//                .FirstOrDefaultAsync(m => m.module_id == id);
+
+//            return _mapper.Map<ResponseModuleDtos>(module);
+//        }
+
+//        public async Task AddAsync(CreateModuleDtos moduleDto)
+//        {
+//            string videoPath = SaveFile(moduleDto.VideoFile, "VideoUpload");
+//            string pdfPath = SaveFile(moduleDto.PdfFile, "PdfUpload");
+
+//            var module = new Module
+//            {
+//                modulename = moduleDto.modulename,
+//                description = moduleDto.description,
+//                duration = moduleDto.duration,
+//                course_id = moduleDto.course_id,
+//                videopath = videoPath,
+//                documentpath = pdfPath,
+//                createdat = DateTime.UtcNow,
+//                updatedat = DateTime.UtcNow
+//            };
+//            string timestamp = DateTime.UtcNow.ToString("yyyyMMdd-HHmmss");
+//            string name = moduleDto.modulename.Split(' ')[0].ToUpper();
+//            string randomString = Guid.NewGuid().ToString().Substring(0, 6).ToUpper();
+//            module.module_id = $"Module-{name}-{timestamp}-{randomString}";
+
+
+//            _context.Modules.Add(module);
+//            await _context.SaveChangesAsync();
+//        }
+
+//        public async Task UpdateAsync(string id, CreateModuleDtos moduleDto)
+//        {
+//            var existingModule = await _context.Modules.FindAsync(id);
+//            if (existingModule == null) return;
+
+//            // Handle file updates
+//            if (moduleDto.VideoFile != null)
+//            {
+//                DeleteFile(existingModule.videopath);
+//                existingModule.videopath = SaveFile(moduleDto.VideoFile, "VideoUpload");
+//            }
+
+//            if (moduleDto.PdfFile != null)
+//            {
+//                DeleteFile(existingModule.documentpath);
+//                existingModule.documentpath = SaveFile(moduleDto.PdfFile, "PdfUpload");
+//            }
+
+//            // Update non-file fields
+//            existingModule.modulename = moduleDto.modulename;
+//            existingModule.description = moduleDto.description;
+//            existingModule.duration = moduleDto.duration;
+//            existingModule.updatedat = DateTime.UtcNow;
+
+//            _context.Modules.Update(existingModule);
+//            await _context.SaveChangesAsync();
+//        }
+
+//        private string SaveFile(IFormFile file, string folderName)
+//        {
+//            if (file == null) return string.Empty;
+
+//            string uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), $"wwwroot/{folderName}");
+//            Directory.CreateDirectory(uploadFolder);
+//            string fileName = Path.GetFileName(file.FileName);
+//            string filePath = Path.Combine(uploadFolder, fileName);
+
+//            using (var stream = new FileStream(filePath, FileMode.Create))
+//            {
+//                file.CopyTo(stream);
+//            }
+
+//            return $"/{folderName}/{fileName}";
+//        }
+
+//        private void DeleteFile(string filePath)
+//        {
+//            if (!string.IsNullOrEmpty(filePath))
+//            {
+//                string fullPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot" + filePath);
+//                if (File.Exists(fullPath))
+//                {
+//                    File.Delete(fullPath);
+//                }
+//            }
+//        }
+//    }
+//}
+
+using AutoMapper;
+using lmsBackend.DataAccessLayer;
+using lmsBackend.Dtos.ModuleDtos;
+using lmsBackend.Models;
+using lmsBackend.Repository.AdminRepo;
+using lmsBackend.Repository.UserRepo;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace lmsBackend.Repository.ModuleRepo
+{
+    //public class ModuleService : IModule
+    //{
+    //    private readonly AppDbContext _context;
+    //    private readonly IMapper _mapper;
+
+    //    public ModuleService(AppDbContext context, IMapper mapper)
+    //    {
+    //        _context = context;
+    //        _mapper = mapper;
+    //    }
+
+    //    public async Task<IEnumerable<ResponseModuleDtos>> GetAllAsync()
+    //    {
+    //        var modules = await _context.Modules.Include(m => m.Course).ToListAsync();
+    //        return _mapper.Map<IEnumerable<ResponseModuleDtos>>(modules);
+    //    }
+
+    //    public async Task<ResponseModuleDtos?> GetByIdAsync(string id)
+    //    {
+    //        var module = await _context.Modules.Include(m => m.Course)
+    //            .FirstOrDefaultAsync(m => m.module_id == id);
+
+    //        return _mapper.Map<ResponseModuleDtos>(module);
+    //    }
+
+    //    public async Task<IEnumerable<ResponseModuleDtos>> GetAllByCourseIdAsync(string courseId)
+    //    {
+    //        var modules = await _context.Modules
+    //            .Include(m => m.Course)
+    //            .Where(m => m.course_id == courseId)
+    //            .ToListAsync();
+
+    //        return _mapper.Map<IEnumerable<ResponseModuleDtos>>(modules);
+    //    }
+
+    //    public async Task AddAsync(CreateModuleDtos moduleDto)
+    //    {
+    //        string videoPath = SaveFile(moduleDto.VideoFile, "VideoUpload");
+    //        string pdfPath = SaveFile(moduleDto.PdfFile, "PdfUpload");
+
+    //        var module = new Module
+    //        {
+    //            modulename = moduleDto.modulename,
+    //            description = moduleDto.description,
+    //            duration = moduleDto.duration,
+    //            course_id = moduleDto.course_id,
+    //            videopath = videoPath,
+    //            documentpath = pdfPath,
+    //            supdocumentpath = string.Empty,
+    //            status = true,
+    //            createdat = DateTime.UtcNow,
+    //            updatedat = DateTime.UtcNow
+    //        };
+    //        string timestamp = DateTime.UtcNow.ToString("yyyyMMdd-HHmmss");
+    //        string name = moduleDto.modulename.Split(' ')[0].ToUpper();
+    //        string randomString = Guid.NewGuid().ToString().Substring(0, 6).ToUpper();
+    //        module.module_id = $"Module-{name}-{timestamp}-{randomString}";
+
+
+    //        _context.Modules.Add(module);
+    //        await _context.SaveChangesAsync();
+    //    }
+
+    //    public async Task UpdateAsync(string id, CreateModuleDtos moduleDto)
+    //    {
+    //        var existingModule = await _context.Modules.FindAsync(id);
+    //        if (existingModule == null) return;
+
+    //        // Handle file updates
+    //        if (moduleDto.VideoFile != null)
+    //        {
+    //            DeleteFile(existingModule.videopath);
+    //            existingModule.videopath = SaveFile(moduleDto.VideoFile, "VideoUpload");
+    //        }
+
+    //        if (moduleDto.PdfFile != null)
+    //        {
+    //            DeleteFile(existingModule.documentpath);
+    //            existingModule.documentpath = SaveFile(moduleDto.PdfFile, "PdfUpload");
+    //        }
+
+    //        // Update non-file fields
+    //        existingModule.modulename = moduleDto.modulename;
+    //        existingModule.description = moduleDto.description;
+    //        existingModule.duration = moduleDto.duration;
+    //        existingModule.updatedat = DateTime.UtcNow;
+
+    //        _context.Modules.Update(existingModule);
+    //        await _context.SaveChangesAsync();
+    //    }
+
+    //    private string SaveFile(IFormFile file, string folderName)
+    //    {
+    //        if (file == null) return string.Empty;
+
+    //        string uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), $"wwwroot/{folderName}");
+    //        Directory.CreateDirectory(uploadFolder);
+    //        string fileName = Path.GetFileName(file.FileName);
+    //        string filePath = Path.Combine(uploadFolder, fileName);
+
+    //        using (var stream = new FileStream(filePath, FileMode.Create))
+    //        {
+    //            file.CopyTo(stream);
+    //        }
+
+    //        return $"/{folderName}/{fileName}";
+    //    }
+
+    //    private void DeleteFile(string filePath)
+    //    {
+    //        if (!string.IsNullOrEmpty(filePath))
+    //        {
+    //            string fullPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot" + filePath);
+    //            if (File.Exists(fullPath))
+    //            {
+    //                File.Delete(fullPath);
+    //            }
+    //        }
+    //    }
+    //}
+
+    public class ModuleService : IModule
+    {
+        private readonly AppDbContext _context;
+        private readonly IMapper _mapper;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        public ModuleService(AppDbContext context, IMapper mapper, IHttpContextAccessor httpContextAccessor)
+        {
+            _context = context;
+            _mapper = mapper;
+            _httpContextAccessor = httpContextAccessor;
+        }
+
+        // Existing methods remain the same...
+        public async Task<IEnumerable<ResponseModuleDtos>> GetAllAsync()
+        {
+            var modules = await _context.Modules.Include(m => m.Course).ToListAsync();
+            return _mapper.Map<IEnumerable<ResponseModuleDtos>>(modules);
+        }
+
+        public async Task<ResponseModuleDtos?> GetByIdAsync(string id)
+        {
+            var module = await _context.Modules.Include(m => m.Course)
+                .FirstOrDefaultAsync(m => m.module_id == id);
+
+            return _mapper.Map<ResponseModuleDtos>(module);
+        }
+
+        public async Task<IEnumerable<ResponseModuleDtos>> GetAllByCourseIdAsync(string courseId)
+        {
+            var modules = await _context.Modules
+                .Include(m => m.Course)
+                .Where(m => m.course_id == courseId)
+                .ToListAsync();
+
+            return _mapper.Map<IEnumerable<ResponseModuleDtos>>(modules);
+        }
+
+        public async Task AddAsync(CreateModuleDtos moduleDto)
+        {
+            string videoPath = SaveFile(moduleDto.VideoFile, "VideoUpload");
+            string pdfPath = SaveFile(moduleDto.PdfFile, "PdfUpload");
+
+            var module = new Module
+            {
+                modulename = moduleDto.modulename,
+                description = moduleDto.description,
+                duration = moduleDto.duration,
+                course_id = moduleDto.course_id,
+                videopath = videoPath,
+                documentpath = pdfPath,
+                supdocumentpath = string.Empty,
+                status = true,
+                createdat = DateTime.UtcNow,
+                updatedat = DateTime.UtcNow
+            };
+            string timestamp = DateTime.UtcNow.ToString("yyyyMMdd-HHmmss");
+            string name = moduleDto.modulename.Split(' ')[0].ToUpper();
+            string randomString = Guid.NewGuid().ToString().Substring(0, 6).ToUpper();
+            module.module_id = $"Module-{name}-{timestamp}-{randomString}";
+
+            _context.Modules.Add(module);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateAsync(string id, CreateModuleDtos moduleDto)
+        {
+            var existingModule = await _context.Modules.FindAsync(id);
+            if (existingModule == null) return;
+
+            // Handle file updates
+            if (moduleDto.VideoFile != null)
+            {
+                DeleteFile(existingModule.videopath);
+                existingModule.videopath = SaveFile(moduleDto.VideoFile, "VideoUpload");
+            }
+
+            if (moduleDto.PdfFile != null)
+            {
+                DeleteFile(existingModule.documentpath);
+                existingModule.documentpath = SaveFile(moduleDto.PdfFile, "PdfUpload");
+            }
+
+            // Update non-file fields
+            existingModule.modulename = moduleDto.modulename;
+            existingModule.description = moduleDto.description;
+            existingModule.duration = moduleDto.duration;
+            existingModule.updatedat = DateTime.UtcNow;
+
+            _context.Modules.Update(existingModule);
+            await _context.SaveChangesAsync();
+        }
+
+        // New method implementation - Manual mapping without AutoMapper
+        public async Task<VideoModuleResponseDto?> GetVideoModuleByIdAsync(string moduleId)
+        {
+            var module = await _context.Modules
+                .FirstOrDefaultAsync(m => m.module_id == moduleId);
+
+            if (module == null)
+                return null;
+
+            // Get base URL from current HTTP context
+            var request = _httpContextAccessor.HttpContext?.Request;
+            var baseUrl = $"{request?.Scheme}://{request?.Host}";
+
+            // Manual mapping without AutoMapper
+            return new VideoModuleResponseDto
+            {
+                module_id = module.module_id,
+                course_id = module.course_id,
+                modulename = module.modulename,
+                duration = module.duration,
+                videopath = !string.IsNullOrEmpty(module.videopath) ?
+                           $"{baseUrl}{module.videopath}" : string.Empty
+            };
+        }
+
+        private string SaveFile(IFormFile file, string folderName)
+        {
+            if (file == null) return string.Empty;
+
+            string uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), $"wwwroot/{folderName}");
+            Directory.CreateDirectory(uploadFolder);
+            string fileName = Path.GetFileName(file.FileName);
+            string filePath = Path.Combine(uploadFolder, fileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                file.CopyTo(stream);
+            }
+
+            return $"/{folderName}/{fileName}";
+        }
+
+        private void DeleteFile(string filePath)
+        {
+            if (!string.IsNullOrEmpty(filePath))
+            {
+                string fullPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot" + filePath);
+                if (File.Exists(fullPath))
+                {
+                    File.Delete(fullPath);
+                }
+            }
+        }
+    }
+}
